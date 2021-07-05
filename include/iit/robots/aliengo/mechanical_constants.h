@@ -5,6 +5,8 @@
  *      Author: marco
  */
 
+/*****************************************************************************    THIS FILE DOES NOT MAKE SENSE FOR ALIENGO   *****************************************/
+
 #ifndef IIT_ALIENGO_MECHANICAL_CONSTANTS_H_
 #define IIT_ALIENGO_MECHANICAL_CONSTANTS_H_
 

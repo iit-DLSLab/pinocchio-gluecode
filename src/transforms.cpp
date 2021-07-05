@@ -54,7 +54,7 @@ SpatialTransformPlain MotionTransforms::getTransform(const dog::JointState &q,
         case OriginFrame::RH_FOOT:
             return this->fr_trunk_X_RH_foot(q);
 
-            // TODO there is no shin in HyQ-Real
+            // TODO there is no shin in Aliengo
         //case OriginFrame::LF_SHIN:
         //    return this->fr_trunk_X_LF_shin(q);
         //case OriginFrame::RF_SHIN:
@@ -404,7 +404,7 @@ SpatialTransformPlain ForceTransforms::getTransform(const dog::JointState &q,
         case OriginFrame::RH_FOOT:
             return this->fr_trunk_X_RH_foot(q);
 
-            // TODO there is no shin in HyQ-Real
+            // TODO there is no shin in Aliengo
         //case OriginFrame::LF_SHIN:
         //    return this->fr_trunk_X_LF_shin(q);
         //case OriginFrame::RF_SHIN:
@@ -756,7 +756,7 @@ HomogeneousTransformPlain HomogeneousTransforms::getTransform(const dog::JointSt
             return this->fr_trunk_X_RH_foot(q);
 
             // TODO
-            // There is no shin in HyQ-Real
+            // There is no shin in Aliengo
         //case OriginFrame::LF_SHIN:
         //    return this->fr_trunk_X_LF_shin(q);
         //case OriginFrame::RF_SHIN:

@@ -94,7 +94,7 @@ dog::FootJac getAngularFootJacobianRH(const JointState& q)  {
 
 
 /*dog::FootJac getAngularFootJacobian(const JointState &q, const dog::LegID &leg,
-				 const double& foot_x, const double& foot_y)
+			              const double& foot_x, const double& foot_y)
 {
 	jacs.updateParameters();
 	return jacs.getAngularFootJacobianXY(q, leg, foot_x, foot_y);

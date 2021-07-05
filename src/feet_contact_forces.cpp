@@ -86,7 +86,7 @@ void FeetContactForces::setContactPoint(dog::LegID leg, double user_foot_x, doub
     foot_y[leg] = user_foot_y;
 }
 
-}
-}
+} // namespace Aliengo
+} // namespace iit
 
 

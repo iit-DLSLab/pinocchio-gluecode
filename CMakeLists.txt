@@ -17,28 +17,30 @@ include_directories(include ${EIGEN3_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 set(LIB_NAME iitaliengocommons)
 
 catkin_package(
-   INCLUDE_DIRS include
-   CATKIN_DEPENDS iit_commons
-   LIBRARIES ${LIB_NAME}
-   DEPENDS
+  INCLUDE_DIRS include
+  CATKIN_DEPENDS iit_commons
+  LIBRARIES ${LIB_NAME}
+  DEPENDS
 )
 
 # Source code folder
-set(SOURCES # Common code
-            src/internals.cpp
-            src/joints_pid_control.cpp
-            src/hydraulic_dynamics.cpp
-            src/hydraulics_parameters.cpp
-            src/feet_contact_forces.cpp
-            src/robot_limits.cpp
-            # Generated code
-            src/transforms.cpp
-            src/jacobians.cpp
-            src/jsim.cpp
-            src/inverse_dynamics.cpp
-            src/inverse_kinematics.cpp
-            src/forward_dynamics.cpp
-            src/inertia_properties.cpp)
+set(SOURCES
+  # Common code
+  src/internals.cpp
+  src/joints_pid_control.cpp
+  src/hydraulic_dynamics.cpp
+  src/hydraulics_parameters.cpp
+  src/feet_contact_forces.cpp
+  src/robot_limits.cpp
+  # Generated code
+  src/transforms.cpp
+  src/jacobians.cpp
+  src/jsim.cpp
+  src/inverse_dynamics.cpp
+  src/inverse_kinematics.cpp
+  src/forward_dynamics.cpp
+  src/inertia_properties.cpp
+)
 
 # Add the shared library
 add_library(${LIB_NAME} SHARED ${SOURCES})
@@ -58,7 +60,7 @@ install(DIRECTORY include/
 )
 
 install(TARGETS ${LIB_NAME}
-        ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-        RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

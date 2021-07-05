@@ -23,7 +23,7 @@ public:
 
 public:
 	FeetContactForces(FeetJacobians &feet_jacobians,
-										dog::InverseDynamicsBase &inverse_dynamics, dog::JSIMBase &jsim);
+	                  dog::InverseDynamicsBase &inverse_dynamics, dog::JSIMBase &jsim);
 	~FeetContactForces() {}
 
 	inline Vector3d getFootGRF(const JointState& q,
@@ -43,27 +43,27 @@ public:
 	}
 
 	bool getFootGRF(const JointState& q,
-									const JointState& qd,
-									const JointState& tau,
-									const Quaterniond& orient,
-									const LegID& leg,
-									Vector3d& foot_grf,
-									const JointState& qdd = JointState::Zero(),
-									const Vector3d& xd = Vector3d::Zero(),
-									const Vector3d& xdd = Vector3d::Zero(),
-									const Vector3d& omega = Vector3d::Zero(),
-									const Vector3d& omegad = Vector3d::Zero());
+	                const JointState& qd,
+	                const JointState& tau,
+	                const Quaterniond& orient,
+	                const LegID& leg,
+	                Vector3d& foot_grf,
+	                const JointState& qdd = JointState::Zero(),
+	                const Vector3d& xd = Vector3d::Zero(),
+	                const Vector3d& xdd = Vector3d::Zero(),
+	                const Vector3d& omega = Vector3d::Zero(),
+	                const Vector3d& omegad = Vector3d::Zero());
 
 	inline bool getFeetGRF(const JointState& q,
-												 const JointState& qd,
-												 const JointState& tau,
-												 const Quaterniond& orient,
-												 dog::LegDataMap<Vector3d>& feet_grf,
-												 const JointState& qdd = JointState::Zero(),
-												 const Vector3d& xd = Vector3d::Zero(),
-												 const Vector3d& xdd = Vector3d::Zero(),
-												 const Vector3d& omega = Vector3d::Zero(),
-												 const Vector3d& omegad = Vector3d::Zero())
+	                       const JointState& qd,
+	                       const JointState& tau,
+	                       const Quaterniond& orient,
+	                       dog::LegDataMap<Vector3d>& feet_grf,
+	                       const JointState& qdd = JointState::Zero(),
+	                       const Vector3d& xd = Vector3d::Zero(),
+	                       const Vector3d& xdd = Vector3d::Zero(),
+	                       const Vector3d& omega = Vector3d::Zero(),
+	                       const Vector3d& omegad = Vector3d::Zero())
 	{
 		bool res_lf = getFootGRF(q, qd, tau, orient, dog::LF, feet_grf[dog::LF], qdd, xd, xdd, omega, omegad);
 		bool res_rf = getFootGRF(q, qd, tau, orient, dog::RF, feet_grf[dog::RF], qdd, xd, xdd, omega, omegad);

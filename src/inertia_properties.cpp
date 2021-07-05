@@ -3,6 +3,7 @@
 using namespace std;
 using namespace iit::rbd;
 
+//HACK: INERTIA PROPERTIES FOR ALIENGO
 iit::Aliengo::dyn::InertiaProperties::InertiaProperties(const dog::KinDynParams& pGetter)
     : paramsGetter(pGetter), homogeneus_transforms(pGetter)
 {
@@ -18,149 +19,149 @@ iit::Aliengo::dyn::InertiaProperties::InertiaProperties(const dog::KinDynParams&
                 paramsGetter.getValue_trunk_Ixz(),
                 paramsGetter.getValue_trunk_Iyz()) );
 
-    com_LF_hipassembly = iit::rbd::Vector3d(-0.010027,-0.010608,0.003644);
+    com_LF_hipassembly = iit::rbd::Vector3d(0.000015,-0.015144,0.022191); //updated with Aliengo
     tensor_LF_hipassembly.fill(
-        4.973275,
-        com_LF_hipassembly,
-        Utils::buildInertiaTensor(
-                0.011857,
-                0.016334,
-                0.017923,
-                -6.3E-5,
-                4.4E-5,
-                3.2E-5) );
+    		1.993,
+			com_LF_hipassembly,
+			Utils::buildInertiaTensor(
+					0.005586944,
+					0.004907517,
+					0.002903894,
+					-0.00000175,
+					-0.000001262,
+					-0.000071850) );
 
-    com_LF_upperleg = iit::rbd::Vector3d(0.107987,-0.011459,-0.002121);
+    com_LF_upperleg = iit::rbd::Vector3d(0.048199,0.005607,0.003877);  //updated with Aliengo
     tensor_LF_upperleg.fill(
-        5.877927,
-        com_LF_upperleg,
-        Utils::buildInertiaTensor(
-                0.01723,
-                0.144308,
-                0.148583,
-                -0.00541,
-                0.00255,
-                -9.7E-5) );
+    		0.639,
+			com_LF_upperleg,
+			Utils::buildInertiaTensor(
+					0.000369811,
+					0.005666803,
+					0.005847229,
+					0.000491446,
+					0.000010086,
+					0.000003597) );
 
-    com_LF_lowerleg = iit::rbd::Vector3d(0.149302,-0.003801,-6.24E-4);
+    com_LF_lowerleg = iit::rbd::Vector3d(0.142518,-0.002781,0.000063);  //updated with Aliengo
     tensor_LF_lowerleg.fill(
-        1.291954,
-        com_LF_lowerleg,
-        Utils::buildInertiaTensor(
-                0.001107,
-                0.058015,
-                0.05859,
-                -0.001305,
-                -1.0E-6,
-                3.0E-6) );
+    		0.207,
+			com_LF_lowerleg,
+			Utils::buildInertiaTensor(
+					0.000039188,
+					0.006341369,
+					0.006355157,
+					-0.000087951,
+					-0.000001336,
+					-0.000000003) );
 
-    com_RF_hipassembly = iit::rbd::Vector3d(-0.010027,-0.010608,0.003644);
+    com_RF_hipassembly = iit::rbd::Vector3d(0.000015,-0.015144,0.022191); //updated with Aliengo
     tensor_RF_hipassembly.fill(
-        4.973275,
-        com_RF_hipassembly,
-        Utils::buildInertiaTensor(
-                0.011857,
-                0.016334,
-                0.017923,
-                -6.3E-5,
-                4.4E-5,
-                3.2E-5) );
+    		1.993,
+			com_RF_hipassembly,
+			Utils::buildInertiaTensor(
+					0.005586944,
+					0.004907517,
+					0.002903894,
+					-0.00000175,
+					-0.000001262,
+					-0.000071850) );
 
-    com_RF_upperleg = iit::rbd::Vector3d(0.107987,-0.011459,-0.002121);
+    com_RF_upperleg = iit::rbd::Vector3d(0.048199,0.005607,0.003877);  //updated with Aliengo
     tensor_RF_upperleg.fill(
-        5.877927,
-        com_RF_upperleg,
-        Utils::buildInertiaTensor(
-                0.01723,
-                0.144308,
-                0.148583,
-                -0.00541,
-                0.00255,
-                -9.7E-5) );
+    		0.639,
+			com_RF_upperleg,
+			Utils::buildInertiaTensor(
+					0.000369811,
+					0.005666803,
+					0.005847229,
+					0.000491446,
+					0.000010086,
+					0.000003597) );
 
-    com_RF_lowerleg = iit::rbd::Vector3d(0.149302,-0.003801,-6.24E-4);
+    com_RF_lowerleg = iit::rbd::Vector3d(0.142518,-0.002781,0.000063);  //updated with Aliengo
     tensor_RF_lowerleg.fill(
-        1.291954,
-        com_RF_lowerleg,
-        Utils::buildInertiaTensor(
-                0.001107,
-                0.058015,
-                0.05859,
-                -0.001305,
-                -1.0E-6,
-                3.0E-6) );
+    		0.207,
+			com_RF_lowerleg,
+			Utils::buildInertiaTensor(
+					0.000039188,
+					0.006341369,
+					0.006355157,
+					-0.000087951,
+					-0.000001336,
+					-0.000000003) );
 
-    com_LH_hipassembly = iit::rbd::Vector3d(-0.010027,-0.010608,0.003644);
+    com_LH_hipassembly = iit::rbd::Vector3d(0.000015,-0.015144,0.022191); //updated with Aliengo
     tensor_LH_hipassembly.fill(
-        4.973275,
-        com_LH_hipassembly,
-        Utils::buildInertiaTensor(
-                0.011857,
-                0.016334,
-                0.017923,
-                -6.3E-5,
-                4.4E-5,
-                3.2E-5) );
+    		1.993,
+			com_LH_hipassembly,
+			Utils::buildInertiaTensor(
+					0.005586944,
+					0.004907517,
+					0.002903894,
+					-0.00000175,
+					-0.000001262,
+					-0.000071850) );
 
-    com_LH_upperleg = iit::rbd::Vector3d(0.107987,-0.011459,-0.002121);
+    com_LH_upperleg = iit::rbd::Vector3d(0.048199,0.005607,0.003877);  //updated with Aliengo
     tensor_LH_upperleg.fill(
-        5.877927,
-        com_LH_upperleg,
-        Utils::buildInertiaTensor(
-                0.01723,
-                0.144308,
-                0.148583,
-                -0.00541,
-                0.00255,
-                -9.7E-5) );
+    		0.639,
+			com_LH_upperleg,
+			Utils::buildInertiaTensor(
+					0.000369811,
+					0.005666803,
+					0.005847229,
+					0.000491446,
+					0.000010086,
+					0.000003597) );
 
-    com_LH_lowerleg = iit::rbd::Vector3d(0.149302,-0.003801,-6.24E-4);
+    com_LH_lowerleg = iit::rbd::Vector3d(0.142518,-0.002781,0.000063);  //updated with Aliengo
     tensor_LH_lowerleg.fill(
-        1.291954,
-        com_LH_lowerleg,
-        Utils::buildInertiaTensor(
-                0.001107,
-                0.058015,
-                0.05859,
-                -0.001305,
-                -1.0E-6,
-                3.0E-6) );
+    		0.207,
+			com_LH_lowerleg,
+			Utils::buildInertiaTensor(
+					0.000039188,
+					0.006341369,
+					0.006355157,
+					-0.000087951,
+					-0.000001336,
+					-0.000000003) );
 
-    com_RH_hipassembly = iit::rbd::Vector3d(-0.010027,-0.010608,0.003644);
+    com_RH_hipassembly = iit::rbd::Vector3d(0.000015,-0.015144,0.022191); //updated with Aliengo
     tensor_RH_hipassembly.fill(
-        4.973275,
-        com_RH_hipassembly,
-        Utils::buildInertiaTensor(
-                0.011857,
-                0.016334,
-                0.017923,
-                -6.3E-5,
-                4.4E-5,
-                3.2E-5) );
+    		1.993,
+			com_RH_hipassembly,
+			Utils::buildInertiaTensor(
+					0.005586944,
+					0.004907517,
+					0.002903894,
+					-0.00000175,
+					-0.000001262,
+					-0.000071850) );
 
-    com_RH_upperleg = iit::rbd::Vector3d(0.107987,-0.011459,-0.002121);
+    com_RH_upperleg = iit::rbd::Vector3d(0.048199,0.005607,0.003877);  //updated with Aliengo
     tensor_RH_upperleg.fill(
-        5.877927,
-        com_RH_upperleg,
-        Utils::buildInertiaTensor(
-                0.01723,
-                0.144308,
-                0.148583,
-                -0.00541,
-                0.00255,
-                -9.7E-5) );
+    		0.639,
+			com_RH_upperleg,
+			Utils::buildInertiaTensor(
+					0.000369811,
+					0.005666803,
+					0.005847229,
+					0.000491446,
+					0.000010086,
+					0.000003597) );
 
-    com_RH_lowerleg = iit::rbd::Vector3d(0.149302,-0.003801,-6.24E-4);
+    com_RH_lowerleg = iit::rbd::Vector3d(0.142518,-0.002781,0.000063);  //updated with Aliengo
     tensor_RH_lowerleg.fill(
-        1.291954,
-        com_RH_lowerleg,
-        Utils::buildInertiaTensor(
-                0.001107,
-                0.058015,
-                0.05859,
-                -0.001305,
-                -1.0E-6,
-                3.0E-6) );
+    		0.207,
+			com_RH_lowerleg,
+			Utils::buildInertiaTensor(
+					0.000039188,
+					0.006341369,
+					0.006355157,
+					-0.000087951,
+					-0.000001336,
+					-0.000000003) );
 
 }
 

@@ -1338,5 +1338,5 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
 }
 
 
-}
-}
+} // namespace Aliengo
+} // namespace iit
