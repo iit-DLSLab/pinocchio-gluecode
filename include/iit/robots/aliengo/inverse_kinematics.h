@@ -322,6 +322,8 @@ private:
     mutable Aliengo::RobotLengths bodyLengths;
     Aliengo::Jacobians jacobians_;
     double dt_ = 0.004; // default task rate is 4 ms
+    // double dt_ = 0.01; // default task rate is 10 ms
+    // double dt_ = 0.008; // default task rate is 8 ms
     dog::LegDataMap<rbd::Matrix33d> old_feet_jacobians_;
     dog::LegDataMap<Eigen::Matrix<double, 6,3 >*> feet_jacobians_; // useful alias
 
