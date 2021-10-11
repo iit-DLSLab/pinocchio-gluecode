@@ -121,8 +121,8 @@ bool InverseKinematics::getJointPosition(const FootPosition &foot_position,
     //Check if the outputs are inf or nan
     for (int joint = LegJoints::HAA; joint <= LegJoints::KFE; joint++) {
         if (!std::isfinite(q_leg(joint))) {
-            std::cerr << "Position of joint " << joint << " and leg " << leg_id
-                      << " is not finite !!!" << std::endl;
+            //std::cerr << "Position of joint " << joint << " and leg " << leg_id
+            //          << " is not finite!" << std::endl;
             return false;
         }
     }
@@ -168,7 +168,7 @@ bool InverseKinematics::getJointVelocity(const FootVelocity &foot_velocity,
         return true;
     } else {
         std::cerr << "[InverseKinematics::getJointVelocity] A joint velocity ";
-        std::cerr << "for leg "<< leg_id << " is not finite!!!" << std::endl;
+        std::cerr << "for leg "<< leg_id << " is not finite!" << std::endl;
     }
 
     return true;
@@ -198,7 +198,7 @@ bool InverseKinematics::getJointState(const FootPosition& foot_position,
             for (int joint = dog::LegJoints::HAA; joint <= dog::LegJoints::KFE; joint++) {
                 if (!std::isfinite(qdd_leg(joint))) {
                     std::cerr << "Acceleration of joint " << joint << " and leg " << leg_id
-                              << " is not finite !!!" << std::endl;
+                              << " is not finite!" << std::endl;
                     return false;
                 }
             }
@@ -298,19 +298,19 @@ dog::LegBoolMap InverseKinematics::calculate(const dog::LegDataMap<rbd::Vector3d
             if (!std::isfinite(des_joint_pos[leg](joint))) {
                 joint_range_check[leg] = false;
                 std::cout << "Position of joint " << joint << " of leg " << leg
-                          << " is " << des_joint_pos[leg](joint) << " !!!" << std::endl;
+                          << " is " << des_joint_pos[leg](joint) << " ." << std::endl;
             }
 
             if (!std::isfinite(des_joint_vel[leg](joint))) {
                 joint_range_check[leg] = false;
                 std::cout << "Velocity of joint " << joint << " of leg " << leg
-                          << " is " << des_joint_vel[leg](joint) << " !!!" << std::endl;
+                          << " is " << des_joint_vel[leg](joint) << " ." << std::endl;
 
             }
             if (!std::isfinite(des_joint_accel[leg](joint))) {
                 joint_range_check[leg] = false;
                 std::cout << "Acceleration of joint " << joint << " of leg " << leg
-                        << " is " << des_joint_accel[leg](joint) << " !!!" << std::endl;
+                        << " is " << des_joint_accel[leg](joint) << " ." << std::endl;
             }
         }
 
@@ -347,19 +347,19 @@ dog::LegBoolMap InverseKinematics::calculate(const dog::LegDataMap<rbd::Vector3d
             if (!std::isfinite(des_joint_pos[leg](joint))) {
                 joint_range_check[leg] = false;
                 std::cout << "Position of joint " << joint << " of leg " << leg
-                          << " is " << des_joint_pos[leg](joint) << " !!!" << std::endl;
+                          << " is " << des_joint_pos[leg](joint) << " ." << std::endl;
             }
 
             if (!std::isfinite(des_joint_vel[leg](joint))) {
                 joint_range_check[leg] = false;
                 std::cout << "Velocity of joint " << joint << " of leg " << leg
-                          << " is " << des_joint_vel[leg](joint) << " !!!" << std::endl;
+                          << " is " << des_joint_vel[leg](joint) << " ." << std::endl;
 
             }
             if (!std::isfinite(des_joint_accel[leg](joint))) {
                 joint_range_check[leg] = false;
                 std::cout << "Acceleration of joint " << joint << " of leg " << leg
-                        << " is " << des_joint_accel[leg](joint) << " !!!" << std::endl;
+                        << " is " << des_joint_accel[leg](joint) << " ." << std::endl;
             }
         }
 
@@ -490,7 +490,7 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
             std::cout << "joint_velocity = "
                       << joint_velocity.transpose() << std::endl;
             std::cout << "joint_acceleration = "
-                      << joint_acceleration.transpose() << std::endl << std::endl;
+                      << joint_acceleration.transpose() << std::endl;
         }
         break;
 
@@ -574,7 +574,7 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
             std::cout << "joint_velocity = "
                       << joint_velocity.transpose() << std::endl;
             std::cout << "joint_acceleration = "
-                      << joint_acceleration.transpose() << std::endl << std::endl;
+                      << joint_acceleration.transpose() << std::endl;
         }
         break;
 
@@ -648,7 +648,7 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
             std::cout << "joint_velocity = "
                       << joint_velocity.transpose() << std::endl;
             std::cout << "joint_acceleration = "
-                      << joint_acceleration.transpose() << std::endl << std::endl;
+                      << joint_acceleration.transpose() << std::endl;
         }
         break;
 
@@ -729,7 +729,7 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
             std::cout << "joint_velocity = "
                       << joint_velocity.transpose() << std::endl;
             std::cout << "joint_acceleration = "
-                      << joint_acceleration.transpose() << std::endl << std::endl;
+                      << joint_acceleration.transpose() << std::endl;
         }
         break;
     }
@@ -919,7 +919,7 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
             std::cout << "joint_velocity = "
                       << joint_velocity.transpose() << std::endl;
             std::cout << "joint_acceleration = "
-                      << joint_acceleration.transpose() << std::endl << std::endl;
+                      << joint_acceleration.transpose() << std::endl;
         }
 
         break;
@@ -1057,7 +1057,7 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
             std::cout << "joint_velocity = "
                       << joint_velocity.transpose() << std::endl;
             std::cout << "joint_acceleration = "
-                      << joint_acceleration.transpose() << std::endl << std::endl;
+                      << joint_acceleration.transpose() << std::endl;
         }
         break;
 
@@ -1192,7 +1192,7 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
             std::cout << "joint_velocity = "
                       << joint_velocity.transpose() << std::endl;
             std::cout << "joint_acceleration = "
-                      << joint_acceleration.transpose() << std::endl << std::endl;
+                      << joint_acceleration.transpose() << std::endl;
         }
         break;
 
@@ -1328,7 +1328,7 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
             std::cout << "joint_velocity = "
                       << joint_velocity.transpose() << std::endl;
             std::cout << "joint_acceleration = "
-                      << joint_acceleration.transpose() << std::endl << std::endl;
+                      << joint_acceleration.transpose() << std::endl;
         }
         break;
     }
