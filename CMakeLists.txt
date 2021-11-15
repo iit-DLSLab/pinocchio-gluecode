@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(aliengo_commons)
 
-SET(CMAKE_CXX_FLAGS "-std=c++11")
+SET(CMAKE_CXX_FLAGS "-std=c++17")
 
 #set(HEADER_INSTALL_ROOT /usr/local/include/ CACHE PATH "Where to install the headers")
 #set(LIB_INSTALL_ROOT /usr/local/lib/ CACHE PATH "Where to install the shared library")
