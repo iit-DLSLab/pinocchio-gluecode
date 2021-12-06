@@ -27,11 +27,11 @@ iit::Aliengo::dyn::InertiaProperties::InertiaProperties(const dog::KinDynParams&
 					0.005586944,
 					0.004907517,
 					0.002903894,
-					-0.00000175,
-					-0.000001262,
-					-0.000071850) );
+                                        0.0,
+                                        0.0,
+                                        0.0) );
 
-    com_LF_upperleg = iit::rbd::Vector3d(0.048199,0.005607,0.003877);  //updated with Aliengo
+    com_LF_upperleg = iit::rbd::Vector3d(0.048199,0.005607,-0.003877);  //updated with Aliengo
     tensor_LF_upperleg.fill(
     		0.639,
 			com_LF_upperleg,
@@ -39,23 +39,23 @@ iit::Aliengo::dyn::InertiaProperties::InertiaProperties(const dog::KinDynParams&
 					0.000369811,
 					0.005666803,
 					0.005847229,
-					0.000491446,
-					0.000010086,
-					0.000003597) );
+                                        0.0,
+                                        0.0,
+                                        0.0) );
 
     com_LF_lowerleg = iit::rbd::Vector3d(0.142518,-0.002781,0.000063);  //updated with Aliengo
     tensor_LF_lowerleg.fill(
-    		0.207,
+                0.207+0.06,
 			com_LF_lowerleg,
 			Utils::buildInertiaTensor(
 					0.000039188,
 					0.006341369,
 					0.006355157,
-					-0.000087951,
-					-0.000001336,
-					-0.000000003) );
+                                        0.0,
+                                        0.0,
+                                        0.0) );
 
-    com_RF_hipassembly = iit::rbd::Vector3d(0.000015,-0.015144,0.022191); //updated with Aliengo
+    com_RF_hipassembly = iit::rbd::Vector3d(0.000015,-0.015144,-0.022191); //updated with Aliengo
     tensor_RF_hipassembly.fill(
     		1.993,
 			com_RF_hipassembly,
@@ -63,9 +63,9 @@ iit::Aliengo::dyn::InertiaProperties::InertiaProperties(const dog::KinDynParams&
 					0.005586944,
 					0.004907517,
 					0.002903894,
-					-0.00000175,
-					-0.000001262,
-					-0.000071850) );
+                                        0.0,
+                                        0.0,
+                                        0.0) );
 
     com_RF_upperleg = iit::rbd::Vector3d(0.048199,0.005607,0.003877);  //updated with Aliengo
     tensor_RF_upperleg.fill(
@@ -75,21 +75,21 @@ iit::Aliengo::dyn::InertiaProperties::InertiaProperties(const dog::KinDynParams&
 					0.000369811,
 					0.005666803,
 					0.005847229,
-					0.000491446,
-					0.000010086,
-					0.000003597) );
+                                        0.0,
+                                        0.0,
+                                        0.0) );
 
     com_RF_lowerleg = iit::rbd::Vector3d(0.142518,-0.002781,0.000063);  //updated with Aliengo
     tensor_RF_lowerleg.fill(
-    		0.207,
+                0.207+0.06,
 			com_RF_lowerleg,
 			Utils::buildInertiaTensor(
 					0.000039188,
 					0.006341369,
 					0.006355157,
-					-0.000087951,
-					-0.000001336,
-					-0.000000003) );
+                                        0.0,
+                                        0.0,
+                                        0.0) );
 
     com_LH_hipassembly = iit::rbd::Vector3d(0.000015,-0.015144,0.022191); //updated with Aliengo
     tensor_LH_hipassembly.fill(
@@ -99,11 +99,11 @@ iit::Aliengo::dyn::InertiaProperties::InertiaProperties(const dog::KinDynParams&
 					0.005586944,
 					0.004907517,
 					0.002903894,
-					-0.00000175,
-					-0.000001262,
-					-0.000071850) );
+                                        0.0,
+                                        0.0,
+                                        0.0) );
 
-    com_LH_upperleg = iit::rbd::Vector3d(0.048199,0.005607,0.003877);  //updated with Aliengo
+    com_LH_upperleg = iit::rbd::Vector3d(0.048199,0.005607,-0.003877);  //updated with Aliengo
     tensor_LH_upperleg.fill(
     		0.639,
 			com_LH_upperleg,
@@ -111,23 +111,23 @@ iit::Aliengo::dyn::InertiaProperties::InertiaProperties(const dog::KinDynParams&
 					0.000369811,
 					0.005666803,
 					0.005847229,
-					0.000491446,
-					0.000010086,
-					0.000003597) );
+                                        0.0,
+                                        0.0,
+                                        0.0) );
 
     com_LH_lowerleg = iit::rbd::Vector3d(0.142518,-0.002781,0.000063);  //updated with Aliengo
     tensor_LH_lowerleg.fill(
-    		0.207,
+                0.207+0.06,
 			com_LH_lowerleg,
 			Utils::buildInertiaTensor(
 					0.000039188,
 					0.006341369,
 					0.006355157,
-					-0.000087951,
-					-0.000001336,
-					-0.000000003) );
+                                        0.0,
+                                        0.0,
+                                        0.0) );
 
-    com_RH_hipassembly = iit::rbd::Vector3d(0.000015,-0.015144,0.022191); //updated with Aliengo
+    com_RH_hipassembly = iit::rbd::Vector3d(0.000015,-0.015144,-0.022191); //updated with Aliengo
     tensor_RH_hipassembly.fill(
     		1.993,
 			com_RH_hipassembly,
@@ -135,9 +135,9 @@ iit::Aliengo::dyn::InertiaProperties::InertiaProperties(const dog::KinDynParams&
 					0.005586944,
 					0.004907517,
 					0.002903894,
-					-0.00000175,
-					-0.000001262,
-					-0.000071850) );
+                                        0.0,
+                                        0.0,
+                                        0.0) );
 
     com_RH_upperleg = iit::rbd::Vector3d(0.048199,0.005607,0.003877);  //updated with Aliengo
     tensor_RH_upperleg.fill(
@@ -147,21 +147,21 @@ iit::Aliengo::dyn::InertiaProperties::InertiaProperties(const dog::KinDynParams&
 					0.000369811,
 					0.005666803,
 					0.005847229,
-					0.000491446,
-					0.000010086,
-					0.000003597) );
+                                        0.0,
+                                        0.0,
+                                        0.0) );
 
     com_RH_lowerleg = iit::rbd::Vector3d(0.142518,-0.002781,0.000063);  //updated with Aliengo
     tensor_RH_lowerleg.fill(
-    		0.207,
+                0.207+0.06,
 			com_RH_lowerleg,
 			Utils::buildInertiaTensor(
 					0.000039188,
 					0.006341369,
 					0.006355157,
-					-0.000087951,
-					-0.000001336,
-					-0.000000003) );
+                                        0.0,
+                                        0.0,
+                                        0.0) );
 
 }
 
