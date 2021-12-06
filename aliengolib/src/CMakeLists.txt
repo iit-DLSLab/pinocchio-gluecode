@@ -7,7 +7,7 @@ add_library(aliengolib SHARED
     utils.cpp
     #robcogen/inertia_properties.cpp #TODO: robcogen
     #robcogen/inverse_dynamics.cpp
-    #robcogen/transforms.cpp
+    robcogen/transforms.cpp
     #robcogen/jacobians.cpp
     #other/jacobians.cpp #TODO: robcogen
 )
