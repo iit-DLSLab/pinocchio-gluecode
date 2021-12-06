@@ -9,7 +9,6 @@
 #include "robcogen/kinematics_parameters.h"
 
 namespace aliengolib {
-namespace Aliengo {
 
 // The type of the "vector" with the status of the variables
 typedef aliengolib::dog::JointState state_t;
@@ -2126,7 +2125,6 @@ protected:
     const dog::KinDynParams* valuesGetter_lengths;
 }; //class 'HomogeneousTransforms'
 
-}
 }
 
 #endif

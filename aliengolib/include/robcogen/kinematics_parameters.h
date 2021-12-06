@@ -2,7 +2,6 @@
 #define IIT_ALIENGO_PARAMS_LENGTHS_H_
 
 namespace aliengolib {
-namespace Aliengo {
 
 struct Params_lengths {
     double haa_x;
@@ -12,5 +11,5 @@ struct Params_lengths {
     double foot_x;
 };
 }
-}
+
 #endif
