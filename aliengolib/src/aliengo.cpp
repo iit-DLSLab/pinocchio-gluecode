@@ -37,10 +37,11 @@ namespace aliengolib
         {
             for (auto joint : *(leg->getJoints()))
             {
-                const std::string child_name = leg->jointToChildName(joint);
-                setChildOfJoint(joint, getLink(child_name));
-                const std::string parent_name = leg->jointToParentName(joint);
-                setParentOfJoint(joint, getLink(parent_name));
+                // const std::string child_name = leg->jointToChildName(joint);
+
+                // setChildOfJoint(joint, getLink(child_name));
+                // const std::string parent_name = leg->jointToParentName(joint);
+                // setParentOfJoint(joint, getLink(parent_name));
             }
         }
 

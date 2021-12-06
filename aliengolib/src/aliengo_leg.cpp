@@ -16,12 +16,6 @@ namespace aliengolib
                     {"RF_HAA", std::make_pair("TRUNK", "RF_ASSEMBLY")},
                     {"RF_HFE", std::make_pair("RF_ASSEMBLY", "RF_UPPERLEG")},
                     {"RF_KFE", std::make_pair("RF_UPPERLEG", "RF_LOWERLEG")},
-                    {"LC_HAA", std::make_pair("TRUNK", "LC_ASSEMBLY")},
-                    {"LC_HFE", std::make_pair("LC_ASSEMBLY", "LC_UPPERLEG")},
-                    {"LC_KFE", std::make_pair("LC_UPPERLEG", "LC_LOWERLEG")},
-                    {"RC_HAA", std::make_pair("TRUNK", "RC_ASSEMBLY")},
-                    {"RC_HFE", std::make_pair("RC_ASSEMBLY", "RC_UPPERLEG")},
-                    {"RC_KFE", std::make_pair("RC_UPPERLEG", "RC_LOWERLEG")},
                     {"LH_HAA", std::make_pair("TRUNK", "LH_ASSEMBLY")},
                     {"LH_HFE", std::make_pair("LH_ASSEMBLY", "LH_UPPERLEG")},
                     {"LH_KFE", std::make_pair("LH_UPPERLEG", "LH_LOWERLEG")},
@@ -35,12 +29,6 @@ namespace aliengolib
                     {"RF_ASSEMBLY", std::make_pair("RF_HAA", "RF_HFE")},
                     {"RF_UPPERLEG", std::make_pair("RF_HFE", "RF_KFE")},
                     {"RF_LOWERLEG", std::make_pair("RF_KFE", "")},
-                    {"LC_ASSEMBLY", std::make_pair("LC_HAA", "LC_HFE")},
-                    {"LC_UPPERLEG", std::make_pair("LC_HFE", "LC_KFE")},
-                    {"LC_LOWERLEG", std::make_pair("LC_KFE", "")},
-                    {"RC_ASSEMBLY", std::make_pair("RC_HAA", "RC_HFE")},
-                    {"RC_UPPERLEG", std::make_pair("RC_HFE", "RC_KFE")},
-                    {"RC_LOWERLEG", std::make_pair("RC_KFE", "")},
                     {"LH_ASSEMBLY", std::make_pair("LH_HAA", "LH_HFE")},
                     {"LH_UPPERLEG", std::make_pair("LH_HFE", "LH_KFE")},
                     {"LH_LOWERLEG", std::make_pair("LH_KFE", "")},
@@ -51,27 +39,52 @@ namespace aliengolib
 
     const std::string AliengoLeg::jointToChildName(const std::shared_ptr<robotlib::Joint> joint) const
     {
-        const std::string joint_name = joint->getName();
-        const std::string child_name = jointMap.find(joint_name)->second.second;
-        return child_name;
+       const std::string joint_name = joint->getName();
+       std::map<std::string, std::pair<std::string, std::string>>::const_iterator it{jointMap.find(joint_name)};
+        if (it == jointMap.end())
+            throw std::invalid_argument("jointToChildName: the joint " + joint_name + " does not belong to Aliengo!");
+        else
+        {       
+            const std::string child_name = it->second.second;
+            return child_name;
+        }
+        
     };
     const std::string AliengoLeg::jointToParentName(const std::shared_ptr<robotlib::Joint> joint) const
     {
-        const std::string joint_name = joint->getName();
-        const std::string parent_name = jointMap.find(joint_name)->second.first;
-        return parent_name;
+        const std::string joint_name = joint->getName(); 
+        std::map<std::string, std::pair<std::string, std::string>>::const_iterator it{jointMap.find(joint_name)};
+        if (it == jointMap.end())
+            throw std::invalid_argument("jointToParentName: the joint " + joint_name + " does not belong to Aliengo!");
+        else
+        { 
+            const std::string parent_name = it->second.first;
+            return parent_name;
+        }
     };
 
     const std::string AliengoLeg::linkToChildName(const std::shared_ptr<robotlib::Link> link) const
     {
         const std::string link_name = link->getName();
-        const std::string child_name = linkMap.find(link_name)->second.second;
-        return child_name;
+        std::map<std::string, std::pair<std::string, std::string>>::const_iterator it{linkMap.find(link_name)};
+        if (it == linkMap.end())
+            throw std::invalid_argument("linkToChildName: the link " + link_name + " does not belong to Aliengo!");
+        else
+        { 
+            const std::string child_name = it->second.second;
+            return child_name;
+        }
     };
     const std::string AliengoLeg::linkToParentName(const std::shared_ptr<robotlib::Link> link) const
     {
         const std::string link_name = link->getName();
-        const std::string parent_name = linkMap.find(link_name)->second.first;
-        return parent_name;
+        std::map<std::string, std::pair<std::string, std::string>>::const_iterator it{linkMap.find(link_name)};
+        if (it == linkMap.end())
+            throw std::invalid_argument("linkToParentName: the link " + link_name + " does not belong to Aliengo!");
+        else
+        { 
+            const std::string parent_name = it->second.first;
+            return parent_name;
+        }
     };
 } // namespace aliengolib
