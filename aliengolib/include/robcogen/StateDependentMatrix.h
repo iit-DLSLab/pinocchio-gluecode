@@ -15,7 +15,7 @@
 #include "rbd.h"
 #include "StateDependentBase.h"
 
-namespace iit {
+namespace aliengolib {
 namespace rbd {
 
 

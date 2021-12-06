@@ -1,7 +1,7 @@
 #ifndef IIT_DOG_KIN_DYN_PARAMS_H_
 #define IIT_DOG_KIN_DYN_PARAMS_H_
 
-namespace iit {
+namespace aliengolib {
 namespace dog {
 
 

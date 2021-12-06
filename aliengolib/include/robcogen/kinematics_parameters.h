@@ -1,7 +1,7 @@
 #ifndef IIT_ALIENGO_PARAMS_LENGTHS_H_
 #define IIT_ALIENGO_PARAMS_LENGTHS_H_
 
-namespace iit {
+namespace aliengolib {
 namespace Aliengo {
 
 struct Params_lengths {

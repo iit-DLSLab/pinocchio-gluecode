@@ -1,7 +1,7 @@
 #include "robcogen/transforms.h"
 
-using namespace iit::dog;
-using namespace iit::Aliengo;
+using namespace aliengolib::dog;
+using namespace aliengolib::Aliengo;
 // Constructors
 
 SpatialTransformPlain MotionTransforms::getTransform(const dog::JointState &q,
@@ -271,7 +271,7 @@ SpatialTransformPlain MotionTransforms::getTransform(const dog::JointState &q,
     }
 }
 
-iit::Aliengo::MotionTransforms::MotionTransforms
+aliengolib::Aliengo::MotionTransforms::MotionTransforms
     (const dog::KinDynParams& getter_lengths)
      :
     fr_LF_lowerleg_X_LF_foot(values_lengths),
@@ -346,7 +346,7 @@ iit::Aliengo::MotionTransforms::MotionTransforms
 {
     updateParameters();
 }
-void iit::Aliengo::MotionTransforms::updateParameters() {
+void aliengolib::Aliengo::MotionTransforms::updateParameters() {
     values_lengths.haa_x = valuesGetter_lengths -> getValue_haa_x();
     values_lengths.haa_y = valuesGetter_lengths -> getValue_haa_y();
     values_lengths.haa_hfe = valuesGetter_lengths -> getValue_haa_hfe();
@@ -621,7 +621,7 @@ SpatialTransformPlain ForceTransforms::getTransform(const dog::JointState &q,
     }
 }
 
-iit::Aliengo::ForceTransforms::ForceTransforms
+aliengolib::Aliengo::ForceTransforms::ForceTransforms
     (const dog::KinDynParams& getter_lengths)
      :
     fr_LF_lowerleg_X_LF_foot(values_lengths),
@@ -697,7 +697,7 @@ iit::Aliengo::ForceTransforms::ForceTransforms
 {
     updateParameters();
 }
-void iit::Aliengo::ForceTransforms::updateParameters() {
+void aliengolib::Aliengo::ForceTransforms::updateParameters() {
     values_lengths.haa_x = valuesGetter_lengths -> getValue_haa_x();
     values_lengths.haa_y = valuesGetter_lengths -> getValue_haa_y();
     values_lengths.haa_hfe = valuesGetter_lengths -> getValue_haa_hfe();
@@ -974,7 +974,7 @@ HomogeneousTransformPlain HomogeneousTransforms::getTransform(const dog::JointSt
 }
 
 
-iit::Aliengo::HomogeneousTransforms::HomogeneousTransforms
+aliengolib::Aliengo::HomogeneousTransforms::HomogeneousTransforms
     (const dog::KinDynParams& getter_lengths)
      :
     fr_LF_lowerleg_X_LF_foot(values_lengths),
@@ -1049,7 +1049,7 @@ iit::Aliengo::HomogeneousTransforms::HomogeneousTransforms
 {
     updateParameters();
 }
-void iit::Aliengo::HomogeneousTransforms::updateParameters() {
+void aliengolib::Aliengo::HomogeneousTransforms::updateParameters() {
     values_lengths.haa_x = valuesGetter_lengths -> getValue_haa_x();
     values_lengths.haa_y = valuesGetter_lengths -> getValue_haa_y();
     values_lengths.haa_hfe = valuesGetter_lengths -> getValue_haa_hfe();
@@ -1057,7 +1057,7 @@ void iit::Aliengo::HomogeneousTransforms::updateParameters() {
     values_lengths.foot_x = valuesGetter_lengths -> getValue_foot_x();
 }
 
-iit::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_LF_foot::Type_fr_LF_lowerleg_X_LF_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_LF_foot::Type_fr_LF_lowerleg_X_LF_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -1095,14 +1095,14 @@ iit::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_LF_foot::Type_fr_LF_lowerl
     (*this)(5,4) = 1;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_LF_foot& iit::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_LF_foot::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_LF_foot& aliengolib::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_LF_foot::update(const state_t& q) {
     
     
     (*this)(4,1) = - lengths_values -> foot_x;
     (*this)(5,0) = - lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_RF_foot::Type_fr_RF_lowerleg_X_RF_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_RF_foot::Type_fr_RF_lowerleg_X_RF_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -1140,14 +1140,14 @@ iit::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_RF_foot::Type_fr_RF_lowerl
     (*this)(5,4) = 1;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_RF_foot& iit::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_RF_foot::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_RF_foot& aliengolib::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_RF_foot::update(const state_t& q) {
     
     
     (*this)(4,1) = - lengths_values -> foot_x;
     (*this)(5,0) = - lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_LH_foot::Type_fr_LH_lowerleg_X_LH_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_LH_foot::Type_fr_LH_lowerleg_X_LH_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -1185,14 +1185,14 @@ iit::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_LH_foot::Type_fr_LH_lowerl
     (*this)(5,4) = 1;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_LH_foot& iit::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_LH_foot::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_LH_foot& aliengolib::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_LH_foot::update(const state_t& q) {
     
     
     (*this)(4,1) = - lengths_values -> foot_x;
     (*this)(5,0) = - lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_RH_foot::Type_fr_RH_lowerleg_X_RH_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_RH_foot::Type_fr_RH_lowerleg_X_RH_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -1230,14 +1230,14 @@ iit::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_RH_foot::Type_fr_RH_lowerl
     (*this)(5,4) = 1;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_RH_foot& iit::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_RH_foot::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_RH_foot& aliengolib::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_RH_foot::update(const state_t& q) {
     
     
     (*this)(4,1) = - lengths_values -> foot_x;
     (*this)(5,0) = - lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_hipassemblyCOM::Type_fr_trunk_X_LF_hipassemblyCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_hipassemblyCOM::Type_fr_trunk_X_LF_hipassemblyCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -1261,7 +1261,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_hipassemblyCOM::Type_fr_trunk
     (*this)(4,5) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_hipassemblyCOM& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_hipassemblyCOM::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_hipassemblyCOM& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_hipassemblyCOM::update(const state_t& q) {
     static double sin__q_LF_HAA__;
     static double cos__q_LF_HAA__;
     
@@ -1286,7 +1286,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_hipassemblyCOM& iit::Al
     (*this)(5,4) =  sin__q_LF_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_hipassemblyCOM::Type_fr_trunk_X_RF_hipassemblyCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_hipassemblyCOM::Type_fr_trunk_X_RF_hipassemblyCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -1310,7 +1310,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_hipassemblyCOM::Type_fr_trunk
     (*this)(4,5) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_hipassemblyCOM& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_hipassemblyCOM::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_hipassemblyCOM& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_hipassemblyCOM::update(const state_t& q) {
     static double sin__q_RF_HAA__;
     static double cos__q_RF_HAA__;
     
@@ -1335,7 +1335,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_hipassemblyCOM& iit::Al
     (*this)(5,4) =  sin__q_RF_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_hipassemblyCOM::Type_fr_trunk_X_LH_hipassemblyCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_hipassemblyCOM::Type_fr_trunk_X_LH_hipassemblyCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -1359,7 +1359,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_hipassemblyCOM::Type_fr_trunk
     (*this)(4,5) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_hipassemblyCOM& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_hipassemblyCOM::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_hipassemblyCOM& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_hipassemblyCOM::update(const state_t& q) {
     static double sin__q_LH_HAA__;
     static double cos__q_LH_HAA__;
     
@@ -1384,7 +1384,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_hipassemblyCOM& iit::Al
     (*this)(5,4) =  sin__q_LH_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_hipassemblyCOM::Type_fr_trunk_X_RH_hipassemblyCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_hipassemblyCOM::Type_fr_trunk_X_RH_hipassemblyCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -1408,7 +1408,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_hipassemblyCOM::Type_fr_trunk
     (*this)(4,5) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_hipassemblyCOM& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_hipassemblyCOM::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_hipassemblyCOM& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_hipassemblyCOM::update(const state_t& q) {
     static double sin__q_RH_HAA__;
     static double cos__q_RH_HAA__;
     
@@ -1433,7 +1433,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_hipassemblyCOM& iit::Al
     (*this)(5,4) =  sin__q_RH_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_upperlegCOM::Type_fr_trunk_X_LF_upperlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_upperlegCOM::Type_fr_trunk_X_LF_upperlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -1448,7 +1448,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_upperlegCOM::Type_fr_trunk_X_
     (*this)(2,5) = 0;
     (*this)(3,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_upperlegCOM& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_upperlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_upperlegCOM& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_upperlegCOM::update(const state_t& q) {
     static double sin__q_LF_HFE__;
     static double sin__q_LF_HAA__;
     static double cos__q_LF_HFE__;
@@ -1486,7 +1486,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_upperlegCOM& iit::Alien
     (*this)(5,5) = - sin__q_LF_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_upperlegCOM::Type_fr_trunk_X_RF_upperlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_upperlegCOM::Type_fr_trunk_X_RF_upperlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -1501,7 +1501,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_upperlegCOM::Type_fr_trunk_X_
     (*this)(2,5) = 0;
     (*this)(3,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_upperlegCOM& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_upperlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_upperlegCOM& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_upperlegCOM::update(const state_t& q) {
     static double sin__q_RF_HFE__;
     static double sin__q_RF_HAA__;
     static double cos__q_RF_HFE__;
@@ -1539,7 +1539,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_upperlegCOM& iit::Alien
     (*this)(5,5) =  sin__q_RF_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_upperlegCOM::Type_fr_trunk_X_LH_upperlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_upperlegCOM::Type_fr_trunk_X_LH_upperlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -1554,7 +1554,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_upperlegCOM::Type_fr_trunk_X_
     (*this)(2,5) = 0;
     (*this)(3,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_upperlegCOM& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_upperlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_upperlegCOM& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_upperlegCOM::update(const state_t& q) {
     static double sin__q_LH_HFE__;
     static double sin__q_LH_HAA__;
     static double cos__q_LH_HFE__;
@@ -1592,7 +1592,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_upperlegCOM& iit::Alien
     (*this)(5,5) = - sin__q_LH_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_upperlegCOM::Type_fr_trunk_X_RH_upperlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_upperlegCOM::Type_fr_trunk_X_RH_upperlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -1607,7 +1607,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_upperlegCOM::Type_fr_trunk_X_
     (*this)(2,5) = 0;
     (*this)(3,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_upperlegCOM& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_upperlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_upperlegCOM& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_upperlegCOM::update(const state_t& q) {
     static double sin__q_RH_HFE__;
     static double sin__q_RH_HAA__;
     static double cos__q_RH_HFE__;
@@ -1645,7 +1645,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_upperlegCOM& iit::Alien
     (*this)(5,5) =  sin__q_RH_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_lowerlegCOM::Type_fr_trunk_X_LF_lowerlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_lowerlegCOM::Type_fr_trunk_X_LF_lowerlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -1660,7 +1660,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_lowerlegCOM::Type_fr_trunk_X_
     (*this)(2,5) = 0;
     (*this)(3,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_lowerlegCOM& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_lowerlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_lowerlegCOM& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_lowerlegCOM::update(const state_t& q) {
     static double sin__q_LF_KFE__;
     static double sin__q_LF_HFE__;
     static double sin__q_LF_HAA__;
@@ -1702,7 +1702,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_lowerlegCOM& iit::Alien
     (*this)(5,5) = - sin__q_LF_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_lowerlegCOM::Type_fr_trunk_X_RF_lowerlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_lowerlegCOM::Type_fr_trunk_X_RF_lowerlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -1717,7 +1717,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_lowerlegCOM::Type_fr_trunk_X_
     (*this)(2,5) = 0;
     (*this)(3,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_lowerlegCOM& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_lowerlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_lowerlegCOM& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_lowerlegCOM::update(const state_t& q) {
     static double sin__q_RF_KFE__;
     static double sin__q_RF_HFE__;
     static double sin__q_RF_HAA__;
@@ -1759,7 +1759,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_lowerlegCOM& iit::Alien
     (*this)(5,5) =  sin__q_RF_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_lowerlegCOM::Type_fr_trunk_X_LH_lowerlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_lowerlegCOM::Type_fr_trunk_X_LH_lowerlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -1774,7 +1774,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_lowerlegCOM::Type_fr_trunk_X_
     (*this)(2,5) = 0;
     (*this)(3,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_lowerlegCOM& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_lowerlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_lowerlegCOM& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_lowerlegCOM::update(const state_t& q) {
     static double sin__q_LH_KFE__;
     static double sin__q_LH_HFE__;
     static double sin__q_LH_HAA__;
@@ -1816,7 +1816,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_lowerlegCOM& iit::Alien
     (*this)(5,5) = - sin__q_LH_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_lowerlegCOM::Type_fr_trunk_X_RH_lowerlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_lowerlegCOM::Type_fr_trunk_X_RH_lowerlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -1831,7 +1831,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_lowerlegCOM::Type_fr_trunk_X_
     (*this)(2,5) = 0;
     (*this)(3,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_lowerlegCOM& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_lowerlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_lowerlegCOM& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_lowerlegCOM::update(const state_t& q) {
     static double sin__q_RH_KFE__;
     static double sin__q_RH_HFE__;
     static double sin__q_RH_HAA__;
@@ -1873,7 +1873,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_lowerlegCOM& iit::Alien
     (*this)(5,5) =  sin__q_RH_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_LF_foot_X_fr_LF_lowerleg::Type_LF_foot_X_fr_LF_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_LF_foot_X_fr_LF_lowerleg::Type_LF_foot_X_fr_LF_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -1911,14 +1911,14 @@ iit::Aliengo::MotionTransforms::Type_LF_foot_X_fr_LF_lowerleg::Type_LF_foot_X_fr
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_LF_foot_X_fr_LF_lowerleg& iit::Aliengo::MotionTransforms::Type_LF_foot_X_fr_LF_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_LF_foot_X_fr_LF_lowerleg& aliengolib::Aliengo::MotionTransforms::Type_LF_foot_X_fr_LF_lowerleg::update(const state_t& q) {
     
     
     (*this)(3,2) = - lengths_values -> foot_x;
     (*this)(4,1) = - lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_RF_foot_X_fr_RF_lowerleg::Type_RF_foot_X_fr_RF_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_RF_foot_X_fr_RF_lowerleg::Type_RF_foot_X_fr_RF_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -1956,14 +1956,14 @@ iit::Aliengo::MotionTransforms::Type_RF_foot_X_fr_RF_lowerleg::Type_RF_foot_X_fr
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_RF_foot_X_fr_RF_lowerleg& iit::Aliengo::MotionTransforms::Type_RF_foot_X_fr_RF_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_RF_foot_X_fr_RF_lowerleg& aliengolib::Aliengo::MotionTransforms::Type_RF_foot_X_fr_RF_lowerleg::update(const state_t& q) {
     
     
     (*this)(3,2) = - lengths_values -> foot_x;
     (*this)(4,1) = - lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_LH_foot_X_fr_LH_lowerleg::Type_LH_foot_X_fr_LH_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_LH_foot_X_fr_LH_lowerleg::Type_LH_foot_X_fr_LH_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -2001,14 +2001,14 @@ iit::Aliengo::MotionTransforms::Type_LH_foot_X_fr_LH_lowerleg::Type_LH_foot_X_fr
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_LH_foot_X_fr_LH_lowerleg& iit::Aliengo::MotionTransforms::Type_LH_foot_X_fr_LH_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_LH_foot_X_fr_LH_lowerleg& aliengolib::Aliengo::MotionTransforms::Type_LH_foot_X_fr_LH_lowerleg::update(const state_t& q) {
     
     
     (*this)(3,2) = - lengths_values -> foot_x;
     (*this)(4,1) = - lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_RH_foot_X_fr_RH_lowerleg::Type_RH_foot_X_fr_RH_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_RH_foot_X_fr_RH_lowerleg::Type_RH_foot_X_fr_RH_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -2046,14 +2046,14 @@ iit::Aliengo::MotionTransforms::Type_RH_foot_X_fr_RH_lowerleg::Type_RH_foot_X_fr
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_RH_foot_X_fr_RH_lowerleg& iit::Aliengo::MotionTransforms::Type_RH_foot_X_fr_RH_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_RH_foot_X_fr_RH_lowerleg& aliengolib::Aliengo::MotionTransforms::Type_RH_foot_X_fr_RH_lowerleg::update(const state_t& q) {
     
     
     (*this)(3,2) = - lengths_values -> foot_x;
     (*this)(4,1) = - lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_foot::Type_fr_trunk_X_LF_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_foot::Type_fr_trunk_X_LF_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -2068,7 +2068,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_foot::Type_fr_trunk_X_LF_foot
     (*this)(2,5) = 0;
     (*this)(3,4) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_foot& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_foot::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_foot& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_foot::update(const state_t& q) {
     static double sin__q_LF_HFE__;
     static double sin__q_LF_KFE__;
     static double sin__q_LF_HAA__;
@@ -2110,7 +2110,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LF_foot& iit::Aliengo::Mot
     (*this)(5,5) = ((( cos__q_LF_HAA__ *  cos__q_LF_HFE__) *  cos__q_LF_KFE__) - (( cos__q_LF_HAA__ *  sin__q_LF_HFE__) *  sin__q_LF_KFE__));
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_foot::Type_fr_trunk_X_RF_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_foot::Type_fr_trunk_X_RF_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -2125,7 +2125,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_foot::Type_fr_trunk_X_RF_foot
     (*this)(2,5) = 0;
     (*this)(3,4) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_foot& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_foot::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_foot& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_foot::update(const state_t& q) {
     static double sin__q_RF_HFE__;
     static double sin__q_RF_KFE__;
     static double sin__q_RF_HAA__;
@@ -2167,7 +2167,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RF_foot& iit::Aliengo::Mot
     (*this)(5,5) = ((( cos__q_RF_HAA__ *  cos__q_RF_HFE__) *  cos__q_RF_KFE__) - (( cos__q_RF_HAA__ *  sin__q_RF_HFE__) *  sin__q_RF_KFE__));
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_foot::Type_fr_trunk_X_LH_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_foot::Type_fr_trunk_X_LH_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -2182,7 +2182,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_foot::Type_fr_trunk_X_LH_foot
     (*this)(2,5) = 0;
     (*this)(3,4) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_foot& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_foot::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_foot& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_foot::update(const state_t& q) {
     static double sin__q_LH_HFE__;
     static double sin__q_LH_KFE__;
     static double sin__q_LH_HAA__;
@@ -2224,7 +2224,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_LH_foot& iit::Aliengo::Mot
     (*this)(5,5) = ((( cos__q_LH_HAA__ *  cos__q_LH_HFE__) *  cos__q_LH_KFE__) - (( cos__q_LH_HAA__ *  sin__q_LH_HFE__) *  sin__q_LH_KFE__));
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_foot::Type_fr_trunk_X_RH_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_foot::Type_fr_trunk_X_RH_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -2239,7 +2239,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_foot::Type_fr_trunk_X_RH_foot
     (*this)(2,5) = 0;
     (*this)(3,4) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_foot& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_foot::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_foot& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_foot::update(const state_t& q) {
     static double sin__q_RH_HFE__;
     static double sin__q_RH_KFE__;
     static double sin__q_RH_HAA__;
@@ -2281,7 +2281,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_RH_foot& iit::Aliengo::Mot
     (*this)(5,5) = ((( cos__q_RH_HAA__ *  cos__q_RH_HFE__) *  cos__q_RH_KFE__) - (( cos__q_RH_HAA__ *  sin__q_RH_HFE__) *  sin__q_RH_KFE__));
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_fr_trunk::Type_fr_LF_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_fr_trunk::Type_fr_LF_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,3) = 0;
@@ -2296,7 +2296,7 @@ iit::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_fr_trunk::Type_fr_LF_lower
     (*this)(2,5) = 0;
     (*this)(5,3) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_fr_trunk& iit::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_fr_trunk& aliengolib::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_fr_trunk::update(const state_t& q) {
     static double sin__q_LF_KFE__;
     static double sin__q_LF_HFE__;
     static double sin__q_LF_HAA__;
@@ -2338,7 +2338,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_fr_trunk& iit::Alien
     (*this)(5,5) = - sin__q_LF_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_fr_trunk::Type_fr_RF_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_fr_trunk::Type_fr_RF_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,3) = 0;
@@ -2353,7 +2353,7 @@ iit::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_fr_trunk::Type_fr_RF_lower
     (*this)(2,5) = 0;
     (*this)(5,3) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_fr_trunk& iit::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_fr_trunk& aliengolib::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_fr_trunk::update(const state_t& q) {
     static double sin__q_RF_KFE__;
     static double sin__q_RF_HFE__;
     static double sin__q_RF_HAA__;
@@ -2395,7 +2395,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_fr_trunk& iit::Alien
     (*this)(5,5) =  sin__q_RF_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_fr_trunk::Type_fr_LH_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_fr_trunk::Type_fr_LH_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,3) = 0;
@@ -2410,7 +2410,7 @@ iit::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_fr_trunk::Type_fr_LH_lower
     (*this)(2,5) = 0;
     (*this)(5,3) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_fr_trunk& iit::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_fr_trunk& aliengolib::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_fr_trunk::update(const state_t& q) {
     static double sin__q_LH_KFE__;
     static double sin__q_LH_HFE__;
     static double sin__q_LH_HAA__;
@@ -2452,7 +2452,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_fr_trunk& iit::Alien
     (*this)(5,5) = - sin__q_LH_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_fr_trunk::Type_fr_RH_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_fr_trunk::Type_fr_RH_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,3) = 0;
@@ -2467,7 +2467,7 @@ iit::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_fr_trunk::Type_fr_RH_lower
     (*this)(2,5) = 0;
     (*this)(5,3) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_fr_trunk& iit::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_fr_trunk& aliengolib::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_fr_trunk::update(const state_t& q) {
     static double sin__q_RH_KFE__;
     static double sin__q_RH_HFE__;
     static double sin__q_RH_HAA__;
@@ -2509,7 +2509,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_fr_trunk& iit::Alien
     (*this)(5,5) =  sin__q_RH_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_LF_foot_X_fr_trunk::Type_LF_foot_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_LF_foot_X_fr_trunk::Type_LF_foot_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,3) = 0;
@@ -2524,7 +2524,7 @@ iit::Aliengo::MotionTransforms::Type_LF_foot_X_fr_trunk::Type_LF_foot_X_fr_trunk
     (*this)(2,5) = 0;
     (*this)(4,3) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_LF_foot_X_fr_trunk& iit::Aliengo::MotionTransforms::Type_LF_foot_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_LF_foot_X_fr_trunk& aliengolib::Aliengo::MotionTransforms::Type_LF_foot_X_fr_trunk::update(const state_t& q) {
     static double sin__q_LF_HFE__;
     static double sin__q_LF_KFE__;
     static double sin__q_LF_HAA__;
@@ -2566,7 +2566,7 @@ const iit::Aliengo::MotionTransforms::Type_LF_foot_X_fr_trunk& iit::Aliengo::Mot
     (*this)(5,5) = ((( cos__q_LF_HAA__ *  cos__q_LF_HFE__) *  cos__q_LF_KFE__) - (( cos__q_LF_HAA__ *  sin__q_LF_HFE__) *  sin__q_LF_KFE__));
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_RF_foot_X_fr_trunk::Type_RF_foot_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_RF_foot_X_fr_trunk::Type_RF_foot_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,3) = 0;
@@ -2581,7 +2581,7 @@ iit::Aliengo::MotionTransforms::Type_RF_foot_X_fr_trunk::Type_RF_foot_X_fr_trunk
     (*this)(2,5) = 0;
     (*this)(4,3) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_RF_foot_X_fr_trunk& iit::Aliengo::MotionTransforms::Type_RF_foot_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_RF_foot_X_fr_trunk& aliengolib::Aliengo::MotionTransforms::Type_RF_foot_X_fr_trunk::update(const state_t& q) {
     static double sin__q_RF_HFE__;
     static double sin__q_RF_KFE__;
     static double sin__q_RF_HAA__;
@@ -2623,7 +2623,7 @@ const iit::Aliengo::MotionTransforms::Type_RF_foot_X_fr_trunk& iit::Aliengo::Mot
     (*this)(5,5) = ((( cos__q_RF_HAA__ *  cos__q_RF_HFE__) *  cos__q_RF_KFE__) - (( cos__q_RF_HAA__ *  sin__q_RF_HFE__) *  sin__q_RF_KFE__));
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_LH_foot_X_fr_trunk::Type_LH_foot_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_LH_foot_X_fr_trunk::Type_LH_foot_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,3) = 0;
@@ -2638,7 +2638,7 @@ iit::Aliengo::MotionTransforms::Type_LH_foot_X_fr_trunk::Type_LH_foot_X_fr_trunk
     (*this)(2,5) = 0;
     (*this)(4,3) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_LH_foot_X_fr_trunk& iit::Aliengo::MotionTransforms::Type_LH_foot_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_LH_foot_X_fr_trunk& aliengolib::Aliengo::MotionTransforms::Type_LH_foot_X_fr_trunk::update(const state_t& q) {
     static double sin__q_LH_HFE__;
     static double sin__q_LH_KFE__;
     static double sin__q_LH_HAA__;
@@ -2680,7 +2680,7 @@ const iit::Aliengo::MotionTransforms::Type_LH_foot_X_fr_trunk& iit::Aliengo::Mot
     (*this)(5,5) = ((( cos__q_LH_HAA__ *  cos__q_LH_HFE__) *  cos__q_LH_KFE__) - (( cos__q_LH_HAA__ *  sin__q_LH_HFE__) *  sin__q_LH_KFE__));
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_RH_foot_X_fr_trunk::Type_RH_foot_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_RH_foot_X_fr_trunk::Type_RH_foot_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,3) = 0;
@@ -2695,7 +2695,7 @@ iit::Aliengo::MotionTransforms::Type_RH_foot_X_fr_trunk::Type_RH_foot_X_fr_trunk
     (*this)(2,5) = 0;
     (*this)(4,3) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_RH_foot_X_fr_trunk& iit::Aliengo::MotionTransforms::Type_RH_foot_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_RH_foot_X_fr_trunk& aliengolib::Aliengo::MotionTransforms::Type_RH_foot_X_fr_trunk::update(const state_t& q) {
     static double sin__q_RH_HFE__;
     static double sin__q_RH_KFE__;
     static double sin__q_RH_HAA__;
@@ -2737,7 +2737,7 @@ const iit::Aliengo::MotionTransforms::Type_RH_foot_X_fr_trunk& iit::Aliengo::Mot
     (*this)(5,5) = ((( cos__q_RH_HAA__ *  cos__q_RH_HFE__) *  cos__q_RH_KFE__) - (( cos__q_RH_HAA__ *  sin__q_RH_HFE__) *  sin__q_RH_KFE__));
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_HAA::Type_fr_trunk_X_fr_LF_HAA(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_HAA::Type_fr_trunk_X_fr_LF_HAA(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -2773,7 +2773,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_HAA::Type_fr_trunk_X_fr_LF
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_HAA& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_HAA::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_HAA& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_HAA::update(const state_t& q) {
     
     
     (*this)(3,0) = - lengths_values -> haa_y;
@@ -2782,7 +2782,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_HAA& iit::Aliengo::M
     (*this)(5,2) =  lengths_values -> haa_y;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_HFE::Type_fr_trunk_X_fr_LF_HFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_HFE::Type_fr_trunk_X_fr_LF_HFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -2806,7 +2806,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_HFE::Type_fr_trunk_X_fr_LF
     (*this)(4,4) = 0;
     (*this)(5,4) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_HFE& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_HFE::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_HFE& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_HFE::update(const state_t& q) {
     static double sin__q_LF_HAA__;
     static double cos__q_LF_HAA__;
     
@@ -2831,7 +2831,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_HFE& iit::Aliengo::M
     (*this)(5,5) = - sin__q_LF_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_KFE::Type_fr_trunk_X_fr_LF_KFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_KFE::Type_fr_trunk_X_fr_LF_KFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -2846,7 +2846,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_KFE::Type_fr_trunk_X_fr_LF
     (*this)(2,5) = 0;
     (*this)(3,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_KFE& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_KFE::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_KFE& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_KFE::update(const state_t& q) {
     static double sin__q_LF_HFE__;
     static double sin__q_LF_HAA__;
     static double cos__q_LF_HFE__;
@@ -2884,7 +2884,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_KFE& iit::Aliengo::M
     (*this)(5,5) = - sin__q_LF_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_HAA::Type_fr_trunk_X_fr_RF_HAA(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_HAA::Type_fr_trunk_X_fr_RF_HAA(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -2920,7 +2920,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_HAA::Type_fr_trunk_X_fr_RF
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_HAA& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_HAA::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_HAA& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_HAA::update(const state_t& q) {
     
     
     (*this)(3,0) =  lengths_values -> haa_y;
@@ -2929,7 +2929,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_HAA& iit::Aliengo::M
     (*this)(5,2) =  lengths_values -> haa_y;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_HFE::Type_fr_trunk_X_fr_RF_HFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_HFE::Type_fr_trunk_X_fr_RF_HFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -2953,7 +2953,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_HFE::Type_fr_trunk_X_fr_RF
     (*this)(4,4) = 0;
     (*this)(5,4) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_HFE& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_HFE::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_HFE& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_HFE::update(const state_t& q) {
     static double sin__q_RF_HAA__;
     static double cos__q_RF_HAA__;
     
@@ -2978,7 +2978,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_HFE& iit::Aliengo::M
     (*this)(5,5) =  sin__q_RF_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_KFE::Type_fr_trunk_X_fr_RF_KFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_KFE::Type_fr_trunk_X_fr_RF_KFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -2993,7 +2993,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_KFE::Type_fr_trunk_X_fr_RF
     (*this)(2,5) = 0;
     (*this)(3,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_KFE& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_KFE::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_KFE& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_KFE::update(const state_t& q) {
     static double sin__q_RF_HFE__;
     static double sin__q_RF_HAA__;
     static double cos__q_RF_HFE__;
@@ -3031,7 +3031,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_KFE& iit::Aliengo::M
     (*this)(5,5) =  sin__q_RF_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_HAA::Type_fr_trunk_X_fr_LH_HAA(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_HAA::Type_fr_trunk_X_fr_LH_HAA(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -3067,7 +3067,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_HAA::Type_fr_trunk_X_fr_LH
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_HAA& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_HAA::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_HAA& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_HAA::update(const state_t& q) {
     
     
     (*this)(3,0) = - lengths_values -> haa_y;
@@ -3076,7 +3076,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_HAA& iit::Aliengo::M
     (*this)(5,2) =  lengths_values -> haa_y;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_HFE::Type_fr_trunk_X_fr_LH_HFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_HFE::Type_fr_trunk_X_fr_LH_HFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -3100,7 +3100,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_HFE::Type_fr_trunk_X_fr_LH
     (*this)(4,4) = 0;
     (*this)(5,4) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_HFE& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_HFE::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_HFE& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_HFE::update(const state_t& q) {
     static double sin__q_LH_HAA__;
     static double cos__q_LH_HAA__;
     
@@ -3125,7 +3125,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_HFE& iit::Aliengo::M
     (*this)(5,5) = - sin__q_LH_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_KFE::Type_fr_trunk_X_fr_LH_KFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_KFE::Type_fr_trunk_X_fr_LH_KFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -3140,7 +3140,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_KFE::Type_fr_trunk_X_fr_LH
     (*this)(2,5) = 0;
     (*this)(3,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_KFE& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_KFE::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_KFE& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_KFE::update(const state_t& q) {
     static double sin__q_LH_HFE__;
     static double sin__q_LH_HAA__;
     static double cos__q_LH_HFE__;
@@ -3178,7 +3178,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_KFE& iit::Aliengo::M
     (*this)(5,5) = - sin__q_LH_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_HAA::Type_fr_trunk_X_fr_RH_HAA(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_HAA::Type_fr_trunk_X_fr_RH_HAA(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -3214,7 +3214,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_HAA::Type_fr_trunk_X_fr_RH
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_HAA& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_HAA::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_HAA& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_HAA::update(const state_t& q) {
     
     
     (*this)(3,0) =  lengths_values -> haa_y;
@@ -3223,7 +3223,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_HAA& iit::Aliengo::M
     (*this)(5,2) =  lengths_values -> haa_y;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_HFE::Type_fr_trunk_X_fr_RH_HFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_HFE::Type_fr_trunk_X_fr_RH_HFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -3247,7 +3247,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_HFE::Type_fr_trunk_X_fr_RH
     (*this)(4,4) = 0;
     (*this)(5,4) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_HFE& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_HFE::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_HFE& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_HFE::update(const state_t& q) {
     static double sin__q_RH_HAA__;
     static double cos__q_RH_HAA__;
     
@@ -3272,7 +3272,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_HFE& iit::Aliengo::M
     (*this)(5,5) =  sin__q_RH_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_KFE::Type_fr_trunk_X_fr_RH_KFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_KFE::Type_fr_trunk_X_fr_RH_KFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -3287,7 +3287,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_KFE::Type_fr_trunk_X_fr_RH
     (*this)(2,5) = 0;
     (*this)(3,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_KFE& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_KFE::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_KFE& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_KFE::update(const state_t& q) {
     static double sin__q_RH_HFE__;
     static double sin__q_RH_HAA__;
     static double cos__q_RH_HFE__;
@@ -3325,7 +3325,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_KFE& iit::Aliengo::M
     (*this)(5,5) =  sin__q_RH_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_LF_hipassembly_X_fr_trunk::Type_fr_LF_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_LF_hipassembly_X_fr_trunk::Type_fr_LF_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -3350,7 +3350,7 @@ iit::Aliengo::MotionTransforms::Type_fr_LF_hipassembly_X_fr_trunk::Type_fr_LF_hi
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_LF_hipassembly_X_fr_trunk& iit::Aliengo::MotionTransforms::Type_fr_LF_hipassembly_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_LF_hipassembly_X_fr_trunk& aliengolib::Aliengo::MotionTransforms::Type_fr_LF_hipassembly_X_fr_trunk::update(const state_t& q) {
     static double sin__q_LF_HAA__;
     static double cos__q_LF_HAA__;
     
@@ -3374,7 +3374,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_LF_hipassembly_X_fr_trunk& iit::Al
     (*this)(5,2) =  lengths_values -> haa_y;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_hipassembly::Type_fr_trunk_X_fr_LF_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_hipassembly::Type_fr_trunk_X_fr_LF_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -3399,7 +3399,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_hipassembly::Type_fr_trunk
     (*this)(4,5) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_hipassembly& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_hipassembly& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_hipassembly::update(const state_t& q) {
     static double sin__q_LF_HAA__;
     static double cos__q_LF_HAA__;
     
@@ -3423,7 +3423,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_hipassembly& iit::Al
     (*this)(5,4) =  sin__q_LF_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly::Type_fr_LF_upperleg_X_fr_LF_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly::Type_fr_LF_upperleg_X_fr_LF_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -3451,7 +3451,7 @@ iit::Aliengo::MotionTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly::Type_fr
     (*this)(5,4) = - 1;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly& iit::Aliengo::MotionTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly& aliengolib::Aliengo::MotionTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly::update(const state_t& q) {
     static double sin__q_LF_HFE__;
     static double cos__q_LF_HFE__;
     
@@ -3472,7 +3472,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly& i
     (*this)(4,5) =  cos__q_LF_HFE__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg::Type_fr_LF_hipassembly_X_fr_LF_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg::Type_fr_LF_hipassembly_X_fr_LF_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -3500,7 +3500,7 @@ iit::Aliengo::MotionTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg::Type_fr
     (*this)(5,2) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg& iit::Aliengo::MotionTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg& aliengolib::Aliengo::MotionTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg::update(const state_t& q) {
     static double sin__q_LF_HFE__;
     static double cos__q_LF_HFE__;
     
@@ -3521,7 +3521,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg& i
     (*this)(5,4) =  cos__q_LF_HFE__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg::Type_fr_LF_lowerleg_X_fr_LF_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg::Type_fr_LF_lowerleg_X_fr_LF_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -3550,7 +3550,7 @@ iit::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg::Type_fr_LF
     (*this)(5,4) = 0;
     (*this)(5,5) = 1;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg& iit::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg& aliengolib::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg::update(const state_t& q) {
     static double sin__q_LF_KFE__;
     static double cos__q_LF_KFE__;
     
@@ -3570,7 +3570,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg& iit:
     (*this)(5,1) = - lengths_values -> upper_leg;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg::Type_fr_LF_upperleg_X_fr_LF_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg::Type_fr_LF_upperleg_X_fr_LF_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -3599,7 +3599,7 @@ iit::Aliengo::MotionTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg::Type_fr_LF
     (*this)(5,4) = 0;
     (*this)(5,5) = 1;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg& iit::Aliengo::MotionTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg& aliengolib::Aliengo::MotionTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg::update(const state_t& q) {
     static double sin__q_LF_KFE__;
     static double cos__q_LF_KFE__;
     
@@ -3619,7 +3619,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg& iit:
     (*this)(5,1) = ( lengths_values -> upper_leg *  cos__q_LF_KFE__);
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_RF_hipassembly_X_fr_trunk::Type_fr_RF_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_RF_hipassembly_X_fr_trunk::Type_fr_RF_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -3644,7 +3644,7 @@ iit::Aliengo::MotionTransforms::Type_fr_RF_hipassembly_X_fr_trunk::Type_fr_RF_hi
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_RF_hipassembly_X_fr_trunk& iit::Aliengo::MotionTransforms::Type_fr_RF_hipassembly_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_RF_hipassembly_X_fr_trunk& aliengolib::Aliengo::MotionTransforms::Type_fr_RF_hipassembly_X_fr_trunk::update(const state_t& q) {
     static double sin__q_RF_HAA__;
     static double cos__q_RF_HAA__;
     
@@ -3668,7 +3668,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_RF_hipassembly_X_fr_trunk& iit::Al
     (*this)(5,2) =  lengths_values -> haa_y;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_hipassembly::Type_fr_trunk_X_fr_RF_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_hipassembly::Type_fr_trunk_X_fr_RF_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -3693,7 +3693,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_hipassembly::Type_fr_trunk
     (*this)(4,5) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_hipassembly& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_hipassembly& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_hipassembly::update(const state_t& q) {
     static double sin__q_RF_HAA__;
     static double cos__q_RF_HAA__;
     
@@ -3717,7 +3717,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_hipassembly& iit::Al
     (*this)(5,4) =  sin__q_RF_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly::Type_fr_RF_upperleg_X_fr_RF_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly::Type_fr_RF_upperleg_X_fr_RF_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -3745,7 +3745,7 @@ iit::Aliengo::MotionTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly::Type_fr
     (*this)(5,4) = 1;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly& iit::Aliengo::MotionTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly& aliengolib::Aliengo::MotionTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly::update(const state_t& q) {
     static double sin__q_RF_HFE__;
     static double cos__q_RF_HFE__;
     
@@ -3766,7 +3766,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly& i
     (*this)(4,5) = - cos__q_RF_HFE__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg::Type_fr_RF_hipassembly_X_fr_RF_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg::Type_fr_RF_hipassembly_X_fr_RF_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -3794,7 +3794,7 @@ iit::Aliengo::MotionTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg::Type_fr
     (*this)(5,2) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg& iit::Aliengo::MotionTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg& aliengolib::Aliengo::MotionTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg::update(const state_t& q) {
     static double sin__q_RF_HFE__;
     static double cos__q_RF_HFE__;
     
@@ -3815,7 +3815,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg& i
     (*this)(5,4) = - cos__q_RF_HFE__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg::Type_fr_RF_lowerleg_X_fr_RF_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg::Type_fr_RF_lowerleg_X_fr_RF_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -3844,7 +3844,7 @@ iit::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg::Type_fr_RF
     (*this)(5,4) = 0;
     (*this)(5,5) = 1;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg& iit::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg& aliengolib::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg::update(const state_t& q) {
     static double sin__q_RF_KFE__;
     static double cos__q_RF_KFE__;
     
@@ -3864,7 +3864,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg& iit:
     (*this)(5,1) = - lengths_values -> upper_leg;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg::Type_fr_RF_upperleg_X_fr_RF_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg::Type_fr_RF_upperleg_X_fr_RF_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -3893,7 +3893,7 @@ iit::Aliengo::MotionTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg::Type_fr_RF
     (*this)(5,4) = 0;
     (*this)(5,5) = 1;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg& iit::Aliengo::MotionTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg& aliengolib::Aliengo::MotionTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg::update(const state_t& q) {
     static double sin__q_RF_KFE__;
     static double cos__q_RF_KFE__;
     
@@ -3913,7 +3913,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg& iit:
     (*this)(5,1) = ( lengths_values -> upper_leg *  cos__q_RF_KFE__);
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_LH_hipassembly_X_fr_trunk::Type_fr_LH_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_LH_hipassembly_X_fr_trunk::Type_fr_LH_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -3938,7 +3938,7 @@ iit::Aliengo::MotionTransforms::Type_fr_LH_hipassembly_X_fr_trunk::Type_fr_LH_hi
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_LH_hipassembly_X_fr_trunk& iit::Aliengo::MotionTransforms::Type_fr_LH_hipassembly_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_LH_hipassembly_X_fr_trunk& aliengolib::Aliengo::MotionTransforms::Type_fr_LH_hipassembly_X_fr_trunk::update(const state_t& q) {
     static double sin__q_LH_HAA__;
     static double cos__q_LH_HAA__;
     
@@ -3962,7 +3962,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_LH_hipassembly_X_fr_trunk& iit::Al
     (*this)(5,2) =  lengths_values -> haa_y;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_hipassembly::Type_fr_trunk_X_fr_LH_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_hipassembly::Type_fr_trunk_X_fr_LH_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -3987,7 +3987,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_hipassembly::Type_fr_trunk
     (*this)(4,5) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_hipassembly& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_hipassembly& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_hipassembly::update(const state_t& q) {
     static double sin__q_LH_HAA__;
     static double cos__q_LH_HAA__;
     
@@ -4011,7 +4011,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_hipassembly& iit::Al
     (*this)(5,4) =  sin__q_LH_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly::Type_fr_LH_upperleg_X_fr_LH_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly::Type_fr_LH_upperleg_X_fr_LH_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -4039,7 +4039,7 @@ iit::Aliengo::MotionTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly::Type_fr
     (*this)(5,4) = - 1;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly& iit::Aliengo::MotionTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly& aliengolib::Aliengo::MotionTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly::update(const state_t& q) {
     static double sin__q_LH_HFE__;
     static double cos__q_LH_HFE__;
     
@@ -4060,7 +4060,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly& i
     (*this)(4,5) =  cos__q_LH_HFE__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg::Type_fr_LH_hipassembly_X_fr_LH_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg::Type_fr_LH_hipassembly_X_fr_LH_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -4088,7 +4088,7 @@ iit::Aliengo::MotionTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg::Type_fr
     (*this)(5,2) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg& iit::Aliengo::MotionTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg& aliengolib::Aliengo::MotionTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg::update(const state_t& q) {
     static double sin__q_LH_HFE__;
     static double cos__q_LH_HFE__;
     
@@ -4109,7 +4109,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg& i
     (*this)(5,4) =  cos__q_LH_HFE__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg::Type_fr_LH_lowerleg_X_fr_LH_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg::Type_fr_LH_lowerleg_X_fr_LH_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -4138,7 +4138,7 @@ iit::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg::Type_fr_LH
     (*this)(5,4) = 0;
     (*this)(5,5) = 1;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg& iit::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg& aliengolib::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg::update(const state_t& q) {
     static double sin__q_LH_KFE__;
     static double cos__q_LH_KFE__;
     
@@ -4158,7 +4158,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg& iit:
     (*this)(5,1) = - lengths_values -> upper_leg;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg::Type_fr_LH_upperleg_X_fr_LH_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg::Type_fr_LH_upperleg_X_fr_LH_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -4187,7 +4187,7 @@ iit::Aliengo::MotionTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg::Type_fr_LH
     (*this)(5,4) = 0;
     (*this)(5,5) = 1;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg& iit::Aliengo::MotionTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg& aliengolib::Aliengo::MotionTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg::update(const state_t& q) {
     static double sin__q_LH_KFE__;
     static double cos__q_LH_KFE__;
     
@@ -4207,7 +4207,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg& iit:
     (*this)(5,1) = ( lengths_values -> upper_leg *  cos__q_LH_KFE__);
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_RH_hipassembly_X_fr_trunk::Type_fr_RH_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_RH_hipassembly_X_fr_trunk::Type_fr_RH_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -4232,7 +4232,7 @@ iit::Aliengo::MotionTransforms::Type_fr_RH_hipassembly_X_fr_trunk::Type_fr_RH_hi
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_RH_hipassembly_X_fr_trunk& iit::Aliengo::MotionTransforms::Type_fr_RH_hipassembly_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_RH_hipassembly_X_fr_trunk& aliengolib::Aliengo::MotionTransforms::Type_fr_RH_hipassembly_X_fr_trunk::update(const state_t& q) {
     static double sin__q_RH_HAA__;
     static double cos__q_RH_HAA__;
     
@@ -4256,7 +4256,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_RH_hipassembly_X_fr_trunk& iit::Al
     (*this)(5,2) =  lengths_values -> haa_y;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_hipassembly::Type_fr_trunk_X_fr_RH_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_hipassembly::Type_fr_trunk_X_fr_RH_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -4281,7 +4281,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_hipassembly::Type_fr_trunk
     (*this)(4,5) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_hipassembly& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_hipassembly& aliengolib::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_hipassembly::update(const state_t& q) {
     static double sin__q_RH_HAA__;
     static double cos__q_RH_HAA__;
     
@@ -4305,7 +4305,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_hipassembly& iit::Al
     (*this)(5,4) =  sin__q_RH_HAA__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly::Type_fr_RH_upperleg_X_fr_RH_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly::Type_fr_RH_upperleg_X_fr_RH_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -4333,7 +4333,7 @@ iit::Aliengo::MotionTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly::Type_fr
     (*this)(5,4) = 1;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly& iit::Aliengo::MotionTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly& aliengolib::Aliengo::MotionTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly::update(const state_t& q) {
     static double sin__q_RH_HFE__;
     static double cos__q_RH_HFE__;
     
@@ -4354,7 +4354,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly& i
     (*this)(4,5) = - cos__q_RH_HFE__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg::Type_fr_RH_hipassembly_X_fr_RH_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg::Type_fr_RH_hipassembly_X_fr_RH_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -4382,7 +4382,7 @@ iit::Aliengo::MotionTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg::Type_fr
     (*this)(5,2) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg& iit::Aliengo::MotionTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg& aliengolib::Aliengo::MotionTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg::update(const state_t& q) {
     static double sin__q_RH_HFE__;
     static double cos__q_RH_HFE__;
     
@@ -4403,7 +4403,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg& i
     (*this)(5,4) = - cos__q_RH_HFE__;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg::Type_fr_RH_lowerleg_X_fr_RH_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg::Type_fr_RH_lowerleg_X_fr_RH_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -4432,7 +4432,7 @@ iit::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg::Type_fr_RH
     (*this)(5,4) = 0;
     (*this)(5,5) = 1;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg& iit::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg& aliengolib::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg::update(const state_t& q) {
     static double sin__q_RH_KFE__;
     static double cos__q_RH_KFE__;
     
@@ -4452,7 +4452,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg& iit:
     (*this)(5,1) = - lengths_values -> upper_leg;
     return *this;
 }
-iit::Aliengo::MotionTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg::Type_fr_RH_upperleg_X_fr_RH_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::MotionTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg::Type_fr_RH_upperleg_X_fr_RH_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -4481,7 +4481,7 @@ iit::Aliengo::MotionTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg::Type_fr_RH
     (*this)(5,4) = 0;
     (*this)(5,5) = 1;
 }
-const iit::Aliengo::MotionTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg& iit::Aliengo::MotionTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::MotionTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg& aliengolib::Aliengo::MotionTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg::update(const state_t& q) {
     static double sin__q_RH_KFE__;
     static double cos__q_RH_KFE__;
     
@@ -4502,7 +4502,7 @@ const iit::Aliengo::MotionTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg& iit:
     return *this;
 }
 
-iit::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_LF_foot::Type_fr_LF_lowerleg_X_LF_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_LF_foot::Type_fr_LF_lowerleg_X_LF_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -4540,14 +4540,14 @@ iit::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_LF_foot::Type_fr_LF_lowerle
     (*this)(5,4) = 1;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_LF_foot& iit::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_LF_foot::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_LF_foot& aliengolib::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_LF_foot::update(const state_t& q) {
     
     
     (*this)(1,4) = - lengths_values -> foot_x;
     (*this)(2,3) = - lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_RF_foot::Type_fr_RF_lowerleg_X_RF_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_RF_foot::Type_fr_RF_lowerleg_X_RF_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -4585,14 +4585,14 @@ iit::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_RF_foot::Type_fr_RF_lowerle
     (*this)(5,4) = 1;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_RF_foot& iit::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_RF_foot::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_RF_foot& aliengolib::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_RF_foot::update(const state_t& q) {
     
     
     (*this)(1,4) = - lengths_values -> foot_x;
     (*this)(2,3) = - lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_LH_foot::Type_fr_LH_lowerleg_X_LH_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_LH_foot::Type_fr_LH_lowerleg_X_LH_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -4630,14 +4630,14 @@ iit::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_LH_foot::Type_fr_LH_lowerle
     (*this)(5,4) = 1;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_LH_foot& iit::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_LH_foot::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_LH_foot& aliengolib::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_LH_foot::update(const state_t& q) {
     
     
     (*this)(1,4) = - lengths_values -> foot_x;
     (*this)(2,3) = - lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_RH_foot::Type_fr_RH_lowerleg_X_RH_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_RH_foot::Type_fr_RH_lowerleg_X_RH_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -4675,14 +4675,14 @@ iit::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_RH_foot::Type_fr_RH_lowerle
     (*this)(5,4) = 1;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_RH_foot& iit::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_RH_foot::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_RH_foot& aliengolib::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_RH_foot::update(const state_t& q) {
     
     
     (*this)(1,4) = - lengths_values -> foot_x;
     (*this)(2,3) = - lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_hipassemblyCOM::Type_fr_trunk_X_LF_hipassemblyCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_hipassemblyCOM::Type_fr_trunk_X_LF_hipassemblyCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -4706,7 +4706,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_hipassemblyCOM::Type_fr_trunk_
     (*this)(5,2) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_hipassemblyCOM& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_hipassemblyCOM::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_hipassemblyCOM& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_hipassemblyCOM::update(const state_t& q) {
     static double sin__q_LF_HAA__;
     static double cos__q_LF_HAA__;
     
@@ -4731,7 +4731,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_hipassemblyCOM& iit::Ali
     (*this)(5,4) =  sin__q_LF_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_hipassemblyCOM::Type_fr_trunk_X_RF_hipassemblyCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_hipassemblyCOM::Type_fr_trunk_X_RF_hipassemblyCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -4755,7 +4755,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_hipassemblyCOM::Type_fr_trunk_
     (*this)(5,2) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_hipassemblyCOM& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_hipassemblyCOM::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_hipassemblyCOM& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_hipassemblyCOM::update(const state_t& q) {
     static double sin__q_RF_HAA__;
     static double cos__q_RF_HAA__;
     
@@ -4780,7 +4780,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_hipassemblyCOM& iit::Ali
     (*this)(5,4) =  sin__q_RF_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_hipassemblyCOM::Type_fr_trunk_X_LH_hipassemblyCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_hipassemblyCOM::Type_fr_trunk_X_LH_hipassemblyCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -4804,7 +4804,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_hipassemblyCOM::Type_fr_trunk_
     (*this)(5,2) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_hipassemblyCOM& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_hipassemblyCOM::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_hipassemblyCOM& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_hipassemblyCOM::update(const state_t& q) {
     static double sin__q_LH_HAA__;
     static double cos__q_LH_HAA__;
     
@@ -4829,7 +4829,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_hipassemblyCOM& iit::Ali
     (*this)(5,4) =  sin__q_LH_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_hipassemblyCOM::Type_fr_trunk_X_RH_hipassemblyCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_hipassemblyCOM::Type_fr_trunk_X_RH_hipassemblyCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -4853,7 +4853,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_hipassemblyCOM::Type_fr_trunk_
     (*this)(5,2) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_hipassemblyCOM& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_hipassemblyCOM::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_hipassemblyCOM& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_hipassemblyCOM::update(const state_t& q) {
     static double sin__q_RH_HAA__;
     static double cos__q_RH_HAA__;
     
@@ -4878,7 +4878,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_hipassemblyCOM& iit::Ali
     (*this)(5,4) =  sin__q_RH_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_upperlegCOM::Type_fr_trunk_X_LF_upperlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_upperlegCOM::Type_fr_trunk_X_LF_upperlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -4893,7 +4893,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_upperlegCOM::Type_fr_trunk_X_L
     (*this)(5,1) = 0;
     (*this)(5,2) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_upperlegCOM& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_upperlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_upperlegCOM& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_upperlegCOM::update(const state_t& q) {
     static double sin__q_LF_HFE__;
     static double sin__q_LF_HAA__;
     static double cos__q_LF_HFE__;
@@ -4931,7 +4931,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_upperlegCOM& iit::Alieng
     (*this)(5,5) = - sin__q_LF_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_upperlegCOM::Type_fr_trunk_X_RF_upperlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_upperlegCOM::Type_fr_trunk_X_RF_upperlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -4946,7 +4946,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_upperlegCOM::Type_fr_trunk_X_R
     (*this)(5,1) = 0;
     (*this)(5,2) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_upperlegCOM& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_upperlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_upperlegCOM& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_upperlegCOM::update(const state_t& q) {
     static double sin__q_RF_HFE__;
     static double sin__q_RF_HAA__;
     static double cos__q_RF_HFE__;
@@ -4984,7 +4984,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_upperlegCOM& iit::Alieng
     (*this)(5,5) =  sin__q_RF_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_upperlegCOM::Type_fr_trunk_X_LH_upperlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_upperlegCOM::Type_fr_trunk_X_LH_upperlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -4999,7 +4999,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_upperlegCOM::Type_fr_trunk_X_L
     (*this)(5,1) = 0;
     (*this)(5,2) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_upperlegCOM& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_upperlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_upperlegCOM& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_upperlegCOM::update(const state_t& q) {
     static double sin__q_LH_HFE__;
     static double sin__q_LH_HAA__;
     static double cos__q_LH_HFE__;
@@ -5037,7 +5037,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_upperlegCOM& iit::Alieng
     (*this)(5,5) = - sin__q_LH_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_upperlegCOM::Type_fr_trunk_X_RH_upperlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_upperlegCOM::Type_fr_trunk_X_RH_upperlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -5052,7 +5052,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_upperlegCOM::Type_fr_trunk_X_R
     (*this)(5,1) = 0;
     (*this)(5,2) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_upperlegCOM& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_upperlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_upperlegCOM& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_upperlegCOM::update(const state_t& q) {
     static double sin__q_RH_HFE__;
     static double sin__q_RH_HAA__;
     static double cos__q_RH_HFE__;
@@ -5090,7 +5090,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_upperlegCOM& iit::Alieng
     (*this)(5,5) =  sin__q_RH_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_lowerlegCOM::Type_fr_trunk_X_LF_lowerlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_lowerlegCOM::Type_fr_trunk_X_LF_lowerlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -5105,7 +5105,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_lowerlegCOM::Type_fr_trunk_X_L
     (*this)(5,1) = 0;
     (*this)(5,2) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_lowerlegCOM& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_lowerlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_lowerlegCOM& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_lowerlegCOM::update(const state_t& q) {
     static double sin__q_LF_KFE__;
     static double sin__q_LF_HFE__;
     static double sin__q_LF_HAA__;
@@ -5147,7 +5147,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_lowerlegCOM& iit::Alieng
     (*this)(5,5) = - sin__q_LF_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_lowerlegCOM::Type_fr_trunk_X_RF_lowerlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_lowerlegCOM::Type_fr_trunk_X_RF_lowerlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -5162,7 +5162,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_lowerlegCOM::Type_fr_trunk_X_R
     (*this)(5,1) = 0;
     (*this)(5,2) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_lowerlegCOM& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_lowerlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_lowerlegCOM& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_lowerlegCOM::update(const state_t& q) {
     static double sin__q_RF_KFE__;
     static double sin__q_RF_HFE__;
     static double sin__q_RF_HAA__;
@@ -5204,7 +5204,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_lowerlegCOM& iit::Alieng
     (*this)(5,5) =  sin__q_RF_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_lowerlegCOM::Type_fr_trunk_X_LH_lowerlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_lowerlegCOM::Type_fr_trunk_X_LH_lowerlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -5219,7 +5219,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_lowerlegCOM::Type_fr_trunk_X_L
     (*this)(5,1) = 0;
     (*this)(5,2) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_lowerlegCOM& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_lowerlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_lowerlegCOM& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_lowerlegCOM::update(const state_t& q) {
     static double sin__q_LH_KFE__;
     static double sin__q_LH_HFE__;
     static double sin__q_LH_HAA__;
@@ -5261,7 +5261,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_lowerlegCOM& iit::Alieng
     (*this)(5,5) = - sin__q_LH_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_lowerlegCOM::Type_fr_trunk_X_RH_lowerlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_lowerlegCOM::Type_fr_trunk_X_RH_lowerlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -5276,7 +5276,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_lowerlegCOM::Type_fr_trunk_X_R
     (*this)(5,1) = 0;
     (*this)(5,2) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_lowerlegCOM& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_lowerlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_lowerlegCOM& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_lowerlegCOM::update(const state_t& q) {
     static double sin__q_RH_KFE__;
     static double sin__q_RH_HFE__;
     static double sin__q_RH_HAA__;
@@ -5318,7 +5318,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_lowerlegCOM& iit::Alieng
     (*this)(5,5) =  sin__q_RH_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_LF_foot_X_fr_LF_lowerleg::Type_LF_foot_X_fr_LF_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_LF_foot_X_fr_LF_lowerleg::Type_LF_foot_X_fr_LF_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -5356,14 +5356,14 @@ iit::Aliengo::ForceTransforms::Type_LF_foot_X_fr_LF_lowerleg::Type_LF_foot_X_fr_
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_LF_foot_X_fr_LF_lowerleg& iit::Aliengo::ForceTransforms::Type_LF_foot_X_fr_LF_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_LF_foot_X_fr_LF_lowerleg& aliengolib::Aliengo::ForceTransforms::Type_LF_foot_X_fr_LF_lowerleg::update(const state_t& q) {
     
     
     (*this)(0,5) = - lengths_values -> foot_x;
     (*this)(1,4) = - lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_RF_foot_X_fr_RF_lowerleg::Type_RF_foot_X_fr_RF_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_RF_foot_X_fr_RF_lowerleg::Type_RF_foot_X_fr_RF_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -5401,14 +5401,14 @@ iit::Aliengo::ForceTransforms::Type_RF_foot_X_fr_RF_lowerleg::Type_RF_foot_X_fr_
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_RF_foot_X_fr_RF_lowerleg& iit::Aliengo::ForceTransforms::Type_RF_foot_X_fr_RF_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_RF_foot_X_fr_RF_lowerleg& aliengolib::Aliengo::ForceTransforms::Type_RF_foot_X_fr_RF_lowerleg::update(const state_t& q) {
     
     
     (*this)(0,5) = - lengths_values -> foot_x;
     (*this)(1,4) = - lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_LH_foot_X_fr_LH_lowerleg::Type_LH_foot_X_fr_LH_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_LH_foot_X_fr_LH_lowerleg::Type_LH_foot_X_fr_LH_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -5446,14 +5446,14 @@ iit::Aliengo::ForceTransforms::Type_LH_foot_X_fr_LH_lowerleg::Type_LH_foot_X_fr_
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_LH_foot_X_fr_LH_lowerleg& iit::Aliengo::ForceTransforms::Type_LH_foot_X_fr_LH_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_LH_foot_X_fr_LH_lowerleg& aliengolib::Aliengo::ForceTransforms::Type_LH_foot_X_fr_LH_lowerleg::update(const state_t& q) {
     
     
     (*this)(0,5) = - lengths_values -> foot_x;
     (*this)(1,4) = - lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_RH_foot_X_fr_RH_lowerleg::Type_RH_foot_X_fr_RH_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_RH_foot_X_fr_RH_lowerleg::Type_RH_foot_X_fr_RH_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -5491,14 +5491,14 @@ iit::Aliengo::ForceTransforms::Type_RH_foot_X_fr_RH_lowerleg::Type_RH_foot_X_fr_
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_RH_foot_X_fr_RH_lowerleg& iit::Aliengo::ForceTransforms::Type_RH_foot_X_fr_RH_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_RH_foot_X_fr_RH_lowerleg& aliengolib::Aliengo::ForceTransforms::Type_RH_foot_X_fr_RH_lowerleg::update(const state_t& q) {
     
     
     (*this)(0,5) = - lengths_values -> foot_x;
     (*this)(1,4) = - lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_foot::Type_fr_trunk_X_LF_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_foot::Type_fr_trunk_X_LF_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -5513,7 +5513,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_foot::Type_fr_trunk_X_LF_foot(
     (*this)(5,1) = 0;
     (*this)(5,2) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_foot& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_foot::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_foot& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_foot::update(const state_t& q) {
     static double sin__q_LF_HFE__;
     static double sin__q_LF_KFE__;
     static double sin__q_LF_HAA__;
@@ -5555,7 +5555,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LF_foot& iit::Aliengo::Forc
     (*this)(5,5) = ((( cos__q_LF_HAA__ *  cos__q_LF_HFE__) *  cos__q_LF_KFE__) - (( cos__q_LF_HAA__ *  sin__q_LF_HFE__) *  sin__q_LF_KFE__));
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_foot::Type_fr_trunk_X_RF_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_foot::Type_fr_trunk_X_RF_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -5570,7 +5570,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_foot::Type_fr_trunk_X_RF_foot(
     (*this)(5,1) = 0;
     (*this)(5,2) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_foot& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_foot::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_foot& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_foot::update(const state_t& q) {
     static double sin__q_RF_HFE__;
     static double sin__q_RF_KFE__;
     static double sin__q_RF_HAA__;
@@ -5612,7 +5612,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RF_foot& iit::Aliengo::Forc
     (*this)(5,5) = ((( cos__q_RF_HAA__ *  cos__q_RF_HFE__) *  cos__q_RF_KFE__) - (( cos__q_RF_HAA__ *  sin__q_RF_HFE__) *  sin__q_RF_KFE__));
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_foot::Type_fr_trunk_X_LH_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_foot::Type_fr_trunk_X_LH_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -5627,7 +5627,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_foot::Type_fr_trunk_X_LH_foot(
     (*this)(5,1) = 0;
     (*this)(5,2) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_foot& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_foot::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_foot& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_foot::update(const state_t& q) {
     static double sin__q_LH_HFE__;
     static double sin__q_LH_KFE__;
     static double sin__q_LH_HAA__;
@@ -5669,7 +5669,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_LH_foot& iit::Aliengo::Forc
     (*this)(5,5) = ((( cos__q_LH_HAA__ *  cos__q_LH_HFE__) *  cos__q_LH_KFE__) - (( cos__q_LH_HAA__ *  sin__q_LH_HFE__) *  sin__q_LH_KFE__));
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_foot::Type_fr_trunk_X_RH_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_foot::Type_fr_trunk_X_RH_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -5684,7 +5684,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_foot::Type_fr_trunk_X_RH_foot(
     (*this)(5,1) = 0;
     (*this)(5,2) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_foot& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_foot::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_foot& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_foot::update(const state_t& q) {
     static double sin__q_RH_HFE__;
     static double sin__q_RH_KFE__;
     static double sin__q_RH_HAA__;
@@ -5726,7 +5726,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_RH_foot& iit::Aliengo::Forc
     (*this)(5,5) = ((( cos__q_RH_HAA__ *  cos__q_RH_HFE__) *  cos__q_RH_KFE__) - (( cos__q_RH_HAA__ *  sin__q_RH_HFE__) *  sin__q_RH_KFE__));
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_fr_trunk::Type_fr_LF_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_fr_trunk::Type_fr_LF_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(2,0) = 0;
@@ -5741,7 +5741,7 @@ iit::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_fr_trunk::Type_fr_LF_lowerl
     (*this)(5,2) = 0;
     (*this)(5,3) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_fr_trunk& iit::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_fr_trunk& aliengolib::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_fr_trunk::update(const state_t& q) {
     static double sin__q_LF_KFE__;
     static double sin__q_LF_HFE__;
     static double sin__q_LF_HAA__;
@@ -5783,7 +5783,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_fr_trunk& iit::Alieng
     (*this)(5,5) = - sin__q_LF_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_fr_trunk::Type_fr_RF_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_fr_trunk::Type_fr_RF_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(2,0) = 0;
@@ -5798,7 +5798,7 @@ iit::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_fr_trunk::Type_fr_RF_lowerl
     (*this)(5,2) = 0;
     (*this)(5,3) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_fr_trunk& iit::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_fr_trunk& aliengolib::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_fr_trunk::update(const state_t& q) {
     static double sin__q_RF_KFE__;
     static double sin__q_RF_HFE__;
     static double sin__q_RF_HAA__;
@@ -5840,7 +5840,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_fr_trunk& iit::Alieng
     (*this)(5,5) =  sin__q_RF_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_fr_trunk::Type_fr_LH_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_fr_trunk::Type_fr_LH_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(2,0) = 0;
@@ -5855,7 +5855,7 @@ iit::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_fr_trunk::Type_fr_LH_lowerl
     (*this)(5,2) = 0;
     (*this)(5,3) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_fr_trunk& iit::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_fr_trunk& aliengolib::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_fr_trunk::update(const state_t& q) {
     static double sin__q_LH_KFE__;
     static double sin__q_LH_HFE__;
     static double sin__q_LH_HAA__;
@@ -5897,7 +5897,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_fr_trunk& iit::Alieng
     (*this)(5,5) = - sin__q_LH_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_fr_trunk::Type_fr_RH_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_fr_trunk::Type_fr_RH_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(2,0) = 0;
@@ -5912,7 +5912,7 @@ iit::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_fr_trunk::Type_fr_RH_lowerl
     (*this)(5,2) = 0;
     (*this)(5,3) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_fr_trunk& iit::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_fr_trunk& aliengolib::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_fr_trunk::update(const state_t& q) {
     static double sin__q_RH_KFE__;
     static double sin__q_RH_HFE__;
     static double sin__q_RH_HAA__;
@@ -5954,7 +5954,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_fr_trunk& iit::Alieng
     (*this)(5,5) =  sin__q_RH_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_LF_foot_X_fr_trunk::Type_LF_foot_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_LF_foot_X_fr_trunk::Type_LF_foot_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(1,0) = 0;
@@ -5969,7 +5969,7 @@ iit::Aliengo::ForceTransforms::Type_LF_foot_X_fr_trunk::Type_LF_foot_X_fr_trunk(
     (*this)(5,1) = 0;
     (*this)(5,2) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_LF_foot_X_fr_trunk& iit::Aliengo::ForceTransforms::Type_LF_foot_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_LF_foot_X_fr_trunk& aliengolib::Aliengo::ForceTransforms::Type_LF_foot_X_fr_trunk::update(const state_t& q) {
     static double sin__q_LF_HFE__;
     static double sin__q_LF_KFE__;
     static double sin__q_LF_HAA__;
@@ -6011,7 +6011,7 @@ const iit::Aliengo::ForceTransforms::Type_LF_foot_X_fr_trunk& iit::Aliengo::Forc
     (*this)(5,5) = ((( cos__q_LF_HAA__ *  cos__q_LF_HFE__) *  cos__q_LF_KFE__) - (( cos__q_LF_HAA__ *  sin__q_LF_HFE__) *  sin__q_LF_KFE__));
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_RF_foot_X_fr_trunk::Type_RF_foot_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_RF_foot_X_fr_trunk::Type_RF_foot_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(1,0) = 0;
@@ -6026,7 +6026,7 @@ iit::Aliengo::ForceTransforms::Type_RF_foot_X_fr_trunk::Type_RF_foot_X_fr_trunk(
     (*this)(5,1) = 0;
     (*this)(5,2) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_RF_foot_X_fr_trunk& iit::Aliengo::ForceTransforms::Type_RF_foot_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_RF_foot_X_fr_trunk& aliengolib::Aliengo::ForceTransforms::Type_RF_foot_X_fr_trunk::update(const state_t& q) {
     static double sin__q_RF_HFE__;
     static double sin__q_RF_KFE__;
     static double sin__q_RF_HAA__;
@@ -6068,7 +6068,7 @@ const iit::Aliengo::ForceTransforms::Type_RF_foot_X_fr_trunk& iit::Aliengo::Forc
     (*this)(5,5) = ((( cos__q_RF_HAA__ *  cos__q_RF_HFE__) *  cos__q_RF_KFE__) - (( cos__q_RF_HAA__ *  sin__q_RF_HFE__) *  sin__q_RF_KFE__));
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_LH_foot_X_fr_trunk::Type_LH_foot_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_LH_foot_X_fr_trunk::Type_LH_foot_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(1,0) = 0;
@@ -6083,7 +6083,7 @@ iit::Aliengo::ForceTransforms::Type_LH_foot_X_fr_trunk::Type_LH_foot_X_fr_trunk(
     (*this)(5,1) = 0;
     (*this)(5,2) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_LH_foot_X_fr_trunk& iit::Aliengo::ForceTransforms::Type_LH_foot_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_LH_foot_X_fr_trunk& aliengolib::Aliengo::ForceTransforms::Type_LH_foot_X_fr_trunk::update(const state_t& q) {
     static double sin__q_LH_HFE__;
     static double sin__q_LH_KFE__;
     static double sin__q_LH_HAA__;
@@ -6125,7 +6125,7 @@ const iit::Aliengo::ForceTransforms::Type_LH_foot_X_fr_trunk& iit::Aliengo::Forc
     (*this)(5,5) = ((( cos__q_LH_HAA__ *  cos__q_LH_HFE__) *  cos__q_LH_KFE__) - (( cos__q_LH_HAA__ *  sin__q_LH_HFE__) *  sin__q_LH_KFE__));
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_RH_foot_X_fr_trunk::Type_RH_foot_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_RH_foot_X_fr_trunk::Type_RH_foot_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(1,0) = 0;
@@ -6140,7 +6140,7 @@ iit::Aliengo::ForceTransforms::Type_RH_foot_X_fr_trunk::Type_RH_foot_X_fr_trunk(
     (*this)(5,1) = 0;
     (*this)(5,2) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_RH_foot_X_fr_trunk& iit::Aliengo::ForceTransforms::Type_RH_foot_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_RH_foot_X_fr_trunk& aliengolib::Aliengo::ForceTransforms::Type_RH_foot_X_fr_trunk::update(const state_t& q) {
     static double sin__q_RH_HFE__;
     static double sin__q_RH_KFE__;
     static double sin__q_RH_HAA__;
@@ -6182,7 +6182,7 @@ const iit::Aliengo::ForceTransforms::Type_RH_foot_X_fr_trunk& iit::Aliengo::Forc
     (*this)(5,5) = ((( cos__q_RH_HAA__ *  cos__q_RH_HFE__) *  cos__q_RH_KFE__) - (( cos__q_RH_HAA__ *  sin__q_RH_HFE__) *  sin__q_RH_KFE__));
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_HAA::Type_fr_trunk_X_fr_LF_HAA(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_HAA::Type_fr_trunk_X_fr_LF_HAA(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -6218,7 +6218,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_HAA::Type_fr_trunk_X_fr_LF_
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_HAA& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_HAA::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_HAA& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_HAA::update(const state_t& q) {
     
     
     (*this)(0,3) = - lengths_values -> haa_y;
@@ -6227,7 +6227,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_HAA& iit::Aliengo::Fo
     (*this)(2,5) =  lengths_values -> haa_y;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_HFE::Type_fr_trunk_X_fr_LF_HFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_HFE::Type_fr_trunk_X_fr_LF_HFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -6251,7 +6251,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_HFE::Type_fr_trunk_X_fr_LF_
     (*this)(5,2) = 0;
     (*this)(5,4) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_HFE& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_HFE::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_HFE& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_HFE::update(const state_t& q) {
     static double sin__q_LF_HAA__;
     static double cos__q_LF_HAA__;
     
@@ -6276,7 +6276,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_HFE& iit::Aliengo::Fo
     (*this)(5,5) = - sin__q_LF_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_KFE::Type_fr_trunk_X_fr_LF_KFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_KFE::Type_fr_trunk_X_fr_LF_KFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -6291,7 +6291,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_KFE::Type_fr_trunk_X_fr_LF_
     (*this)(5,1) = 0;
     (*this)(5,2) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_KFE& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_KFE::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_KFE& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_KFE::update(const state_t& q) {
     static double sin__q_LF_HFE__;
     static double sin__q_LF_HAA__;
     static double cos__q_LF_HFE__;
@@ -6329,7 +6329,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_KFE& iit::Aliengo::Fo
     (*this)(5,5) = - sin__q_LF_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_HAA::Type_fr_trunk_X_fr_RF_HAA(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_HAA::Type_fr_trunk_X_fr_RF_HAA(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -6365,7 +6365,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_HAA::Type_fr_trunk_X_fr_RF_
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_HAA& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_HAA::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_HAA& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_HAA::update(const state_t& q) {
     
     
     (*this)(0,3) =  lengths_values -> haa_y;
@@ -6374,7 +6374,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_HAA& iit::Aliengo::Fo
     (*this)(2,5) =  lengths_values -> haa_y;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_HFE::Type_fr_trunk_X_fr_RF_HFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_HFE::Type_fr_trunk_X_fr_RF_HFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -6398,7 +6398,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_HFE::Type_fr_trunk_X_fr_RF_
     (*this)(5,2) = 0;
     (*this)(5,4) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_HFE& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_HFE::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_HFE& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_HFE::update(const state_t& q) {
     static double sin__q_RF_HAA__;
     static double cos__q_RF_HAA__;
     
@@ -6423,7 +6423,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_HFE& iit::Aliengo::Fo
     (*this)(5,5) =  sin__q_RF_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_KFE::Type_fr_trunk_X_fr_RF_KFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_KFE::Type_fr_trunk_X_fr_RF_KFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -6438,7 +6438,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_KFE::Type_fr_trunk_X_fr_RF_
     (*this)(5,1) = 0;
     (*this)(5,2) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_KFE& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_KFE::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_KFE& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_KFE::update(const state_t& q) {
     static double sin__q_RF_HFE__;
     static double sin__q_RF_HAA__;
     static double cos__q_RF_HFE__;
@@ -6476,7 +6476,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_KFE& iit::Aliengo::Fo
     (*this)(5,5) =  sin__q_RF_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_HAA::Type_fr_trunk_X_fr_LH_HAA(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_HAA::Type_fr_trunk_X_fr_LH_HAA(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -6512,7 +6512,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_HAA::Type_fr_trunk_X_fr_LH_
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_HAA& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_HAA::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_HAA& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_HAA::update(const state_t& q) {
     
     
     (*this)(0,3) = - lengths_values -> haa_y;
@@ -6521,7 +6521,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_HAA& iit::Aliengo::Fo
     (*this)(2,5) =  lengths_values -> haa_y;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_HFE::Type_fr_trunk_X_fr_LH_HFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_HFE::Type_fr_trunk_X_fr_LH_HFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -6545,7 +6545,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_HFE::Type_fr_trunk_X_fr_LH_
     (*this)(5,2) = 0;
     (*this)(5,4) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_HFE& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_HFE::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_HFE& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_HFE::update(const state_t& q) {
     static double sin__q_LH_HAA__;
     static double cos__q_LH_HAA__;
     
@@ -6570,7 +6570,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_HFE& iit::Aliengo::Fo
     (*this)(5,5) = - sin__q_LH_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_KFE::Type_fr_trunk_X_fr_LH_KFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_KFE::Type_fr_trunk_X_fr_LH_KFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -6585,7 +6585,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_KFE::Type_fr_trunk_X_fr_LH_
     (*this)(5,1) = 0;
     (*this)(5,2) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_KFE& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_KFE::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_KFE& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_KFE::update(const state_t& q) {
     static double sin__q_LH_HFE__;
     static double sin__q_LH_HAA__;
     static double cos__q_LH_HFE__;
@@ -6623,7 +6623,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_KFE& iit::Aliengo::Fo
     (*this)(5,5) = - sin__q_LH_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_HAA::Type_fr_trunk_X_fr_RH_HAA(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_HAA::Type_fr_trunk_X_fr_RH_HAA(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -6659,7 +6659,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_HAA::Type_fr_trunk_X_fr_RH_
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_HAA& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_HAA::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_HAA& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_HAA::update(const state_t& q) {
     
     
     (*this)(0,3) =  lengths_values -> haa_y;
@@ -6668,7 +6668,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_HAA& iit::Aliengo::Fo
     (*this)(2,5) =  lengths_values -> haa_y;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_HFE::Type_fr_trunk_X_fr_RH_HFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_HFE::Type_fr_trunk_X_fr_RH_HFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -6692,7 +6692,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_HFE::Type_fr_trunk_X_fr_RH_
     (*this)(5,2) = 0;
     (*this)(5,4) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_HFE& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_HFE::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_HFE& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_HFE::update(const state_t& q) {
     static double sin__q_RH_HAA__;
     static double cos__q_RH_HAA__;
     
@@ -6717,7 +6717,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_HFE& iit::Aliengo::Fo
     (*this)(5,5) =  sin__q_RH_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_KFE::Type_fr_trunk_X_fr_RH_KFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_KFE::Type_fr_trunk_X_fr_RH_KFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -6732,7 +6732,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_KFE::Type_fr_trunk_X_fr_RH_
     (*this)(5,1) = 0;
     (*this)(5,2) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_KFE& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_KFE::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_KFE& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_KFE::update(const state_t& q) {
     static double sin__q_RH_HFE__;
     static double sin__q_RH_HAA__;
     static double cos__q_RH_HFE__;
@@ -6770,7 +6770,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_KFE& iit::Aliengo::Fo
     (*this)(5,5) =  sin__q_RH_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_LF_hipassembly_X_fr_trunk::Type_fr_LF_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_LF_hipassembly_X_fr_trunk::Type_fr_LF_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -6795,7 +6795,7 @@ iit::Aliengo::ForceTransforms::Type_fr_LF_hipassembly_X_fr_trunk::Type_fr_LF_hip
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_LF_hipassembly_X_fr_trunk& iit::Aliengo::ForceTransforms::Type_fr_LF_hipassembly_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_LF_hipassembly_X_fr_trunk& aliengolib::Aliengo::ForceTransforms::Type_fr_LF_hipassembly_X_fr_trunk::update(const state_t& q) {
     static double sin__q_LF_HAA__;
     static double cos__q_LF_HAA__;
     
@@ -6819,7 +6819,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_LF_hipassembly_X_fr_trunk& iit::Ali
     (*this)(4,5) =  sin__q_LF_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_hipassembly::Type_fr_trunk_X_fr_LF_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_hipassembly::Type_fr_trunk_X_fr_LF_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -6844,7 +6844,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_hipassembly::Type_fr_trunk_
     (*this)(5,2) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_hipassembly& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_hipassembly& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_hipassembly::update(const state_t& q) {
     static double sin__q_LF_HAA__;
     static double cos__q_LF_HAA__;
     
@@ -6868,7 +6868,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_hipassembly& iit::Ali
     (*this)(5,4) =  sin__q_LF_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly::Type_fr_LF_upperleg_X_fr_LF_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly::Type_fr_LF_upperleg_X_fr_LF_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -6896,7 +6896,7 @@ iit::Aliengo::ForceTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly::Type_fr_
     (*this)(5,4) = - 1;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly& iit::Aliengo::ForceTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly& aliengolib::Aliengo::ForceTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly::update(const state_t& q) {
     static double sin__q_LF_HFE__;
     static double cos__q_LF_HFE__;
     
@@ -6917,7 +6917,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly& ii
     (*this)(4,5) =  cos__q_LF_HFE__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg::Type_fr_LF_hipassembly_X_fr_LF_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg::Type_fr_LF_hipassembly_X_fr_LF_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -6945,7 +6945,7 @@ iit::Aliengo::ForceTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg::Type_fr_
     (*this)(5,2) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg& iit::Aliengo::ForceTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg& aliengolib::Aliengo::ForceTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg::update(const state_t& q) {
     static double sin__q_LF_HFE__;
     static double cos__q_LF_HFE__;
     
@@ -6966,7 +6966,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg& ii
     (*this)(5,4) =  cos__q_LF_HFE__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg::Type_fr_LF_lowerleg_X_fr_LF_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg::Type_fr_LF_lowerleg_X_fr_LF_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -6995,7 +6995,7 @@ iit::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg::Type_fr_LF_
     (*this)(5,4) = 0;
     (*this)(5,5) = 1;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg& iit::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg& aliengolib::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg::update(const state_t& q) {
     static double sin__q_LF_KFE__;
     static double cos__q_LF_KFE__;
     
@@ -7015,7 +7015,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg& iit::
     (*this)(4,4) =  cos__q_LF_KFE__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg::Type_fr_LF_upperleg_X_fr_LF_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg::Type_fr_LF_upperleg_X_fr_LF_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -7044,7 +7044,7 @@ iit::Aliengo::ForceTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg::Type_fr_LF_
     (*this)(5,4) = 0;
     (*this)(5,5) = 1;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg& iit::Aliengo::ForceTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg& aliengolib::Aliengo::ForceTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg::update(const state_t& q) {
     static double sin__q_LF_KFE__;
     static double cos__q_LF_KFE__;
     
@@ -7064,7 +7064,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg& iit::
     (*this)(4,4) =  cos__q_LF_KFE__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_RF_hipassembly_X_fr_trunk::Type_fr_RF_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_RF_hipassembly_X_fr_trunk::Type_fr_RF_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -7089,7 +7089,7 @@ iit::Aliengo::ForceTransforms::Type_fr_RF_hipassembly_X_fr_trunk::Type_fr_RF_hip
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_RF_hipassembly_X_fr_trunk& iit::Aliengo::ForceTransforms::Type_fr_RF_hipassembly_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_RF_hipassembly_X_fr_trunk& aliengolib::Aliengo::ForceTransforms::Type_fr_RF_hipassembly_X_fr_trunk::update(const state_t& q) {
     static double sin__q_RF_HAA__;
     static double cos__q_RF_HAA__;
     
@@ -7113,7 +7113,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_RF_hipassembly_X_fr_trunk& iit::Ali
     (*this)(4,5) =  sin__q_RF_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_hipassembly::Type_fr_trunk_X_fr_RF_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_hipassembly::Type_fr_trunk_X_fr_RF_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -7138,7 +7138,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_hipassembly::Type_fr_trunk_
     (*this)(5,2) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_hipassembly& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_hipassembly& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_hipassembly::update(const state_t& q) {
     static double sin__q_RF_HAA__;
     static double cos__q_RF_HAA__;
     
@@ -7162,7 +7162,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_hipassembly& iit::Ali
     (*this)(5,4) =  sin__q_RF_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly::Type_fr_RF_upperleg_X_fr_RF_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly::Type_fr_RF_upperleg_X_fr_RF_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -7190,7 +7190,7 @@ iit::Aliengo::ForceTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly::Type_fr_
     (*this)(5,4) = 1;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly& iit::Aliengo::ForceTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly& aliengolib::Aliengo::ForceTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly::update(const state_t& q) {
     static double sin__q_RF_HFE__;
     static double cos__q_RF_HFE__;
     
@@ -7211,7 +7211,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly& ii
     (*this)(4,5) = - cos__q_RF_HFE__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg::Type_fr_RF_hipassembly_X_fr_RF_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg::Type_fr_RF_hipassembly_X_fr_RF_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -7239,7 +7239,7 @@ iit::Aliengo::ForceTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg::Type_fr_
     (*this)(5,2) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg& iit::Aliengo::ForceTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg& aliengolib::Aliengo::ForceTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg::update(const state_t& q) {
     static double sin__q_RF_HFE__;
     static double cos__q_RF_HFE__;
     
@@ -7260,7 +7260,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg& ii
     (*this)(5,4) = - cos__q_RF_HFE__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg::Type_fr_RF_lowerleg_X_fr_RF_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg::Type_fr_RF_lowerleg_X_fr_RF_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -7289,7 +7289,7 @@ iit::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg::Type_fr_RF_
     (*this)(5,4) = 0;
     (*this)(5,5) = 1;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg& iit::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg& aliengolib::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg::update(const state_t& q) {
     static double sin__q_RF_KFE__;
     static double cos__q_RF_KFE__;
     
@@ -7309,7 +7309,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg& iit::
     (*this)(4,4) =  cos__q_RF_KFE__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg::Type_fr_RF_upperleg_X_fr_RF_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg::Type_fr_RF_upperleg_X_fr_RF_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -7338,7 +7338,7 @@ iit::Aliengo::ForceTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg::Type_fr_RF_
     (*this)(5,4) = 0;
     (*this)(5,5) = 1;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg& iit::Aliengo::ForceTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg& aliengolib::Aliengo::ForceTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg::update(const state_t& q) {
     static double sin__q_RF_KFE__;
     static double cos__q_RF_KFE__;
     
@@ -7358,7 +7358,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg& iit::
     (*this)(4,4) =  cos__q_RF_KFE__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_LH_hipassembly_X_fr_trunk::Type_fr_LH_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_LH_hipassembly_X_fr_trunk::Type_fr_LH_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -7383,7 +7383,7 @@ iit::Aliengo::ForceTransforms::Type_fr_LH_hipassembly_X_fr_trunk::Type_fr_LH_hip
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_LH_hipassembly_X_fr_trunk& iit::Aliengo::ForceTransforms::Type_fr_LH_hipassembly_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_LH_hipassembly_X_fr_trunk& aliengolib::Aliengo::ForceTransforms::Type_fr_LH_hipassembly_X_fr_trunk::update(const state_t& q) {
     static double sin__q_LH_HAA__;
     static double cos__q_LH_HAA__;
     
@@ -7407,7 +7407,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_LH_hipassembly_X_fr_trunk& iit::Ali
     (*this)(4,5) =  sin__q_LH_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_hipassembly::Type_fr_trunk_X_fr_LH_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_hipassembly::Type_fr_trunk_X_fr_LH_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -7432,7 +7432,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_hipassembly::Type_fr_trunk_
     (*this)(5,2) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_hipassembly& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_hipassembly& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_hipassembly::update(const state_t& q) {
     static double sin__q_LH_HAA__;
     static double cos__q_LH_HAA__;
     
@@ -7456,7 +7456,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_hipassembly& iit::Ali
     (*this)(5,4) =  sin__q_LH_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly::Type_fr_LH_upperleg_X_fr_LH_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly::Type_fr_LH_upperleg_X_fr_LH_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -7484,7 +7484,7 @@ iit::Aliengo::ForceTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly::Type_fr_
     (*this)(5,4) = - 1;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly& iit::Aliengo::ForceTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly& aliengolib::Aliengo::ForceTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly::update(const state_t& q) {
     static double sin__q_LH_HFE__;
     static double cos__q_LH_HFE__;
     
@@ -7505,7 +7505,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly& ii
     (*this)(4,5) =  cos__q_LH_HFE__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg::Type_fr_LH_hipassembly_X_fr_LH_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg::Type_fr_LH_hipassembly_X_fr_LH_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -7533,7 +7533,7 @@ iit::Aliengo::ForceTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg::Type_fr_
     (*this)(5,2) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg& iit::Aliengo::ForceTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg& aliengolib::Aliengo::ForceTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg::update(const state_t& q) {
     static double sin__q_LH_HFE__;
     static double cos__q_LH_HFE__;
     
@@ -7554,7 +7554,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg& ii
     (*this)(5,4) =  cos__q_LH_HFE__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg::Type_fr_LH_lowerleg_X_fr_LH_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg::Type_fr_LH_lowerleg_X_fr_LH_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -7583,7 +7583,7 @@ iit::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg::Type_fr_LH_
     (*this)(5,4) = 0;
     (*this)(5,5) = 1;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg& iit::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg& aliengolib::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg::update(const state_t& q) {
     static double sin__q_LH_KFE__;
     static double cos__q_LH_KFE__;
     
@@ -7603,7 +7603,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg& iit::
     (*this)(4,4) =  cos__q_LH_KFE__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg::Type_fr_LH_upperleg_X_fr_LH_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg::Type_fr_LH_upperleg_X_fr_LH_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -7632,7 +7632,7 @@ iit::Aliengo::ForceTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg::Type_fr_LH_
     (*this)(5,4) = 0;
     (*this)(5,5) = 1;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg& iit::Aliengo::ForceTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg& aliengolib::Aliengo::ForceTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg::update(const state_t& q) {
     static double sin__q_LH_KFE__;
     static double cos__q_LH_KFE__;
     
@@ -7652,7 +7652,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg& iit::
     (*this)(4,4) =  cos__q_LH_KFE__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_RH_hipassembly_X_fr_trunk::Type_fr_RH_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_RH_hipassembly_X_fr_trunk::Type_fr_RH_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -7677,7 +7677,7 @@ iit::Aliengo::ForceTransforms::Type_fr_RH_hipassembly_X_fr_trunk::Type_fr_RH_hip
     (*this)(5,4) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_RH_hipassembly_X_fr_trunk& iit::Aliengo::ForceTransforms::Type_fr_RH_hipassembly_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_RH_hipassembly_X_fr_trunk& aliengolib::Aliengo::ForceTransforms::Type_fr_RH_hipassembly_X_fr_trunk::update(const state_t& q) {
     static double sin__q_RH_HAA__;
     static double cos__q_RH_HAA__;
     
@@ -7701,7 +7701,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_RH_hipassembly_X_fr_trunk& iit::Ali
     (*this)(4,5) =  sin__q_RH_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_hipassembly::Type_fr_trunk_X_fr_RH_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_hipassembly::Type_fr_trunk_X_fr_RH_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -7726,7 +7726,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_hipassembly::Type_fr_trunk_
     (*this)(5,2) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_hipassembly& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_hipassembly& aliengolib::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_hipassembly::update(const state_t& q) {
     static double sin__q_RH_HAA__;
     static double cos__q_RH_HAA__;
     
@@ -7750,7 +7750,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_hipassembly& iit::Ali
     (*this)(5,4) =  sin__q_RH_HAA__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly::Type_fr_RH_upperleg_X_fr_RH_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly::Type_fr_RH_upperleg_X_fr_RH_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -7778,7 +7778,7 @@ iit::Aliengo::ForceTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly::Type_fr_
     (*this)(5,4) = 1;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly& iit::Aliengo::ForceTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly& aliengolib::Aliengo::ForceTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly::update(const state_t& q) {
     static double sin__q_RH_HFE__;
     static double cos__q_RH_HFE__;
     
@@ -7799,7 +7799,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly& ii
     (*this)(4,5) = - cos__q_RH_HFE__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg::Type_fr_RH_hipassembly_X_fr_RH_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg::Type_fr_RH_hipassembly_X_fr_RH_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -7827,7 +7827,7 @@ iit::Aliengo::ForceTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg::Type_fr_
     (*this)(5,2) = 0;
     (*this)(5,5) = 0;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg& iit::Aliengo::ForceTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg& aliengolib::Aliengo::ForceTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg::update(const state_t& q) {
     static double sin__q_RH_HFE__;
     static double cos__q_RH_HFE__;
     
@@ -7848,7 +7848,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg& ii
     (*this)(5,4) = - cos__q_RH_HFE__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg::Type_fr_RH_lowerleg_X_fr_RH_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg::Type_fr_RH_lowerleg_X_fr_RH_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -7877,7 +7877,7 @@ iit::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg::Type_fr_RH_
     (*this)(5,4) = 0;
     (*this)(5,5) = 1;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg& iit::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg& aliengolib::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg::update(const state_t& q) {
     static double sin__q_RH_KFE__;
     static double cos__q_RH_KFE__;
     
@@ -7897,7 +7897,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg& iit::
     (*this)(4,4) =  cos__q_RH_KFE__;
     return *this;
 }
-iit::Aliengo::ForceTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg::Type_fr_RH_upperleg_X_fr_RH_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::ForceTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg::Type_fr_RH_upperleg_X_fr_RH_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -7926,7 +7926,7 @@ iit::Aliengo::ForceTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg::Type_fr_RH_
     (*this)(5,4) = 0;
     (*this)(5,5) = 1;
 }
-const iit::Aliengo::ForceTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg& iit::Aliengo::ForceTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::ForceTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg& aliengolib::Aliengo::ForceTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg::update(const state_t& q) {
     static double sin__q_RH_KFE__;
     static double cos__q_RH_KFE__;
     
@@ -7947,7 +7947,7 @@ const iit::Aliengo::ForceTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg& iit::
     return *this;
 }
 
-iit::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_LF_foot::Type_fr_LF_lowerleg_X_LF_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_LF_foot::Type_fr_LF_lowerleg_X_LF_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -7966,13 +7966,13 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_LF_foot::Type_fr_LF_l
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_LF_foot& iit::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_LF_foot::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_LF_foot& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_LF_foot::update(const state_t& q) {
     
     
     (*this)(0,3) =  lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_RF_foot::Type_fr_RF_lowerleg_X_RF_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_RF_foot::Type_fr_RF_lowerleg_X_RF_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -7991,13 +7991,13 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_RF_foot::Type_fr_RF_l
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_RF_foot& iit::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_RF_foot::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_RF_foot& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_RF_foot::update(const state_t& q) {
     
     
     (*this)(0,3) =  lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_LH_foot::Type_fr_LH_lowerleg_X_LH_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_LH_foot::Type_fr_LH_lowerleg_X_LH_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -8016,13 +8016,13 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_LH_foot::Type_fr_LH_l
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_LH_foot& iit::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_LH_foot::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_LH_foot& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_LH_foot::update(const state_t& q) {
     
     
     (*this)(0,3) =  lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_RH_foot::Type_fr_RH_lowerleg_X_RH_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_RH_foot::Type_fr_RH_lowerleg_X_RH_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -8041,13 +8041,13 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_RH_foot::Type_fr_RH_l
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_RH_foot& iit::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_RH_foot::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_RH_foot& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_RH_foot::update(const state_t& q) {
     
     
     (*this)(0,3) =  lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_hipassemblyCOM::Type_fr_trunk_X_LF_hipassemblyCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_hipassemblyCOM::Type_fr_trunk_X_LF_hipassemblyCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -8060,7 +8060,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_hipassemblyCOM::Type_fr_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1.0;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_hipassemblyCOM& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_hipassemblyCOM::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_hipassemblyCOM& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_hipassemblyCOM::update(const state_t& q) {
     static double sin__q_LF_HAA__;
     static double cos__q_LF_HAA__;
     
@@ -8076,7 +8076,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_hipassemblyCOM& ii
     (*this)(2,3) = (( 0.01003 *  cos__q_LF_HAA__) - ( 0.01061 *  sin__q_LF_HAA__));
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_hipassemblyCOM::Type_fr_trunk_X_RF_hipassemblyCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_hipassemblyCOM::Type_fr_trunk_X_RF_hipassemblyCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -8089,7 +8089,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_hipassemblyCOM::Type_fr_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1.0;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_hipassemblyCOM& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_hipassemblyCOM::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_hipassemblyCOM& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_hipassemblyCOM::update(const state_t& q) {
     static double sin__q_RF_HAA__;
     static double cos__q_RF_HAA__;
     
@@ -8105,7 +8105,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_hipassemblyCOM& ii
     (*this)(2,3) = (( 0.01003 *  cos__q_RF_HAA__) - ( 0.01061 *  sin__q_RF_HAA__));
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_hipassemblyCOM::Type_fr_trunk_X_LH_hipassemblyCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_hipassemblyCOM::Type_fr_trunk_X_LH_hipassemblyCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -8118,7 +8118,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_hipassemblyCOM::Type_fr_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1.0;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_hipassemblyCOM& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_hipassemblyCOM::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_hipassemblyCOM& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_hipassemblyCOM::update(const state_t& q) {
     static double sin__q_LH_HAA__;
     static double cos__q_LH_HAA__;
     
@@ -8134,7 +8134,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_hipassemblyCOM& ii
     (*this)(2,3) = (( 0.01003 *  cos__q_LH_HAA__) - ( 0.01061 *  sin__q_LH_HAA__));
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_hipassemblyCOM::Type_fr_trunk_X_RH_hipassemblyCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_hipassemblyCOM::Type_fr_trunk_X_RH_hipassemblyCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -8147,7 +8147,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_hipassemblyCOM::Type_fr_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1.0;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_hipassemblyCOM& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_hipassemblyCOM::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_hipassemblyCOM& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_hipassemblyCOM::update(const state_t& q) {
     static double sin__q_RH_HAA__;
     static double cos__q_RH_HAA__;
     
@@ -8163,7 +8163,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_hipassemblyCOM& ii
     (*this)(2,3) = (( 0.01003 *  cos__q_RH_HAA__) - ( 0.01061 *  sin__q_RH_HAA__));
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_upperlegCOM::Type_fr_trunk_X_LF_upperlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_upperlegCOM::Type_fr_trunk_X_LF_upperlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -8172,7 +8172,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_upperlegCOM::Type_fr_tru
     (*this)(3,2) = 0;
     (*this)(3,3) = 1.0;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_upperlegCOM& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_upperlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_upperlegCOM& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_upperlegCOM::update(const state_t& q) {
     static double sin__q_LF_HFE__;
     static double sin__q_LF_HAA__;
     static double cos__q_LF_HFE__;
@@ -8196,7 +8196,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_upperlegCOM& iit::
     (*this)(2,3) = ((((- 0.01146 *  cos__q_LF_HAA__) *  sin__q_LF_HFE__) - (( 0.10799 *  cos__q_LF_HAA__) *  cos__q_LF_HFE__)) + (( 0.00212 -  lengths_values -> haa_hfe) *  sin__q_LF_HAA__));
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_upperlegCOM::Type_fr_trunk_X_RF_upperlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_upperlegCOM::Type_fr_trunk_X_RF_upperlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -8205,7 +8205,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_upperlegCOM::Type_fr_tru
     (*this)(3,2) = 0;
     (*this)(3,3) = 1.0;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_upperlegCOM& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_upperlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_upperlegCOM& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_upperlegCOM::update(const state_t& q) {
     static double sin__q_RF_HFE__;
     static double sin__q_RF_HAA__;
     static double cos__q_RF_HFE__;
@@ -8229,7 +8229,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_upperlegCOM& iit::
     (*this)(2,3) = ((((- 0.01146 *  cos__q_RF_HAA__) *  sin__q_RF_HFE__) - (( 0.10799 *  cos__q_RF_HAA__) *  cos__q_RF_HFE__)) + ((- 0.00212 -  lengths_values -> haa_hfe) *  sin__q_RF_HAA__));
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_upperlegCOM::Type_fr_trunk_X_LH_upperlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_upperlegCOM::Type_fr_trunk_X_LH_upperlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -8238,7 +8238,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_upperlegCOM::Type_fr_tru
     (*this)(3,2) = 0;
     (*this)(3,3) = 1.0;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_upperlegCOM& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_upperlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_upperlegCOM& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_upperlegCOM::update(const state_t& q) {
     static double sin__q_LH_HFE__;
     static double sin__q_LH_HAA__;
     static double cos__q_LH_HFE__;
@@ -8262,7 +8262,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_upperlegCOM& iit::
     (*this)(2,3) = ((((- 0.01146 *  cos__q_LH_HAA__) *  sin__q_LH_HFE__) - (( 0.10799 *  cos__q_LH_HAA__) *  cos__q_LH_HFE__)) + (( 0.00212 -  lengths_values -> haa_hfe) *  sin__q_LH_HAA__));
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_upperlegCOM::Type_fr_trunk_X_RH_upperlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_upperlegCOM::Type_fr_trunk_X_RH_upperlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -8271,7 +8271,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_upperlegCOM::Type_fr_tru
     (*this)(3,2) = 0;
     (*this)(3,3) = 1.0;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_upperlegCOM& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_upperlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_upperlegCOM& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_upperlegCOM::update(const state_t& q) {
     static double sin__q_RH_HFE__;
     static double sin__q_RH_HAA__;
     static double cos__q_RH_HFE__;
@@ -8295,7 +8295,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_upperlegCOM& iit::
     (*this)(2,3) = ((((- 0.01146 *  cos__q_RH_HAA__) *  sin__q_RH_HFE__) - (( 0.10799 *  cos__q_RH_HAA__) *  cos__q_RH_HFE__)) + ((- 0.00212 -  lengths_values -> haa_hfe) *  sin__q_RH_HAA__));
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_lowerlegCOM::Type_fr_trunk_X_LF_lowerlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_lowerlegCOM::Type_fr_trunk_X_LF_lowerlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -8304,7 +8304,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_lowerlegCOM::Type_fr_tru
     (*this)(3,2) = 0;
     (*this)(3,3) = 1.0;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_lowerlegCOM& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_lowerlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_lowerlegCOM& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_lowerlegCOM::update(const state_t& q) {
     static double sin__q_LF_KFE__;
     static double sin__q_LF_HFE__;
     static double sin__q_LF_HAA__;
@@ -8332,7 +8332,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_lowerlegCOM& iit::
     (*this)(2,3) = ((((((( 0.1493 *  cos__q_LF_HAA__) *  sin__q_LF_HFE__) - (( 0.0038 *  cos__q_LF_HAA__) *  cos__q_LF_HFE__)) *  sin__q_LF_KFE__) + ((((- 0.1493 *  cos__q_LF_HAA__) *  cos__q_LF_HFE__) - (( 0.0038 *  cos__q_LF_HAA__) *  sin__q_LF_HFE__)) *  cos__q_LF_KFE__)) - (( lengths_values -> upper_leg *  cos__q_LF_HAA__) *  cos__q_LF_HFE__)) + (( 6.2E-4 -  lengths_values -> haa_hfe) *  sin__q_LF_HAA__));
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_lowerlegCOM::Type_fr_trunk_X_RF_lowerlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_lowerlegCOM::Type_fr_trunk_X_RF_lowerlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -8341,7 +8341,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_lowerlegCOM::Type_fr_tru
     (*this)(3,2) = 0;
     (*this)(3,3) = 1.0;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_lowerlegCOM& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_lowerlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_lowerlegCOM& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_lowerlegCOM::update(const state_t& q) {
     static double sin__q_RF_KFE__;
     static double sin__q_RF_HFE__;
     static double sin__q_RF_HAA__;
@@ -8369,7 +8369,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_lowerlegCOM& iit::
     (*this)(2,3) = ((((((( 0.1493 *  cos__q_RF_HAA__) *  sin__q_RF_HFE__) - (( 0.0038 *  cos__q_RF_HAA__) *  cos__q_RF_HFE__)) *  sin__q_RF_KFE__) + ((((- 0.1493 *  cos__q_RF_HAA__) *  cos__q_RF_HFE__) - (( 0.0038 *  cos__q_RF_HAA__) *  sin__q_RF_HFE__)) *  cos__q_RF_KFE__)) - (( lengths_values -> upper_leg *  cos__q_RF_HAA__) *  cos__q_RF_HFE__)) + ((- 6.2E-4 -  lengths_values -> haa_hfe) *  sin__q_RF_HAA__));
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_lowerlegCOM::Type_fr_trunk_X_LH_lowerlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_lowerlegCOM::Type_fr_trunk_X_LH_lowerlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -8378,7 +8378,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_lowerlegCOM::Type_fr_tru
     (*this)(3,2) = 0;
     (*this)(3,3) = 1.0;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_lowerlegCOM& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_lowerlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_lowerlegCOM& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_lowerlegCOM::update(const state_t& q) {
     static double sin__q_LH_KFE__;
     static double sin__q_LH_HFE__;
     static double sin__q_LH_HAA__;
@@ -8406,7 +8406,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_lowerlegCOM& iit::
     (*this)(2,3) = ((((((( 0.1493 *  cos__q_LH_HAA__) *  sin__q_LH_HFE__) - (( 0.0038 *  cos__q_LH_HAA__) *  cos__q_LH_HFE__)) *  sin__q_LH_KFE__) + ((((- 0.1493 *  cos__q_LH_HAA__) *  cos__q_LH_HFE__) - (( 0.0038 *  cos__q_LH_HAA__) *  sin__q_LH_HFE__)) *  cos__q_LH_KFE__)) - (( lengths_values -> upper_leg *  cos__q_LH_HAA__) *  cos__q_LH_HFE__)) + (( 6.2E-4 -  lengths_values -> haa_hfe) *  sin__q_LH_HAA__));
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_lowerlegCOM::Type_fr_trunk_X_RH_lowerlegCOM(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_lowerlegCOM::Type_fr_trunk_X_RH_lowerlegCOM(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -8415,7 +8415,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_lowerlegCOM::Type_fr_tru
     (*this)(3,2) = 0;
     (*this)(3,3) = 1.0;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_lowerlegCOM& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_lowerlegCOM::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_lowerlegCOM& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_lowerlegCOM::update(const state_t& q) {
     static double sin__q_RH_KFE__;
     static double sin__q_RH_HFE__;
     static double sin__q_RH_HAA__;
@@ -8443,7 +8443,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_lowerlegCOM& iit::
     (*this)(2,3) = ((((((( 0.1493 *  cos__q_RH_HAA__) *  sin__q_RH_HFE__) - (( 0.0038 *  cos__q_RH_HAA__) *  cos__q_RH_HFE__)) *  sin__q_RH_KFE__) + ((((- 0.1493 *  cos__q_RH_HAA__) *  cos__q_RH_HFE__) - (( 0.0038 *  cos__q_RH_HAA__) *  sin__q_RH_HFE__)) *  cos__q_RH_KFE__)) - (( lengths_values -> upper_leg *  cos__q_RH_HAA__) *  cos__q_RH_HFE__)) + ((- 6.2E-4 -  lengths_values -> haa_hfe) *  sin__q_RH_HAA__));
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_LF_foot_X_fr_LF_lowerleg::Type_LF_foot_X_fr_LF_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_LF_foot_X_fr_LF_lowerleg::Type_LF_foot_X_fr_LF_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -8462,13 +8462,13 @@ iit::Aliengo::HomogeneousTransforms::Type_LF_foot_X_fr_LF_lowerleg::Type_LF_foot
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_LF_foot_X_fr_LF_lowerleg& iit::Aliengo::HomogeneousTransforms::Type_LF_foot_X_fr_LF_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_LF_foot_X_fr_LF_lowerleg& aliengolib::Aliengo::HomogeneousTransforms::Type_LF_foot_X_fr_LF_lowerleg::update(const state_t& q) {
     
     
     (*this)(2,3) =  lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_RF_foot_X_fr_RF_lowerleg::Type_RF_foot_X_fr_RF_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_RF_foot_X_fr_RF_lowerleg::Type_RF_foot_X_fr_RF_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -8487,13 +8487,13 @@ iit::Aliengo::HomogeneousTransforms::Type_RF_foot_X_fr_RF_lowerleg::Type_RF_foot
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_RF_foot_X_fr_RF_lowerleg& iit::Aliengo::HomogeneousTransforms::Type_RF_foot_X_fr_RF_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_RF_foot_X_fr_RF_lowerleg& aliengolib::Aliengo::HomogeneousTransforms::Type_RF_foot_X_fr_RF_lowerleg::update(const state_t& q) {
     
     
     (*this)(2,3) =  lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_LH_foot_X_fr_LH_lowerleg::Type_LH_foot_X_fr_LH_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_LH_foot_X_fr_LH_lowerleg::Type_LH_foot_X_fr_LH_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -8512,13 +8512,13 @@ iit::Aliengo::HomogeneousTransforms::Type_LH_foot_X_fr_LH_lowerleg::Type_LH_foot
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_LH_foot_X_fr_LH_lowerleg& iit::Aliengo::HomogeneousTransforms::Type_LH_foot_X_fr_LH_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_LH_foot_X_fr_LH_lowerleg& aliengolib::Aliengo::HomogeneousTransforms::Type_LH_foot_X_fr_LH_lowerleg::update(const state_t& q) {
     
     
     (*this)(2,3) =  lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_RH_foot_X_fr_RH_lowerleg::Type_RH_foot_X_fr_RH_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_RH_foot_X_fr_RH_lowerleg::Type_RH_foot_X_fr_RH_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -8537,13 +8537,13 @@ iit::Aliengo::HomogeneousTransforms::Type_RH_foot_X_fr_RH_lowerleg::Type_RH_foot
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_RH_foot_X_fr_RH_lowerleg& iit::Aliengo::HomogeneousTransforms::Type_RH_foot_X_fr_RH_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_RH_foot_X_fr_RH_lowerleg& aliengolib::Aliengo::HomogeneousTransforms::Type_RH_foot_X_fr_RH_lowerleg::update(const state_t& q) {
     
     
     (*this)(2,3) =  lengths_values -> foot_x;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_foot::Type_fr_trunk_X_LF_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_foot::Type_fr_trunk_X_LF_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -8552,7 +8552,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_foot::Type_fr_trunk_X_LF
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_foot& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_foot::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_foot& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_foot::update(const state_t& q) {
     static double sin__q_LF_HFE__;
     static double sin__q_LF_KFE__;
     static double sin__q_LF_HAA__;
@@ -8580,7 +8580,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LF_foot& iit::Aliengo
     (*this)(2,3) = (((((( lengths_values -> foot_x *  cos__q_LF_HAA__) *  sin__q_LF_HFE__) *  sin__q_LF_KFE__) - ((( lengths_values -> foot_x *  cos__q_LF_HAA__) *  cos__q_LF_HFE__) *  cos__q_LF_KFE__)) - (( lengths_values -> upper_leg *  cos__q_LF_HAA__) *  cos__q_LF_HFE__)) - ( lengths_values -> haa_hfe *  sin__q_LF_HAA__));
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_foot::Type_fr_trunk_X_RF_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_foot::Type_fr_trunk_X_RF_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -8589,7 +8589,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_foot::Type_fr_trunk_X_RF
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_foot& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_foot::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_foot& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_foot::update(const state_t& q) {
     static double sin__q_RF_HFE__;
     static double sin__q_RF_KFE__;
     static double sin__q_RF_HAA__;
@@ -8617,7 +8617,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RF_foot& iit::Aliengo
     (*this)(2,3) = (((((( lengths_values -> foot_x *  cos__q_RF_HAA__) *  sin__q_RF_HFE__) *  sin__q_RF_KFE__) - ((( lengths_values -> foot_x *  cos__q_RF_HAA__) *  cos__q_RF_HFE__) *  cos__q_RF_KFE__)) - (( lengths_values -> upper_leg *  cos__q_RF_HAA__) *  cos__q_RF_HFE__)) - ( lengths_values -> haa_hfe *  sin__q_RF_HAA__));
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_foot::Type_fr_trunk_X_LH_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_foot::Type_fr_trunk_X_LH_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -8626,7 +8626,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_foot::Type_fr_trunk_X_LH
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_foot& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_foot::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_foot& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_foot::update(const state_t& q) {
     static double sin__q_LH_HFE__;
     static double sin__q_LH_KFE__;
     static double sin__q_LH_HAA__;
@@ -8654,7 +8654,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_LH_foot& iit::Aliengo
     (*this)(2,3) = (((((( lengths_values -> foot_x *  cos__q_LH_HAA__) *  sin__q_LH_HFE__) *  sin__q_LH_KFE__) - ((( lengths_values -> foot_x *  cos__q_LH_HAA__) *  cos__q_LH_HFE__) *  cos__q_LH_KFE__)) - (( lengths_values -> upper_leg *  cos__q_LH_HAA__) *  cos__q_LH_HFE__)) - ( lengths_values -> haa_hfe *  sin__q_LH_HAA__));
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_foot::Type_fr_trunk_X_RH_foot(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_foot::Type_fr_trunk_X_RH_foot(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -8663,7 +8663,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_foot::Type_fr_trunk_X_RH
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_foot& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_foot::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_foot& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_foot::update(const state_t& q) {
     static double sin__q_RH_HFE__;
     static double sin__q_RH_KFE__;
     static double sin__q_RH_HAA__;
@@ -8691,7 +8691,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_RH_foot& iit::Aliengo
     (*this)(2,3) = (((((( lengths_values -> foot_x *  cos__q_RH_HAA__) *  sin__q_RH_HFE__) *  sin__q_RH_KFE__) - ((( lengths_values -> foot_x *  cos__q_RH_HAA__) *  cos__q_RH_HFE__) *  cos__q_RH_KFE__)) - (( lengths_values -> upper_leg *  cos__q_RH_HAA__) *  cos__q_RH_HFE__)) - ( lengths_values -> haa_hfe *  sin__q_RH_HAA__));
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_fr_trunk::Type_fr_LF_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_fr_trunk::Type_fr_LF_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(2,0) = 0;
@@ -8700,7 +8700,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_fr_trunk::Type_fr_LF_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_fr_trunk& iit::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_fr_trunk& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_fr_trunk::update(const state_t& q) {
     static double sin__q_LF_KFE__;
     static double sin__q_LF_HFE__;
     static double sin__q_LF_HAA__;
@@ -8728,7 +8728,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_fr_trunk& iit::
     (*this)(2,3) = ((- lengths_values -> haa_y *  cos__q_LF_HAA__) -  lengths_values -> haa_hfe);
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_fr_trunk::Type_fr_RF_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_fr_trunk::Type_fr_RF_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(2,0) = 0;
@@ -8737,7 +8737,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_fr_trunk::Type_fr_RF_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_fr_trunk& iit::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_fr_trunk& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_fr_trunk::update(const state_t& q) {
     static double sin__q_RF_KFE__;
     static double sin__q_RF_HFE__;
     static double sin__q_RF_HAA__;
@@ -8765,7 +8765,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_fr_trunk& iit::
     (*this)(2,3) = (( lengths_values -> haa_y *  cos__q_RF_HAA__) +  lengths_values -> haa_hfe);
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_fr_trunk::Type_fr_LH_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_fr_trunk::Type_fr_LH_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(2,0) = 0;
@@ -8774,7 +8774,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_fr_trunk::Type_fr_LH_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_fr_trunk& iit::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_fr_trunk& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_fr_trunk::update(const state_t& q) {
     static double sin__q_LH_KFE__;
     static double sin__q_LH_HFE__;
     static double sin__q_LH_HAA__;
@@ -8802,7 +8802,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_fr_trunk& iit::
     (*this)(2,3) = ((- lengths_values -> haa_y *  cos__q_LH_HAA__) -  lengths_values -> haa_hfe);
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_fr_trunk::Type_fr_RH_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_fr_trunk::Type_fr_RH_lowerleg_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(2,0) = 0;
@@ -8811,7 +8811,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_fr_trunk::Type_fr_RH_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_fr_trunk& iit::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_fr_trunk& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_fr_trunk::update(const state_t& q) {
     static double sin__q_RH_KFE__;
     static double sin__q_RH_HFE__;
     static double sin__q_RH_HAA__;
@@ -8839,7 +8839,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_fr_trunk& iit::
     (*this)(2,3) = (( lengths_values -> haa_y *  cos__q_RH_HAA__) +  lengths_values -> haa_hfe);
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_LF_foot_X_fr_trunk::Type_LF_foot_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_LF_foot_X_fr_trunk::Type_LF_foot_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(1,0) = 0;
@@ -8848,7 +8848,7 @@ iit::Aliengo::HomogeneousTransforms::Type_LF_foot_X_fr_trunk::Type_LF_foot_X_fr_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_LF_foot_X_fr_trunk& iit::Aliengo::HomogeneousTransforms::Type_LF_foot_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_LF_foot_X_fr_trunk& aliengolib::Aliengo::HomogeneousTransforms::Type_LF_foot_X_fr_trunk::update(const state_t& q) {
     static double sin__q_LF_HFE__;
     static double sin__q_LF_KFE__;
     static double sin__q_LF_HAA__;
@@ -8876,7 +8876,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_LF_foot_X_fr_trunk& iit::Aliengo
     (*this)(2,3) = (((((( lengths_values -> haa_y *  sin__q_LF_HAA__) *  sin__q_LF_HFE__) - ( lengths_values -> haa_x *  cos__q_LF_HFE__)) *  sin__q_LF_KFE__) + ((( lengths_values -> upper_leg - (( lengths_values -> haa_y *  sin__q_LF_HAA__) *  cos__q_LF_HFE__)) - ( lengths_values -> haa_x *  sin__q_LF_HFE__)) *  cos__q_LF_KFE__)) +  lengths_values -> foot_x);
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_RF_foot_X_fr_trunk::Type_RF_foot_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_RF_foot_X_fr_trunk::Type_RF_foot_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(1,0) = 0;
@@ -8885,7 +8885,7 @@ iit::Aliengo::HomogeneousTransforms::Type_RF_foot_X_fr_trunk::Type_RF_foot_X_fr_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_RF_foot_X_fr_trunk& iit::Aliengo::HomogeneousTransforms::Type_RF_foot_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_RF_foot_X_fr_trunk& aliengolib::Aliengo::HomogeneousTransforms::Type_RF_foot_X_fr_trunk::update(const state_t& q) {
     static double sin__q_RF_HFE__;
     static double sin__q_RF_KFE__;
     static double sin__q_RF_HAA__;
@@ -8913,7 +8913,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_RF_foot_X_fr_trunk& iit::Aliengo
     (*this)(2,3) = (((((( lengths_values -> haa_y *  sin__q_RF_HAA__) *  sin__q_RF_HFE__) - ( lengths_values -> haa_x *  cos__q_RF_HFE__)) *  sin__q_RF_KFE__) + ((( lengths_values -> upper_leg - (( lengths_values -> haa_y *  sin__q_RF_HAA__) *  cos__q_RF_HFE__)) - ( lengths_values -> haa_x *  sin__q_RF_HFE__)) *  cos__q_RF_KFE__)) +  lengths_values -> foot_x);
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_LH_foot_X_fr_trunk::Type_LH_foot_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_LH_foot_X_fr_trunk::Type_LH_foot_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(1,0) = 0;
@@ -8922,7 +8922,7 @@ iit::Aliengo::HomogeneousTransforms::Type_LH_foot_X_fr_trunk::Type_LH_foot_X_fr_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_LH_foot_X_fr_trunk& iit::Aliengo::HomogeneousTransforms::Type_LH_foot_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_LH_foot_X_fr_trunk& aliengolib::Aliengo::HomogeneousTransforms::Type_LH_foot_X_fr_trunk::update(const state_t& q) {
     static double sin__q_LH_HFE__;
     static double sin__q_LH_KFE__;
     static double sin__q_LH_HAA__;
@@ -8950,7 +8950,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_LH_foot_X_fr_trunk& iit::Aliengo
     (*this)(2,3) = ((((( lengths_values -> haa_x *  cos__q_LH_HFE__) + (( lengths_values -> haa_y *  sin__q_LH_HAA__) *  sin__q_LH_HFE__)) *  sin__q_LH_KFE__) + ((( lengths_values -> upper_leg - (( lengths_values -> haa_y *  sin__q_LH_HAA__) *  cos__q_LH_HFE__)) + ( lengths_values -> haa_x *  sin__q_LH_HFE__)) *  cos__q_LH_KFE__)) +  lengths_values -> foot_x);
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_RH_foot_X_fr_trunk::Type_RH_foot_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_RH_foot_X_fr_trunk::Type_RH_foot_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(1,0) = 0;
@@ -8959,7 +8959,7 @@ iit::Aliengo::HomogeneousTransforms::Type_RH_foot_X_fr_trunk::Type_RH_foot_X_fr_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_RH_foot_X_fr_trunk& iit::Aliengo::HomogeneousTransforms::Type_RH_foot_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_RH_foot_X_fr_trunk& aliengolib::Aliengo::HomogeneousTransforms::Type_RH_foot_X_fr_trunk::update(const state_t& q) {
     static double sin__q_RH_HFE__;
     static double sin__q_RH_KFE__;
     static double sin__q_RH_HAA__;
@@ -8987,7 +8987,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_RH_foot_X_fr_trunk& iit::Aliengo
     (*this)(2,3) = ((((( lengths_values -> haa_x *  cos__q_RH_HFE__) + (( lengths_values -> haa_y *  sin__q_RH_HAA__) *  sin__q_RH_HFE__)) *  sin__q_RH_KFE__) + ((( lengths_values -> upper_leg - (( lengths_values -> haa_y *  sin__q_RH_HAA__) *  cos__q_RH_HFE__)) + ( lengths_values -> haa_x *  sin__q_RH_HFE__)) *  cos__q_RH_KFE__)) +  lengths_values -> foot_x);
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_HAA::Type_fr_trunk_X_fr_LF_HAA(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_HAA::Type_fr_trunk_X_fr_LF_HAA(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -9005,14 +9005,14 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_HAA::Type_fr_trunk_X_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_HAA& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_HAA::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_HAA& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_HAA::update(const state_t& q) {
     
     
     (*this)(0,3) =  lengths_values -> haa_x;
     (*this)(1,3) =  lengths_values -> haa_y;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_HFE::Type_fr_trunk_X_fr_LF_HFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_HFE::Type_fr_trunk_X_fr_LF_HFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -9025,7 +9025,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_HFE::Type_fr_trunk_X_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_HFE& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_HFE::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_HFE& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_HFE::update(const state_t& q) {
     static double sin__q_LF_HAA__;
     static double cos__q_LF_HAA__;
     
@@ -9041,7 +9041,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_HFE& iit::Alien
     (*this)(2,3) = (- lengths_values -> haa_hfe *  sin__q_LF_HAA__);
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_KFE::Type_fr_trunk_X_fr_LF_KFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_KFE::Type_fr_trunk_X_fr_LF_KFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -9050,7 +9050,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_KFE::Type_fr_trunk_X_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_KFE& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_KFE::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_KFE& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_KFE::update(const state_t& q) {
     static double sin__q_LF_HFE__;
     static double sin__q_LF_HAA__;
     static double cos__q_LF_HFE__;
@@ -9074,7 +9074,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_KFE& iit::Alien
     (*this)(2,3) = (((- lengths_values -> upper_leg *  cos__q_LF_HAA__) *  cos__q_LF_HFE__) - ( lengths_values -> haa_hfe *  sin__q_LF_HAA__));
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_HAA::Type_fr_trunk_X_fr_RF_HAA(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_HAA::Type_fr_trunk_X_fr_RF_HAA(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -9092,14 +9092,14 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_HAA::Type_fr_trunk_X_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_HAA& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_HAA::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_HAA& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_HAA::update(const state_t& q) {
     
     
     (*this)(0,3) =  lengths_values -> haa_x;
     (*this)(1,3) = - lengths_values -> haa_y;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_HFE::Type_fr_trunk_X_fr_RF_HFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_HFE::Type_fr_trunk_X_fr_RF_HFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -9112,7 +9112,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_HFE::Type_fr_trunk_X_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_HFE& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_HFE::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_HFE& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_HFE::update(const state_t& q) {
     static double sin__q_RF_HAA__;
     static double cos__q_RF_HAA__;
     
@@ -9128,7 +9128,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_HFE& iit::Alien
     (*this)(2,3) = (- lengths_values -> haa_hfe *  sin__q_RF_HAA__);
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_KFE::Type_fr_trunk_X_fr_RF_KFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_KFE::Type_fr_trunk_X_fr_RF_KFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -9137,7 +9137,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_KFE::Type_fr_trunk_X_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_KFE& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_KFE::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_KFE& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_KFE::update(const state_t& q) {
     static double sin__q_RF_HFE__;
     static double sin__q_RF_HAA__;
     static double cos__q_RF_HFE__;
@@ -9161,7 +9161,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_KFE& iit::Alien
     (*this)(2,3) = (((- lengths_values -> upper_leg *  cos__q_RF_HAA__) *  cos__q_RF_HFE__) - ( lengths_values -> haa_hfe *  sin__q_RF_HAA__));
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_HAA::Type_fr_trunk_X_fr_LH_HAA(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_HAA::Type_fr_trunk_X_fr_LH_HAA(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -9179,14 +9179,14 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_HAA::Type_fr_trunk_X_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_HAA& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_HAA::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_HAA& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_HAA::update(const state_t& q) {
     
     
     (*this)(0,3) = - lengths_values -> haa_x;
     (*this)(1,3) =  lengths_values -> haa_y;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_HFE::Type_fr_trunk_X_fr_LH_HFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_HFE::Type_fr_trunk_X_fr_LH_HFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -9199,7 +9199,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_HFE::Type_fr_trunk_X_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_HFE& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_HFE::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_HFE& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_HFE::update(const state_t& q) {
     static double sin__q_LH_HAA__;
     static double cos__q_LH_HAA__;
     
@@ -9215,7 +9215,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_HFE& iit::Alien
     (*this)(2,3) = (- lengths_values -> haa_hfe *  sin__q_LH_HAA__);
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_KFE::Type_fr_trunk_X_fr_LH_KFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_KFE::Type_fr_trunk_X_fr_LH_KFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -9224,7 +9224,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_KFE::Type_fr_trunk_X_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_KFE& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_KFE::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_KFE& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_KFE::update(const state_t& q) {
     static double sin__q_LH_HFE__;
     static double sin__q_LH_HAA__;
     static double cos__q_LH_HFE__;
@@ -9248,7 +9248,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_KFE& iit::Alien
     (*this)(2,3) = (((- lengths_values -> upper_leg *  cos__q_LH_HAA__) *  cos__q_LH_HFE__) - ( lengths_values -> haa_hfe *  sin__q_LH_HAA__));
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_HAA::Type_fr_trunk_X_fr_RH_HAA(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_HAA::Type_fr_trunk_X_fr_RH_HAA(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -9266,14 +9266,14 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_HAA::Type_fr_trunk_X_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_HAA& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_HAA::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_HAA& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_HAA::update(const state_t& q) {
     
     
     (*this)(0,3) = - lengths_values -> haa_x;
     (*this)(1,3) = - lengths_values -> haa_y;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_HFE::Type_fr_trunk_X_fr_RH_HFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_HFE::Type_fr_trunk_X_fr_RH_HFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -9286,7 +9286,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_HFE::Type_fr_trunk_X_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_HFE& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_HFE::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_HFE& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_HFE::update(const state_t& q) {
     static double sin__q_RH_HAA__;
     static double cos__q_RH_HAA__;
     
@@ -9302,7 +9302,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_HFE& iit::Alien
     (*this)(2,3) = (- lengths_values -> haa_hfe *  sin__q_RH_HAA__);
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_KFE::Type_fr_trunk_X_fr_RH_KFE(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_KFE::Type_fr_trunk_X_fr_RH_KFE(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -9311,7 +9311,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_KFE::Type_fr_trunk_X_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_KFE& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_KFE::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_KFE& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_KFE::update(const state_t& q) {
     static double sin__q_RH_HFE__;
     static double sin__q_RH_HAA__;
     static double cos__q_RH_HFE__;
@@ -9335,7 +9335,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_KFE& iit::Alien
     (*this)(2,3) = (((- lengths_values -> upper_leg *  cos__q_RH_HAA__) *  cos__q_RH_HFE__) - ( lengths_values -> haa_hfe *  sin__q_RH_HAA__));
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_LF_hipassembly_X_fr_trunk::Type_fr_LF_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LF_hipassembly_X_fr_trunk::Type_fr_LF_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -9348,7 +9348,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_LF_hipassembly_X_fr_trunk::Type_fr_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_LF_hipassembly_X_fr_trunk& iit::Aliengo::HomogeneousTransforms::Type_fr_LF_hipassembly_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LF_hipassembly_X_fr_trunk& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LF_hipassembly_X_fr_trunk::update(const state_t& q) {
     static double sin__q_LF_HAA__;
     static double cos__q_LF_HAA__;
     
@@ -9364,7 +9364,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_LF_hipassembly_X_fr_trunk& ii
     (*this)(2,3) =  lengths_values -> haa_x;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_hipassembly::Type_fr_trunk_X_fr_LF_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_hipassembly::Type_fr_trunk_X_fr_LF_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -9378,7 +9378,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_hipassembly::Type_fr_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_hipassembly& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_hipassembly& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_hipassembly::update(const state_t& q) {
     static double sin__q_LF_HAA__;
     static double cos__q_LF_HAA__;
     
@@ -9393,7 +9393,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_hipassembly& ii
     (*this)(2,1) =  sin__q_LF_HAA__;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly::Type_fr_LF_upperleg_X_fr_LF_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly::Type_fr_LF_upperleg_X_fr_LF_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -9408,7 +9408,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly::Ty
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly& iit::Aliengo::HomogeneousTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassembly::update(const state_t& q) {
     static double sin__q_LF_HFE__;
     static double cos__q_LF_HFE__;
     
@@ -9422,7 +9422,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_LF_upperleg_X_fr_LF_hipassemb
     (*this)(2,3) = - lengths_values -> haa_hfe;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg::Type_fr_LF_hipassembly_X_fr_LF_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg::Type_fr_LF_hipassembly_X_fr_LF_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -9437,7 +9437,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg::Ty
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg& iit::Aliengo::HomogeneousTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperleg::update(const state_t& q) {
     static double sin__q_LF_HFE__;
     static double cos__q_LF_HFE__;
     
@@ -9451,7 +9451,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_LF_hipassembly_X_fr_LF_upperl
     (*this)(2,1) =  cos__q_LF_HFE__;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg::Type_fr_LF_lowerleg_X_fr_LF_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg::Type_fr_LF_lowerleg_X_fr_LF_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -9465,7 +9465,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg::Type_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg& iit::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg::update(const state_t& q) {
     static double sin__q_LF_KFE__;
     static double cos__q_LF_KFE__;
     
@@ -9480,7 +9480,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_fr_LF_upperleg&
     (*this)(1,3) = ( lengths_values -> upper_leg *  sin__q_LF_KFE__);
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg::Type_fr_LF_upperleg_X_fr_LF_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg::Type_fr_LF_upperleg_X_fr_LF_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -9495,7 +9495,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg::Type_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg& iit::Aliengo::HomogeneousTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg::update(const state_t& q) {
     static double sin__q_LF_KFE__;
     static double cos__q_LF_KFE__;
     
@@ -9509,7 +9509,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_LF_upperleg_X_fr_LF_lowerleg&
     (*this)(1,1) =  cos__q_LF_KFE__;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_RF_hipassembly_X_fr_trunk::Type_fr_RF_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RF_hipassembly_X_fr_trunk::Type_fr_RF_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -9522,7 +9522,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_RF_hipassembly_X_fr_trunk::Type_fr_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_RF_hipassembly_X_fr_trunk& iit::Aliengo::HomogeneousTransforms::Type_fr_RF_hipassembly_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RF_hipassembly_X_fr_trunk& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RF_hipassembly_X_fr_trunk::update(const state_t& q) {
     static double sin__q_RF_HAA__;
     static double cos__q_RF_HAA__;
     
@@ -9538,7 +9538,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_RF_hipassembly_X_fr_trunk& ii
     (*this)(2,3) = - lengths_values -> haa_x;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_hipassembly::Type_fr_trunk_X_fr_RF_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_hipassembly::Type_fr_trunk_X_fr_RF_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -9552,7 +9552,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_hipassembly::Type_fr_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_hipassembly& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_hipassembly& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_hipassembly::update(const state_t& q) {
     static double sin__q_RF_HAA__;
     static double cos__q_RF_HAA__;
     
@@ -9567,7 +9567,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_hipassembly& ii
     (*this)(2,1) =  sin__q_RF_HAA__;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly::Type_fr_RF_upperleg_X_fr_RF_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly::Type_fr_RF_upperleg_X_fr_RF_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -9582,7 +9582,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly::Ty
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly& iit::Aliengo::HomogeneousTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassembly::update(const state_t& q) {
     static double sin__q_RF_HFE__;
     static double cos__q_RF_HFE__;
     
@@ -9596,7 +9596,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_RF_upperleg_X_fr_RF_hipassemb
     (*this)(2,3) =  lengths_values -> haa_hfe;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg::Type_fr_RF_hipassembly_X_fr_RF_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg::Type_fr_RF_hipassembly_X_fr_RF_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -9611,7 +9611,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg::Ty
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg& iit::Aliengo::HomogeneousTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperleg::update(const state_t& q) {
     static double sin__q_RF_HFE__;
     static double cos__q_RF_HFE__;
     
@@ -9625,7 +9625,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_RF_hipassembly_X_fr_RF_upperl
     (*this)(2,1) = - cos__q_RF_HFE__;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg::Type_fr_RF_lowerleg_X_fr_RF_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg::Type_fr_RF_lowerleg_X_fr_RF_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -9639,7 +9639,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg::Type_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg& iit::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg::update(const state_t& q) {
     static double sin__q_RF_KFE__;
     static double cos__q_RF_KFE__;
     
@@ -9654,7 +9654,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_fr_RF_upperleg&
     (*this)(1,3) = ( lengths_values -> upper_leg *  sin__q_RF_KFE__);
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg::Type_fr_RF_upperleg_X_fr_RF_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg::Type_fr_RF_upperleg_X_fr_RF_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -9669,7 +9669,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg::Type_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg& iit::Aliengo::HomogeneousTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg::update(const state_t& q) {
     static double sin__q_RF_KFE__;
     static double cos__q_RF_KFE__;
     
@@ -9683,7 +9683,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_RF_upperleg_X_fr_RF_lowerleg&
     (*this)(1,1) =  cos__q_RF_KFE__;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_LH_hipassembly_X_fr_trunk::Type_fr_LH_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LH_hipassembly_X_fr_trunk::Type_fr_LH_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -9696,7 +9696,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_LH_hipassembly_X_fr_trunk::Type_fr_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_LH_hipassembly_X_fr_trunk& iit::Aliengo::HomogeneousTransforms::Type_fr_LH_hipassembly_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LH_hipassembly_X_fr_trunk& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LH_hipassembly_X_fr_trunk::update(const state_t& q) {
     static double sin__q_LH_HAA__;
     static double cos__q_LH_HAA__;
     
@@ -9712,7 +9712,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_LH_hipassembly_X_fr_trunk& ii
     (*this)(2,3) = - lengths_values -> haa_x;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_hipassembly::Type_fr_trunk_X_fr_LH_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_hipassembly::Type_fr_trunk_X_fr_LH_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -9726,7 +9726,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_hipassembly::Type_fr_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_hipassembly& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_hipassembly& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_hipassembly::update(const state_t& q) {
     static double sin__q_LH_HAA__;
     static double cos__q_LH_HAA__;
     
@@ -9741,7 +9741,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_hipassembly& ii
     (*this)(2,1) =  sin__q_LH_HAA__;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly::Type_fr_LH_upperleg_X_fr_LH_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly::Type_fr_LH_upperleg_X_fr_LH_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -9756,7 +9756,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly::Ty
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly& iit::Aliengo::HomogeneousTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassembly::update(const state_t& q) {
     static double sin__q_LH_HFE__;
     static double cos__q_LH_HFE__;
     
@@ -9770,7 +9770,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_LH_upperleg_X_fr_LH_hipassemb
     (*this)(2,3) = - lengths_values -> haa_hfe;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg::Type_fr_LH_hipassembly_X_fr_LH_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg::Type_fr_LH_hipassembly_X_fr_LH_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -9785,7 +9785,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg::Ty
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg& iit::Aliengo::HomogeneousTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperleg::update(const state_t& q) {
     static double sin__q_LH_HFE__;
     static double cos__q_LH_HFE__;
     
@@ -9799,7 +9799,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_LH_hipassembly_X_fr_LH_upperl
     (*this)(2,1) =  cos__q_LH_HFE__;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg::Type_fr_LH_lowerleg_X_fr_LH_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg::Type_fr_LH_lowerleg_X_fr_LH_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -9813,7 +9813,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg::Type_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg& iit::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg::update(const state_t& q) {
     static double sin__q_LH_KFE__;
     static double cos__q_LH_KFE__;
     
@@ -9828,7 +9828,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_fr_LH_upperleg&
     (*this)(1,3) = ( lengths_values -> upper_leg *  sin__q_LH_KFE__);
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg::Type_fr_LH_upperleg_X_fr_LH_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg::Type_fr_LH_upperleg_X_fr_LH_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -9843,7 +9843,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg::Type_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg& iit::Aliengo::HomogeneousTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg::update(const state_t& q) {
     static double sin__q_LH_KFE__;
     static double cos__q_LH_KFE__;
     
@@ -9857,7 +9857,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_LH_upperleg_X_fr_LH_lowerleg&
     (*this)(1,1) =  cos__q_LH_KFE__;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_RH_hipassembly_X_fr_trunk::Type_fr_RH_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RH_hipassembly_X_fr_trunk::Type_fr_RH_hipassembly_X_fr_trunk(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -9870,7 +9870,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_RH_hipassembly_X_fr_trunk::Type_fr_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_RH_hipassembly_X_fr_trunk& iit::Aliengo::HomogeneousTransforms::Type_fr_RH_hipassembly_X_fr_trunk::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RH_hipassembly_X_fr_trunk& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RH_hipassembly_X_fr_trunk::update(const state_t& q) {
     static double sin__q_RH_HAA__;
     static double cos__q_RH_HAA__;
     
@@ -9886,7 +9886,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_RH_hipassembly_X_fr_trunk& ii
     (*this)(2,3) =  lengths_values -> haa_x;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_hipassembly::Type_fr_trunk_X_fr_RH_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_hipassembly::Type_fr_trunk_X_fr_RH_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,0) = 0;
@@ -9900,7 +9900,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_hipassembly::Type_fr_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_hipassembly& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_hipassembly& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_hipassembly::update(const state_t& q) {
     static double sin__q_RH_HAA__;
     static double cos__q_RH_HAA__;
     
@@ -9915,7 +9915,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_hipassembly& ii
     (*this)(2,1) =  sin__q_RH_HAA__;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly::Type_fr_RH_upperleg_X_fr_RH_hipassembly(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly::Type_fr_RH_upperleg_X_fr_RH_hipassembly(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,1) = 0;
@@ -9930,7 +9930,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly::Ty
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly& iit::Aliengo::HomogeneousTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassembly::update(const state_t& q) {
     static double sin__q_RH_HFE__;
     static double cos__q_RH_HFE__;
     
@@ -9944,7 +9944,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_RH_upperleg_X_fr_RH_hipassemb
     (*this)(2,3) =  lengths_values -> haa_hfe;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg::Type_fr_RH_hipassembly_X_fr_RH_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg::Type_fr_RH_hipassembly_X_fr_RH_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -9959,7 +9959,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg::Ty
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg& iit::Aliengo::HomogeneousTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperleg::update(const state_t& q) {
     static double sin__q_RH_HFE__;
     static double cos__q_RH_HFE__;
     
@@ -9973,7 +9973,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_RH_hipassembly_X_fr_RH_upperl
     (*this)(2,1) = - cos__q_RH_HFE__;
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg::Type_fr_RH_lowerleg_X_fr_RH_upperleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg::Type_fr_RH_lowerleg_X_fr_RH_upperleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -9987,7 +9987,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg::Type_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg& iit::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg::update(const state_t& q) {
     static double sin__q_RH_KFE__;
     static double cos__q_RH_KFE__;
     
@@ -10002,7 +10002,7 @@ const iit::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_fr_RH_upperleg&
     (*this)(1,3) = ( lengths_values -> upper_leg *  sin__q_RH_KFE__);
     return *this;
 }
-iit::Aliengo::HomogeneousTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg::Type_fr_RH_upperleg_X_fr_RH_lowerleg(const Params_lengths& _lengths_values)
+aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg::Type_fr_RH_upperleg_X_fr_RH_lowerleg(const Params_lengths& _lengths_values)
     : lengths_values(& _lengths_values)
 {
     (*this)(0,2) = 0;
@@ -10017,7 +10017,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg::Type_
     (*this)(3,2) = 0;
     (*this)(3,3) = 1;
 }
-const iit::Aliengo::HomogeneousTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg& iit::Aliengo::HomogeneousTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg::update(const state_t& q) {
+const aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg& aliengolib::Aliengo::HomogeneousTransforms::Type_fr_RH_upperleg_X_fr_RH_lowerleg::update(const state_t& q) {
     static double sin__q_RH_KFE__;
     static double cos__q_RH_KFE__;
     

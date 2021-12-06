@@ -10,7 +10,7 @@
 #include <robotlib/robot_base.hpp>
 #include <robotlib/robot_factory.hpp>
 
-// copy of the rpyToRot function inside rotations.h of iit::commons
+// copy of the rpyToRot function inside rotations.h of aliengolib::commons
 Eigen::Matrix3d inline rpyToRot(const Eigen::Vector3d & rpy){
 
     Eigen::Matrix3d Rx, Ry, Rz;

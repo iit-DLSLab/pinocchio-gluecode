@@ -12,7 +12,7 @@
 
 #include "StateDependentMatrix.h"
 
-namespace iit {
+namespace aliengolib {
 namespace rbd {
 
 

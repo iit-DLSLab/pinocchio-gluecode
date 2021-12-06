@@ -8,20 +8,20 @@
 #include "dog/kin_dyn_params.h"
 #include "robcogen/kinematics_parameters.h"
 
-namespace iit {
+namespace aliengolib {
 namespace Aliengo {
 
 // The type of the "vector" with the status of the variables
-typedef iit::dog::JointState state_t;
+typedef aliengolib::dog::JointState state_t;
 
 template<class M>
-class TransformMotion : public iit::rbd::SpatialTransformBase<state_t, M> {};
+class TransformMotion : public aliengolib::rbd::SpatialTransformBase<state_t, M> {};
 
 template<class M>
-class TransformForce : public iit::rbd::SpatialTransformBase<state_t, M> {};
+class TransformForce : public aliengolib::rbd::SpatialTransformBase<state_t, M> {};
 
 template<class M>
-class TransformHomogeneous : public iit::rbd::HomogeneousTransformBase<state_t, M> {};
+class TransformHomogeneous : public aliengolib::rbd::HomogeneousTransformBase<state_t, M> {};
 
 
 /**
