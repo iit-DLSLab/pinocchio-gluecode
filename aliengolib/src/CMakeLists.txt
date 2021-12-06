@@ -5,11 +5,11 @@ add_library(aliengolib SHARED
     aliengo.cpp
     aliengo_leg.cpp
     utils.cpp
-    robcogen/inertia_properties.cpp
-    robcogen/inverse_dynamics.cpp
-    robcogen/transforms.cpp
-    robcogen/jacobians.cpp
-    other/jacobians.cpp
+    #robcogen/inertia_properties.cpp #TODO: robcogen
+    #robcogen/inverse_dynamics.cpp
+    #robcogen/transforms.cpp
+    #robcogen/jacobians.cpp
+    #other/jacobians.cpp #TODO: robcogen
 )
  
 target_link_libraries(aliengolib

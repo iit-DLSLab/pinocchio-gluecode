@@ -6,12 +6,13 @@
 #include "aliengo_leg.hpp"
 #include "types.hpp"
 #include "utils.hpp"
-#include "robcogen/jacobians.h"
+//TODO: robcogen
+// #include "robcogen/jacobians.h"
 
 // ROBCOGEN INCLUDES
-#include <robcogen/transforms.h>
-#include <robcogen/inertia_properties.h>
-#include <robcogen/inverse_dynamics.h>
+// #include <robcogen/transforms.h>
+// #include <robcogen/inertia_properties.h>
+// #include <robcogen/inverse_dynamics.h>
 
 namespace aliengolib
 {
@@ -290,10 +291,10 @@ namespace aliengolib
         robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 3>> h_R_b_;
         robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> hipPos_;
         //**********  RobCoGen variables  **********
-        rcg::MotionTransforms transforms{};
-        rcg::InertiaProperties inertias{};
-	    rcg::InverseDynamics invdyn_;
-        rcg::Jacobians jacobians_;
+        // rcg::MotionTransforms transforms{};
+        // rcg::InertiaProperties inertias{};
+	    // rcg::InverseDynamics invdyn_;
+        // rcg::Jacobians jacobians_;
     };
 } //namespace aliengolib
 

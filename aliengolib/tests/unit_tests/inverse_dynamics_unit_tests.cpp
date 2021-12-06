@@ -38,58 +38,59 @@ Eigen::Matrix3d inline rpyToRot(const Eigen::Vector3d & rpy){
 
 }
 
+//TODO: robcogen
 //Robcogen
-#include "robcogen/rbd.h"
+// #include "robcogen/rbd.h"
 /**
  * @brief Set of unit tests for Arm::method_name function
  */
-TEST(InverseDynamics, inverse_dynamics_dlopen)
-{
-    /**
-      * @test
-      */
-  std::shared_ptr<robotlib::RobotBase> robot = robotlib::RobotFactory::openRobot("aliengolib");
+// TEST(InverseDynamics, inverse_dynamics_dlopen)
+// {
+//     /**
+//       * @test
+//       */
+//   std::shared_ptr<robotlib::RobotBase> robot = robotlib::RobotFactory::openRobot("aliengolib");
 
-	robotlib::RobotBase::JointState q = robot->makeJointState();	
-	robotlib::RobotBase::JointState qd = robot->makeJointState();	
-	robotlib::RobotBase::JointState qdd = robot->makeJointState();	
-	robotlib::RobotBase::JointState invDynTau = robot->makeJointState();
-	robotlib::RobotBase::JointState invDynTau_gt = robot->makeJointState();	//computed using id_fully_actuated method of the inverse dynamics
+// 	robotlib::RobotBase::JointState q = robot->makeJointState();	
+// 	robotlib::RobotBase::JointState qd = robot->makeJointState();	
+// 	robotlib::RobotBase::JointState qdd = robot->makeJointState();	
+// 	robotlib::RobotBase::JointState invDynTau = robot->makeJointState();
+// 	robotlib::RobotBase::JointState invDynTau_gt = robot->makeJointState();	//computed using id_fully_actuated method of the inverse dynamics
 
-  aliengolib::rbd::Vector6D gW = aliengolib::rbd::Vector6D::Zero();
-	aliengolib::rbd::Vector6D gB = aliengolib::rbd::Vector6D::Zero();
+//   aliengolib::rbd::Vector6D gW = aliengolib::rbd::Vector6D::Zero();
+// 	aliengolib::rbd::Vector6D gB = aliengolib::rbd::Vector6D::Zero();
   
-  aliengolib::rbd::ForceVector baseWrench;
+//   aliengolib::rbd::ForceVector baseWrench;
 	
-  gW(aliengolib::rbd::LZ) =  -aliengolib::rbd::g;
-	gB.setZero();
+//   gW(aliengolib::rbd::LZ) =  -aliengolib::rbd::g;
+// 	gB.setZero();
 
-	// Set robot orientation //TODO
-  Eigen::Vector3d rpy;
-  rpy(0) = 0.8; //roll
-  rpy(1) = 0.8; //pitch
-  rpy(2) = 0.8; //yaw
+// 	// Set robot orientation //TODO
+//   Eigen::Vector3d rpy;
+//   rpy(0) = 0.8; //roll
+//   rpy(1) = 0.8; //pitch
+//   rpy(2) = 0.8; //yaw
 	
-  // Set robot q, qd ,qdd //TODO
-  Eigen::VectorXd q_values(18);
-  Eigen::VectorXd qd_values(18);
-  Eigen::VectorXd qdd_values(18);
-  q_values << 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0;
-  qd_values << 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0;
-  qdd_values << 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0;
+//   // Set robot q, qd ,qdd //TODO
+//   Eigen::VectorXd q_values(18);
+//   Eigen::VectorXd qd_values(18);
+//   Eigen::VectorXd qdd_values(18);
+//   q_values << 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0;
+//   qd_values << 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0;
+//   qdd_values << 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0;
 
-	// // Set ground truth inverse dynamics //TODO
-  Eigen::VectorXd invDynTau_gt_values(18);
-  invDynTau_gt_values << 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0;
+// 	// // Set ground truth inverse dynamics //TODO
+//   Eigen::VectorXd invDynTau_gt_values(18);
+//   invDynTau_gt_values << 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0;
 
-  // transform gravity from world to base frame
-	gB.segment(aliengolib::rbd::LX,3) = rpyToRot(aliengolib::rbd::Vector3d(rpy[0], rpy[1], rpy[2]))*gW.segment(aliengolib::rbd::LX,3);
+//   // transform gravity from world to base frame
+// 	gB.segment(aliengolib::rbd::LX,3) = rpyToRot(aliengolib::rbd::Vector3d(rpy[0], rpy[1], rpy[2]))*gW.segment(aliengolib::rbd::LX,3);
 
 
-	robot->inverseDynamics(aliengolib::rbd::Vector6D::Zero(), aliengolib::rbd::Vector6D::Zero(), gB, q, qd, qdd, baseWrench, invDynTau);
+// 	// robot->inverseDynamics(aliengolib::rbd::Vector6D::Zero(), aliengolib::rbd::Vector6D::Zero(), gB, q, qd, qdd, baseWrench, invDynTau);
   
-  // check estimated tau with ground truth //TODO
-}
+//   // check estimated tau with ground truth //TODO
+// }
 
 int main(int argc, char **argv)
 {

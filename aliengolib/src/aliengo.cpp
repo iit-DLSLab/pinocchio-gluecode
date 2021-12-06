@@ -15,9 +15,10 @@ namespace aliengolib
                 kinConfig_(this->makeLegDataMap<KinematicsConfig>()),
                 b_R_h_(this->makeLegDataMap<Eigen::Matrix<double, 3, 3>>()),
                 h_R_b_(this->makeLegDataMap<Eigen::Matrix<double, 3, 3>>()),
-                hipPos_(this->makeLegDataMap<Eigen::Matrix<double, 3, 1>>()),
-                invdyn_(rcg::InverseDynamics(inertias, transforms)),
-                jacobians_(rcg::Jacobians())
+                hipPos_(this->makeLegDataMap<Eigen::Matrix<double, 3, 1>>())
+                // TODO: robcogen
+                // invdyn_(rcg::InverseDynamics(inertias, transforms)),
+                // jacobians_(rcg::Jacobians())
     {
         std::array<std::shared_ptr<robotlib::Joint>, NLEGS> children;
 
@@ -209,13 +210,13 @@ namespace aliengolib
                 count++;
             }
         }
-
-        robot_jacobian["LF"].block<3,3>(0,0) = jacobians_.fr_trunk_J_lf_foot(joints_positions_matrix).block<3,3>(3,0);
-		robot_jacobian["RF"].block<3,3>(0,0) = jacobians_.fr_trunk_J_rf_foot(joints_positions_matrix).block<3,3>(3,0);
-		robot_jacobian["LH"].block<3,3>(0,0) = jacobians_.fr_trunk_J_lh_foot(joints_positions_matrix).block<3,3>(3,0);
-		robot_jacobian["RH"].block<3,3>(0,0) = jacobians_.fr_trunk_J_rh_foot(joints_positions_matrix).block<3,3>(3,0);
-		robot_jacobian["LC"].block<3,3>(0,0) = jacobians_.fr_trunk_J_lc_foot(joints_positions_matrix).block<3,3>(3,0);
-		robot_jacobian["RC"].block<3,3>(0,0) = jacobians_.fr_trunk_J_rc_foot(joints_positions_matrix).block<3,3>(3,0);
+        // TODO: robcogen
+        // robot_jacobian["LF"].block<3,3>(0,0) = jacobians_.fr_trunk_J_lf_foot(joints_positions_matrix).block<3,3>(3,0);
+		// robot_jacobian["RF"].block<3,3>(0,0) = jacobians_.fr_trunk_J_rf_foot(joints_positions_matrix).block<3,3>(3,0);
+		// robot_jacobian["LH"].block<3,3>(0,0) = jacobians_.fr_trunk_J_lh_foot(joints_positions_matrix).block<3,3>(3,0);
+		// robot_jacobian["RH"].block<3,3>(0,0) = jacobians_.fr_trunk_J_rh_foot(joints_positions_matrix).block<3,3>(3,0);
+		// robot_jacobian["LC"].block<3,3>(0,0) = jacobians_.fr_trunk_J_lc_foot(joints_positions_matrix).block<3,3>(3,0);
+		// robot_jacobian["RC"].block<3,3>(0,0) = jacobians_.fr_trunk_J_rc_foot(joints_positions_matrix).block<3,3>(3,0);
     }
 
     /// TODO: Robotlib - joint_velocity and joint_acceleration variables are not used
@@ -242,7 +243,8 @@ namespace aliengolib
                 idx++;
             }
             
-            evaluate_forward_kinematics(&fkIn, &kinConfig_[leg], &fkOut);
+            // TODO: robcogen
+            // evaluate_forward_kinematics(&fkIn, &kinConfig_[leg], &fkOut);
             
             //Load output solution (solution in the hip frame)
             end_effector_position[leg](0) = fkOut.pos_x;
@@ -285,8 +287,8 @@ namespace aliengolib
                 count++;
             }
         }
-        
-        invdyn_.id_fully_actuated(wrench_base, invDynTau_robcogen,gravity_vector, robot_velocity, robot_acceleration,  q_robcogen, qd_robcogen, qdd_robcogen);
+        //TODO: robcogen
+        //invdyn_.id_fully_actuated(wrench_base, invDynTau_robcogen,gravity_vector, robot_velocity, robot_acceleration,  q_robcogen, qd_robcogen, qdd_robcogen);
         // mapping of robcogen tau to robotlib tau
         count = 0;
         for(auto leg : *this->getLegs())

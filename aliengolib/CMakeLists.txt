@@ -22,7 +22,7 @@ add_compile_options(
 
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}/include
-	${CMAKE_CURRENT_SOURCE_DIR}/include/robcogen
+	#${CMAKE_CURRENT_SOURCE_DIR}/include/robcogen	#TODO: robcogen
 	SYSTEM
 	/usr/include/eigen3
 	#${CMAKE_CURRENT_SOURCE_DIR}/iit-commons/include
