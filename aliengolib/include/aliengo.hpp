@@ -270,7 +270,7 @@ namespace aliengolib
                                 JointState &tau_joints);                   ///output
         
 
-        double getRobotMass() { return 87.404; } ///TODO: compute total mass from links and trunk masses (this could be done in robotlib)
+        double getRobotMass() { return 21.525; } ///TODO: compute total mass from links and trunk masses (this could be done in robotlib)
         Eigen::Vector3d getRobotCoM() { return Eigen::Vector3d().setZero(); }
 
         // TODO: inheritance from robotBase?
