@@ -1,5 +1,5 @@
-#ifndef _CREXLIB_CREX_LEG_HPP_
-#define _CREXLIB_CREX_LEG_HPP_
+#ifndef _ALIENGOLIB_CREX_LEG_HPP_
+#define _ALIENGOLIB_CREX_LEG_HPP_
 
 #include <robotlib/leg.hpp>
 #include <map>
@@ -30,4 +30,4 @@ namespace aliengolib
     };
 } // namespace aliengolib
 
-#endif // _CREXLIB_CREX_LEG_HPP_
+#endif // _ALIENGOLIB_CREX_LEG_HPP_

@@ -1,5 +1,5 @@
-#ifndef _CREXLIB_CREX_HPP_
-#define _CREXLIB_CREX_HPP_
+#ifndef _ALIENGOLIB_CREX_HPP_
+#define _ALIENGOLIB_CREX_HPP_
 
 #include <robotlib/robot.hpp>
 #include <robotlib/limb.hpp>
@@ -300,4 +300,4 @@ namespace aliengolib
 
 extern "C" std::shared_ptr<robotlib::RobotBase> createRobot_t();
 
-#endif // _CREXLIB_CREX_HPP_
+#endif // _ALIENGOLIB_CREX_HPP_
