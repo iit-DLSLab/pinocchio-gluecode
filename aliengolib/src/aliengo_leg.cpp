@@ -5,7 +5,7 @@
 
 namespace aliengolib
 {
-    CrexLeg::CrexLeg(const std::string &name,
+    AliengoLeg::AliengoLeg(const std::string &name,
                         const std::array<std::shared_ptr<robotlib::Joint>, NJOINTS> &joints,
                         const std::array<std::shared_ptr<robotlib::Link>, NLINKS> &links)
         : Leg<NJOINTS, NLINKS>(name, joints, links),
@@ -47,28 +47,28 @@ namespace aliengolib
                     {"RH_ASSEMBLY", std::make_pair("RH_HAA", "RH_HFE")},
                     {"RH_UPPERLEG", std::make_pair("RH_HFE", "RH_KFE")},
                     {"RH_LOWERLEG", std::make_pair("RH_KFE", "")}}){};
-    CrexLeg::~CrexLeg(){};
+    AliengoLeg::~AliengoLeg(){};
 
-    const std::string CrexLeg::jointToChildName(const std::shared_ptr<robotlib::Joint> joint) const
+    const std::string AliengoLeg::jointToChildName(const std::shared_ptr<robotlib::Joint> joint) const
     {
         const std::string joint_name = joint->getName();
         const std::string child_name = jointMap.find(joint_name)->second.second;
         return child_name;
     };
-    const std::string CrexLeg::jointToParentName(const std::shared_ptr<robotlib::Joint> joint) const
+    const std::string AliengoLeg::jointToParentName(const std::shared_ptr<robotlib::Joint> joint) const
     {
         const std::string joint_name = joint->getName();
         const std::string parent_name = jointMap.find(joint_name)->second.first;
         return parent_name;
     };
 
-    const std::string CrexLeg::linkToChildName(const std::shared_ptr<robotlib::Link> link) const
+    const std::string AliengoLeg::linkToChildName(const std::shared_ptr<robotlib::Link> link) const
     {
         const std::string link_name = link->getName();
         const std::string child_name = linkMap.find(link_name)->second.second;
         return child_name;
     };
-    const std::string CrexLeg::linkToParentName(const std::shared_ptr<robotlib::Link> link) const
+    const std::string AliengoLeg::linkToParentName(const std::shared_ptr<robotlib::Link> link) const
     {
         const std::string link_name = link->getName();
         const std::string parent_name = linkMap.find(link_name)->second.first;

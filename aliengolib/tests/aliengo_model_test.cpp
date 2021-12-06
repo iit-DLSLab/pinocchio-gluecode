@@ -4,7 +4,7 @@
 #include <gtest/gtest.h>
 #include <memory>
 
-TEST(CrexUnitTests, aliengoModel)
+TEST(AliengoUnitTests, aliengoModel)
 {
     std::shared_ptr<robotlib::RobotBase> aliengo = createRobot_t();
 

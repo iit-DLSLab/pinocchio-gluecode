@@ -9,15 +9,15 @@ namespace aliengolib
     const int NJOINTS = 3;
     const int NLINKS = 3;
 
-    class CrexLeg : public robotlib::Leg<NJOINTS, NLINKS>
+    class AliengoLeg : public robotlib::Leg<NJOINTS, NLINKS>
     {
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-        CrexLeg(const std::string &name,
+        AliengoLeg(const std::string &name,
                 const std::array<std::shared_ptr<robotlib::Joint>, NJOINTS> &joints,
                 const std::array<std::shared_ptr<robotlib::Link>, NLINKS> &links);
 
-        ~CrexLeg();
+        ~AliengoLeg();
 
         virtual const std::string jointToChildName(const std::shared_ptr<robotlib::Joint> joint) const override;
         virtual const std::string jointToParentName(const std::shared_ptr<robotlib::Joint> joint) const override;

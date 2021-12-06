@@ -4,11 +4,11 @@
 namespace aliengolib
 {
 
-    Crex::Crex(const std::shared_ptr<robotlib::Trunk> trunk,
+    Aliengo::Aliengo(const std::shared_ptr<robotlib::Trunk> trunk,
                 const std::array<std::shared_ptr<robotlib::LimbBase>, NLEGS> legs,
                 const std::array<std::shared_ptr<robotlib::LimbBase>, NARMS> arms)
         : Robot<NJOINTS_TOT, NLINKS_TOT, NLEGS, NARMS>(
-                "Crex",
+                "Aliengo",
                 trunk,
                 std::make_shared<const robotlib::Container<std::shared_ptr<robotlib::LimbBase>, NLEGS>>(legs),
                 std::make_shared<const robotlib::Container<std::shared_ptr<robotlib::LimbBase>, NARMS>>(arms)),
@@ -61,9 +61,9 @@ namespace aliengolib
     };
 
     
-    Crex::~Crex(){};
+    Aliengo::~Aliengo(){};
 
-    void Crex::setKinematicsParameters()
+    void Aliengo::setKinematicsParameters()
     {
         //Leg kinematic configurations
         kinConfig_["LF"].thorax_conf = 1;
@@ -186,17 +186,17 @@ namespace aliengolib
         hipPos_["RC"] << -0.06672, -0.24531, 0.01452;
     }
 
-    Eigen::Vector3d Crex::hipToBasePosition(const Eigen::Vector3d& pos, const std::shared_ptr<robotlib::LimbBase> leg)
+    Eigen::Vector3d Aliengo::hipToBasePosition(const Eigen::Vector3d& pos, const std::shared_ptr<robotlib::LimbBase> leg)
     {
         return (b_R_h_[leg] * pos + hipPos_[leg]);
     }
 
-    Eigen::Vector3d Crex::baseToHipPosition(const Eigen::Vector3d& pos, const std::shared_ptr<robotlib::LimbBase> leg)
+    Eigen::Vector3d Aliengo::baseToHipPosition(const Eigen::Vector3d& pos, const std::shared_ptr<robotlib::LimbBase> leg)
     {
         return h_R_b_[leg] * (pos - hipPos_[leg]);
     }
 
-    void Crex::updateLinearJacobian(const robotlib::RobotBase::JointState &joints_positions,
+    void Aliengo::updateLinearJacobian(const robotlib::RobotBase::JointState &joints_positions,
                                     robotlib::RobotBase::LegDataMap<robotlib::RobotBase::Jacobian> &robot_jacobian)
     {
         Eigen::Matrix<double, 18, 1> joints_positions_matrix;
@@ -220,7 +220,7 @@ namespace aliengolib
     }
 
     /// TODO: Robotlib - joint_velocity and joint_acceleration variables are not used
-    void Crex::forwardKinematics(const robotlib::RobotBase::JointState &joint_position,
+    void Aliengo::forwardKinematics(const robotlib::RobotBase::JointState &joint_position,
                             const robotlib::RobotBase::JointState &joint_velocity,
                             const robotlib::RobotBase::JointState &joint_acceleration,
                             robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
@@ -260,7 +260,7 @@ namespace aliengolib
         }
     }
 
-    void Crex::inverseDynamics(const Eigen::Matrix<double, 6, 1> &robot_velocity,
+    void Aliengo::inverseDynamics(const Eigen::Matrix<double, 6, 1> &robot_velocity,
                                 const Eigen::Matrix<double, 6, 1> &robot_acceleration,
                                 const Eigen::Matrix<double, 6, 1> &gravity_vector,
                                 const JointState &joint_position,
@@ -270,7 +270,7 @@ namespace aliengolib
                                 JointState &tau_joints)                   ///output
     {
         // Mapping from robotlib structure to robcogen ones, TODO: maybe a function mapping robotlib to eigen structure is needed
-        // NB: this mapping assumes that the robcogen order is the same as the one defining the legs and joints of Crex!
+        // NB: this mapping assumes that the robcogen order is the same as the one defining the legs and joints of Aliengo!
         Eigen::Matrix<double, NJOINTS_TOT, 1> q_robcogen;
         Eigen::Matrix<double, NJOINTS_TOT, 1> qd_robcogen;
         Eigen::Matrix<double, NJOINTS_TOT, 1> qdd_robcogen;
@@ -301,7 +301,7 @@ namespace aliengolib
         }
     }
 
-    void Crex::inverseKinematics(const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
+    void Aliengo::inverseKinematics(const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
                                  const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity,
                                  const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_acceleration,
                                  robotlib::RobotBase::JointState &joint_position,
@@ -336,7 +336,7 @@ namespace aliengolib
         joint_acceleration.setZero();
     }
 
-    void Crex::inverseKinematics(const LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
+    void Aliengo::inverseKinematics(const LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
                                  const LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity,
                                  const LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_acceleration,
                                  const robotlib::RobotBase::LegDataMap<robotlib::RobotBase::Jacobian> &robot_jacobian,
@@ -379,7 +379,7 @@ namespace aliengolib
         joint_acceleration.setZero();
     }
 
-    std::shared_ptr<CrexLeg> makeLeg(const std::string &legName) // function used to generate a leg inside the create_function
+    std::shared_ptr<AliengoLeg> makeLeg(const std::string &legName) // function used to generate a leg inside the create_function
     {
         std::shared_ptr<robotlib::Joint> haa = std::make_shared<robotlib::Joint>(legName + "_HAA");
         std::shared_ptr<robotlib::Link> assembly = std::make_shared<robotlib::Link>(legName + "_ASSEMBLY");
@@ -389,7 +389,7 @@ namespace aliengolib
         std::shared_ptr<robotlib::Joint> kfe = std::make_shared<robotlib::Joint>(legName + "_KFE");
         std::shared_ptr<robotlib::Link> lowerleg = std::make_shared<robotlib::Link>(legName + "_LOWERLEG");
 
-        return std::make_shared<CrexLeg>(legName,
+        return std::make_shared<AliengoLeg>(legName,
                                             std::array<std::shared_ptr<robotlib::Joint>, NJOINTS>({haa, hfe, kfe}),
                                             std::array<std::shared_ptr<robotlib::Link>, NLINKS>({assembly, upperleg, lowerleg}));
     }
@@ -406,7 +406,7 @@ namespace aliengolib
              makeLeg("RC")});
         const std::array<std::shared_ptr<robotlib::LimbBase>, NARMS> arms({});
 
-        return std::make_shared<Crex>(trunk, legs, arms);
+        return std::make_shared<Aliengo>(trunk, legs, arms);
     }
     extern "C" void destroyRobot_t(std::shared_ptr<robotlib::RobotBase> robot)
     {

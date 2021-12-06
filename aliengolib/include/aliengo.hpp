@@ -20,14 +20,14 @@ namespace aliengolib
     const int NLINKS_TOT = 18;
     const int NLEGS = 6;
     const int NARMS = 0;
-    class Crex : public robotlib::Robot<NJOINTS_TOT, NLINKS_TOT, NLEGS, NARMS>
+    class Aliengo : public robotlib::Robot<NJOINTS_TOT, NLINKS_TOT, NLEGS, NARMS>
     {
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-        Crex(const std::shared_ptr<robotlib::Trunk> trunk,
+        Aliengo(const std::shared_ptr<robotlib::Trunk> trunk,
                 const std::array<std::shared_ptr<robotlib::LimbBase>, NLEGS> legs,
                 const std::array<std::shared_ptr<robotlib::LimbBase>, NARMS> arms);
-        virtual ~Crex();
+        virtual ~Aliengo();
 
         Eigen::Vector3d getFramePosition(const robotlib::RobotBase::JointState &q,
                                             const std::shared_ptr<robotlib::Frame> origin,
