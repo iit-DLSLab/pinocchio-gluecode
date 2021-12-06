@@ -26,8 +26,6 @@ namespace aliengolib
         children[1] = getJoint("RF_HAA");
         children[2] = getJoint("LH_HAA");
         children[3] = getJoint("RH_HAA");
-        children[4] = getJoint("LC_HAA");
-        children[5] = getJoint("RC_HAA");
 
         setChildrenOfTrunk(std::make_shared<robotlib::Container<std::shared_ptr<robotlib::Joint>, NLEGS>>(children));
 
@@ -122,34 +120,6 @@ namespace aliengolib
             kinConfig_["RH"].max_joints[i]    = +M_PI;
         }
 
-        //Leg kinematic configurations
-        kinConfig_["LC"].thorax_conf = 1;
-        kinConfig_["LC"].thigh            = 0.2; //central_lowerleg_x
-        kinConfig_["LC"].thigh_horizontal = 0.04087+0.03938; //central_lowerleg_z - central_upperleg_y
-        kinConfig_["LC"].thigh_vertical   = 0.0587;
-        kinConfig_["LC"].knee_offset      = 0.00723; //central_foot_z
-        kinConfig_["LC"].base_offset      = 0.0;
-        kinConfig_["LC"].shank            = 0.3; //central_foot_x
-
-        for (short i = 0; i < 4; ++i) {
-            kinConfig_["LC"].min_joints[i]    = -M_PI;
-            kinConfig_["LC"].max_joints[i]    = +M_PI;
-        }
-
-        //Leg kinematic configurations
-        kinConfig_["RC"].thorax_conf = -1;
-        kinConfig_["RC"].thigh            = 0.2; //central_lowerleg_x
-        kinConfig_["RC"].thigh_horizontal = 0.04087+0.03938; //central_lowerleg_z - central_upperleg_y
-        kinConfig_["RC"].thigh_vertical   = 0.0587;
-        kinConfig_["RC"].knee_offset      = 0.00723; //central_foot_z
-        kinConfig_["RC"].base_offset      = 0.0;
-        kinConfig_["RC"].shank            = 0.3; //central_foot_x
-
-        for (short i = 0; i < 4; ++i) {
-            kinConfig_["RC"].min_joints[i]    = -M_PI;
-            kinConfig_["RC"].max_joints[i]    = +M_PI;
-        }
-
         //Transformation matrix from the hip frame to the base frame
         b_R_h_["LF"].setZero();
         b_R_h_["LF"](0,0) = -1;
@@ -161,8 +131,8 @@ namespace aliengolib
         b_R_h_["RF"](1,2) = -1;
         b_R_h_["RF"](2,1) = +1;
 
-        b_R_h_["LH"] = b_R_h_["LC"] = b_R_h_["LF"];
-        b_R_h_["RH"] = b_R_h_["RC"] = b_R_h_["RF"];
+        b_R_h_["LH"] = b_R_h_["LF"];
+        b_R_h_["RH"] =  b_R_h_["RF"];
 
         //Transformation matrix from the base frame to the hip frame
         h_R_b_["LF"].setZero();
@@ -175,16 +145,14 @@ namespace aliengolib
         h_R_b_["RF"](1,2) = +1;
         h_R_b_["RF"](2,1) = -1;
 
-        h_R_b_["LH"] = h_R_b_["LC"] = h_R_b_["LF"];
-        h_R_b_["RH"] = h_R_b_["RC"] = h_R_b_["RF"];
+        h_R_b_["LH"] = h_R_b_["LF"];
+        h_R_b_["RH"] = h_R_b_["RF"];
 
         //Hip position with respect to the base frame
         hipPos_["LF"] << +0.32729, +0.16972, -0.02722;
         hipPos_["RF"] << +0.32729, -0.16972, -0.02722;
         hipPos_["LH"] << -0.32729, +0.16972, -0.02722;
         hipPos_["RH"] << -0.32729, -0.16972, -0.02722;
-        hipPos_["LC"] << -0.06672, +0.24531, 0.01452;
-        hipPos_["RC"] << -0.06672, -0.24531, 0.01452;
     }
 
     Eigen::Vector3d Aliengo::hipToBasePosition(const Eigen::Vector3d& pos, const std::shared_ptr<robotlib::LimbBase> leg)
@@ -216,8 +184,6 @@ namespace aliengolib
 		// robot_jacobian["RF"].block<3,3>(0,0) = jacobians_.fr_trunk_J_rf_foot(joints_positions_matrix).block<3,3>(3,0);
 		// robot_jacobian["LH"].block<3,3>(0,0) = jacobians_.fr_trunk_J_lh_foot(joints_positions_matrix).block<3,3>(3,0);
 		// robot_jacobian["RH"].block<3,3>(0,0) = jacobians_.fr_trunk_J_rh_foot(joints_positions_matrix).block<3,3>(3,0);
-		// robot_jacobian["LC"].block<3,3>(0,0) = jacobians_.fr_trunk_J_lc_foot(joints_positions_matrix).block<3,3>(3,0);
-		// robot_jacobian["RC"].block<3,3>(0,0) = jacobians_.fr_trunk_J_rc_foot(joints_positions_matrix).block<3,3>(3,0);
     }
 
     /// TODO: Robotlib - joint_velocity and joint_acceleration variables are not used
@@ -402,9 +368,7 @@ namespace aliengolib
             {makeLeg("LF"),
              makeLeg("RF"),
              makeLeg("LH"),
-             makeLeg("RH"),
-             makeLeg("LC"),
-             makeLeg("RC")});
+             makeLeg("RH")});
         const std::array<std::shared_ptr<robotlib::LimbBase>, NARMS> arms({});
 
         return std::make_shared<Aliengo>(trunk, legs, arms);

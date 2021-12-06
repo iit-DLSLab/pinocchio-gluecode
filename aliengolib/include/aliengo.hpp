@@ -16,9 +16,9 @@
 
 namespace aliengolib
 {
-    const int NJOINTS_TOT = 18;
-    const int NLINKS_TOT = 18;
-    const int NLEGS = 6;
+    const int NJOINTS_TOT = 12;
+    const int NLINKS_TOT = 12;
+    const int NLEGS = 4;
     const int NARMS = 0;
     class Aliengo : public robotlib::Robot<NJOINTS_TOT, NLINKS_TOT, NLEGS, NARMS>
     {
