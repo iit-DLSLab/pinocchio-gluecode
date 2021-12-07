@@ -1,5 +1,7 @@
 #include "aliengo.hpp"
 #include "aliengo_leg.hpp"
+#include "urdf_params_getter.h"
+#include <urdf/model.h>
 
 namespace aliengolib
 {
@@ -15,7 +17,7 @@ namespace aliengolib
                 kinConfig_(this->makeLegDataMap<KinematicsConfig>()),
                 b_R_h_(this->makeLegDataMap<Eigen::Matrix<double, 3, 3>>()),
                 h_R_b_(this->makeLegDataMap<Eigen::Matrix<double, 3, 3>>()),
-                hipPos_(this->makeLegDataMap<Eigen::Matrix<double, 3, 1>>())
+                hipPos_(this->makeLegDataMap<Eigen::Matrix<double, 3, 1>>())                
                 // TODO: robcogen
                 // invdyn_(rcg::InverseDynamics(inertias, transforms)),
                 // jacobians_(rcg::Jacobians())
@@ -54,7 +56,17 @@ namespace aliengolib
                 setParentOfLink(link, getJoint(parent_name));
             }
         }
+        
+        std::string robot_description{readURDFPugixml("../include/aliengo.urdf")};
+        if(robot_description.compare(""))
+            std::cout << "Failed to read the urdf using pugixml" << std::endl;
 
+        urdf::Model robot_model;
+        if (!robot_model.initString(robot_description))
+            std::cout << "Failed to parse urdf file" << std::endl;
+
+        // param_getter_.reset(new iit::dog::UrdfParamsGetter(robot_model));
+        
         // Define kinematic parameters
         setKinematicsParameters();
     };

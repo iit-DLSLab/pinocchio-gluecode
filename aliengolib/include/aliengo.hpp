@@ -10,7 +10,7 @@
 // #include "robcogen/jacobians.h"
 
 // ROBCOGEN INCLUDES
-// #include <robcogen/transforms.h>
+#include "robcogen/transforms.h"
 // #include <robcogen/inertia_properties.h>
 // #include <robcogen/inverse_dynamics.h>
 
@@ -291,6 +291,9 @@ namespace aliengolib
         robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 3>> h_R_b_;
         robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> hipPos_;
         //**********  RobCoGen variables  **********
+		std::shared_ptr<iit::Aliengo::HomogeneousTransforms> homogeneous_transforms_;
+		std::shared_ptr<iit::dog::KinDynParams> param_getter_;
+
         // rcg::MotionTransforms transforms{};
         // rcg::InertiaProperties inertias{};
 	    // rcg::InverseDynamics invdyn_;
