@@ -272,13 +272,6 @@ namespace aliengolib
 
         double getRobotMass() { return 21.525; } ///TODO: compute total mass from links and trunk masses (this could be done in robotlib)
         Eigen::Vector3d getRobotCoM() { return Eigen::Vector3d().setZero(); }
-
-        // TODO: inheritance from robotBase?
-        void setKinematicsParameters();
-
-        // TODO: inheritance from robotBase?
-        Eigen::Vector3d hipToBasePosition(const Eigen::Vector3d& pos, const std::shared_ptr<robotlib::LimbBase> limb);
-        Eigen::Vector3d baseToHipPosition(const Eigen::Vector3d& pos, const std::shared_ptr<robotlib::LimbBase> limb);
         
         // void updateLinearJacobian(const robotlib::RobotBase::JointState &joints_positions,
         //                           const rcg::Jacobians &jacobians,
