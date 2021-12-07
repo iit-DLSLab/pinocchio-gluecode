@@ -13,7 +13,7 @@
 #include <iostream>
 #include "rbd.h"
 
-namespace aliengolib {
+namespace iit {
 namespace rbd {
 
 /**

@@ -14,7 +14,7 @@
 #include <Eigen/Sparse>
 
 
-namespace aliengolib {
+namespace iit {
 /**
  * This namespace contains some basic types and functions related to spatial
  * vectors and Rigid Body Dynamics (RBD).

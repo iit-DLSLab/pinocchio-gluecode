@@ -3,7 +3,7 @@
 
 #include "robcogen/rbd.h"
 
-namespace aliengolib {
+namespace iit {
 namespace dog {
 
 static const int JointSpaceDimension = 12;
@@ -26,9 +26,9 @@ typedef Eigen::Matrix<double, 12, 1> Column12d;
 typedef Column12d JointState;
 typedef Eigen::Array<bool, 3, 1> LegJointBool;
 
-typedef aliengolib::rbd::Vector3d Vector3d;
-typedef aliengolib::rbd::Matrix33d Matrix3d;
-typedef aliengolib::rbd::PlainMatrix<double, 3, 3 > FootJac;
+typedef iit::rbd::Vector3d Vector3d;
+typedef iit::rbd::Matrix33d Matrix3d;
+typedef iit::rbd::PlainMatrix<double, 3, 3 > FootJac;
 
 typedef Eigen::Vector3d LegJointState;
 
