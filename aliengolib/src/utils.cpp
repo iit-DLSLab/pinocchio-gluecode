@@ -207,14 +207,14 @@ namespace aliengolib
         }
     }
 
-    const std::string readURDFPugixml(const std::string urdf_path)
+    const std::string readURDFPugixml(const std::string& urdf_path)
     {
         // Create empty XML document within memory
         pugi::xml_document doc;
         // Load XML file into memory
         // Remark: to fully read declaration entries you have to specify
         // "pugi::parse_declaration"
-        pugi::xml_parse_result result = doc.load_file("../include/aliengo.urdf");
+        pugi::xml_parse_result result = doc.load_file(urdf_path.c_str());
         if (!result){
             std::cout << "error while loading the aliengo urdf: " << result.description() << std::endl; 
         }
