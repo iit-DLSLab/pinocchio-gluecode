@@ -1,13 +1,9 @@
-// =============================================================================
-// TEMPORARY LOCATION OF URDF PARAMS GETTER --- NEEDS TO BE REMOVED WHEN DOGLIB
-// IMPLEMENTS THIS PROPERLY
-// =============================================================================
-#ifndef RCF_TEMP_SUPERVISOR_CRAP_URDF_PARAMS_GETTER_H
-#define RCF_TEMP_SUPERVISOR_CRAP_URDF_PARAMS_GETTER_H
+#ifndef URDF_PARAMS_GETTER_H
+#define URDF_PARAMS_GETTER_H
 
-#include "dog/kin_dyn_params.h"
-#include "geometry/rotations.h"
-#include "utils.hpp"
+#include <iit/commons/dog/kin_dyn_params.h>
+#include <iit/commons/geometry/rotations.h>
+#include <iit/locomotionutils/computeJacobians.h>
 #include <urdf/model.h>
 #include <Eigen/Core>
 
@@ -36,6 +32,8 @@ private:
 
     model_.getLinks(links_);
 
+    /////////////TRUNK
+
     //0 - Get only the links with relevant mass and which are not part of the legs
     for(unsigned int i=0; i<links_.size(); i++)
     {
@@ -50,17 +48,18 @@ private:
     }
 
 
-    //1 - Compute the total mass
-    mass_ = 0.0;
+    //1 - Compute the trunk mass
+    trunk_mass_ = 0.0;
     for(unsigned int i=0; i<links_with_mass_.size(); i++)
-      mass_ = mass_ + links_with_mass_[i]->inertial->mass;
+      trunk_mass_ = trunk_mass_ + links_with_mass_[i]->inertial->mass;
 
     //2 - Compute the trunk com
     com_ = Eigen::Vector3d::Zero();
     Eigen::Vector3d curr_com = Eigen::Vector3d::Zero();
-    std::shared_ptr<urdf::Link> curr_link, start_link, end_link;
-    std::vector<std::shared_ptr<urdf::Joint> > curr_joints;
+    boost::shared_ptr<urdf::Link> curr_link, start_link, end_link;
+    std::vector<boost::shared_ptr<urdf::Joint> > curr_joints;
     std::string curr_joint_name;
+
     for(unsigned int i=0; i<links_with_mass_.size(); i++)
     {
 
@@ -95,7 +94,7 @@ private:
 
       com_ = com_ + links_with_mass_[i]->inertial->mass * curr_com;
     }
-    com_ = com_ / mass_;
+    com_ = com_ / trunk_mass_;
 
     //3 - Calculate the inertia of the trunk in the base frame, we ignore the sensors inertia
     Eigen::MatrixXd I_com = Eigen::MatrixXd::Zero(6,6);
@@ -118,24 +117,43 @@ private:
     I_com(2,1) = model_.getLink(TRUNK_NAME)->inertial->iyz;
 
     Vector3d m;
-    m << mass_, mass_, mass_;
+    m << trunk_mass_, trunk_mass_, trunk_mass_;
     I_com.block<3,3>(3,3) = m.asDiagonal();
 
     b_X_com = forceVectorTransform(-com_,R);
     com_X_b = motionVectorTransform(com_,R);
 
     I_b = b_X_com * I_com * com_X_b;
-    inertia_ = I_b.block<3,3>(0,0);
+    trunk_inertia_ = I_b.block<3,3>(0,0);
 
     // Simmetry check
-    assert(std::abs(inertia_(0,1) - inertia_(1,0)) <= std::numeric_limits<double>::epsilon());
-    assert(std::abs(inertia_(0,2) - inertia_(2,0)) <= std::numeric_limits<double>::epsilon());
-    assert(std::abs(inertia_(1,2) - inertia_(2,1)) <= std::numeric_limits<double>::epsilon());
+    assert(std::abs(trunk_inertia_(0,1) - trunk_inertia_(1,0)) <= std::numeric_limits<double>::epsilon());
+    assert(std::abs(trunk_inertia_(0,2) - trunk_inertia_(2,0)) <= std::numeric_limits<double>::epsilon());
+    assert(std::abs(trunk_inertia_(1,2) - trunk_inertia_(2,1)) <= std::numeric_limits<double>::epsilon());
 
     // Note: RobCoGen requires the off-diagonal inertia terms to be multiplied by -1
-    inertia_(0,1) = inertia_(1,0) = -1 * inertia_(1,0);
-    inertia_(0,2) = inertia_(2,0) = -1 * inertia_(2,0);
-    inertia_(1,2) = inertia_(2,1) = -1 * inertia_(2,1);
+    trunk_inertia_(0,1) = trunk_inertia_(1,0) = -1 * trunk_inertia_(1,0);
+    trunk_inertia_(0,2) = trunk_inertia_(2,0) = -1 * trunk_inertia_(2,0);
+    trunk_inertia_(1,2) = trunk_inertia_(2,1) = -1 * trunk_inertia_(2,1);
+
+    //////////Compute total robot mass
+    // Get only the links with relevant mass
+    links_with_mass_.resize(0);
+    for(unsigned int i=0; i<links_.size(); i++)
+    {
+      if(links_[i]->inertial && links_[i]->inertial->mass > 0.001) // Check if the inertial information exists and if the mass is relevant
+             if ( links_[i]->name.find("ext") == std::string::npos ) // Exclude the external links (e.g. external arm, cart...)
+            {
+              links_with_mass_.push_back(links_[i]);
+              ROS_DEBUG_STREAM("UrdfParamsGetter: Robot "<< model_.name_ << " Link " << links_[i]->name << " Mass " << links_[i]->inertial->mass);
+            }
+    }
+    //Compute the total robot mass
+    robot_mass_ = 0.0;
+    for(unsigned int i=0; i<links_with_mass_.size(); i++)
+      robot_mass_ = robot_mass_ + links_with_mass_[i]->inertial->mass;
+
+    ///////////////////////Kinematic stuff
 
     assert(model_.getJoint("lf_foot_joint")->parent_to_joint_origin_transform.position.x ==
            model_.getJoint("rf_foot_joint")->parent_to_joint_origin_transform.position.x);
@@ -185,9 +203,9 @@ private:
 public:
   virtual void resetDefaults() {
 
-    inertia_ = Eigen::Matrix3d::Zero();
+    trunk_inertia_ = Eigen::Matrix3d::Zero();
     foot_x_ = 0.0;
-    mass_ = 0.0;
+    trunk_mass_ = 0.0;
     com_ = Eigen::Vector3d::Zero();
     LF_shin_ = RF_shin_ = LH_shin_ = RH_shin_ = 0.0;
     haa_x_ = haa_y_ = haa_z_ = 0.0;
@@ -195,8 +213,12 @@ public:
   }
 
   //getters
+  double getValue_robot_total_mass() const {
+    return robot_mass_;
+  }
+
   double getValue_trunk_mass() const {
-    return mass_;
+    return trunk_mass_;
   }
   double getValue_trunk_com_x() const {
     return com_(0);
@@ -208,30 +230,34 @@ public:
     return com_(2);
   }
   double getValue_trunk_Ix() const {
-    return inertia_(0,0);
+    return trunk_inertia_(0,0);
   }
   double getValue_trunk_Iy() const {
-    return inertia_(1,1);
+    return trunk_inertia_(1,1);
   }
   double getValue_trunk_Iz() const {
-    return inertia_(2,2);
+    return trunk_inertia_(2,2);
   }
   double getValue_trunk_Ixy() const {
-    return inertia_(0,1);
+    return trunk_inertia_(0,1);
   }
   double getValue_trunk_Ixz() const {
-    return inertia_(0,2);
+    return trunk_inertia_(0,2);
   }
   double getValue_trunk_Iyz() const {
-    return inertia_(1,2);
+    return trunk_inertia_(1,2);
   }
   //setters
   // the getters are not virtual (the setters are!) so
   // if you inherit this class, to avoid the use of the default
   // implementation we need to set the functions as virtual!)
+  virtual void setValue_robot_total_mass(double val)  {
+    assert(val >= 0.0);
+    robot_mass_ = val;
+  }
   virtual void setValue_trunk_mass(double val)  {
     assert(val >= 0.0);
-    mass_ = val;
+    trunk_mass_ = val;
   }
   virtual void setValue_trunk_com_x(double val)  {
     com_(0) = val;
@@ -243,25 +269,25 @@ public:
     com_(2) = val;
   }
   virtual void setValue_trunk_Ix(double val)  {
-    inertia_(0,0) = val;
+    trunk_inertia_(0,0) = val;
   }
   virtual void setValue_trunk_Iy(double val)  {
-    inertia_(1,1) = val;
+    trunk_inertia_(1,1) = val;
   }
   virtual void setValue_trunk_Iz(double val)  {
-    inertia_(2,2) = val;
+    trunk_inertia_(2,2) = val;
   }
   virtual void setValue_trunk_Ixy(double val)  {
-    inertia_(0,1) = val;
-    inertia_(1,0) = val;
+    trunk_inertia_(0,1) = val;
+    trunk_inertia_(1,0) = val;
   }
   virtual void setValue_trunk_Ixz(double val)  {
-    inertia_(0,2) = val;
-    inertia_(2,0) = val;
+    trunk_inertia_(0,2) = val;
+    trunk_inertia_(2,0) = val;
   }
   virtual void setValue_trunk_Iyz(double val)  {
-    inertia_(1,2) = val;
-    inertia_(2,1) = val;
+    trunk_inertia_(1,2) = val;
+    trunk_inertia_(2,1) = val;
   }
 
   virtual void setValue_foot_x(double val)
@@ -349,16 +375,14 @@ private:
     cur_pos(2) = model_.getJoint(join_name)->parent_to_joint_origin_transform.position.z;
 
     return commons::rpyToRot(curr_rpy) * com + cur_pos;
-
   }
 
-
   urdf::Model model_;
-  double mass_, foot_x_, LF_shin_, RF_shin_, LH_shin_, RH_shin_,
+  double trunk_mass_, robot_mass_, foot_x_, LF_shin_, RF_shin_, LH_shin_, RH_shin_,
   haa_x_, haa_y_, haa_z_, haa_hfe_, upper_leg_, lower_leg_;
   Eigen::Vector3d com_;
-  Eigen::Matrix3d inertia_;
-  std::vector<std::shared_ptr<urdf::Link> > links_, links_with_mass_;
+  Eigen::Matrix3d trunk_inertia_;
+  std::vector<boost::shared_ptr<urdf::Link> > links_, links_with_mass_;
 };
 
 
