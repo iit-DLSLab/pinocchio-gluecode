@@ -22,3 +22,18 @@ target_link_libraries(inverse_dynamics_unit_tests
 	${CMAKE_DL_LIBS}
 	gtest
 )
+
+include_directories(
+	${CMAKE_CURRENT_SOURCE_DIR}/../include/pugixml
+)
+
+add_executable(read_urdf_test
+	other_tests/read_urdf_test.cpp
+	../src/pugixml/pugixml.cpp
+)
+
+target_link_libraries(read_urdf_test
+	PRIVATE
+	${CMAKE_DL_LIBS}
+	gtest
+)
