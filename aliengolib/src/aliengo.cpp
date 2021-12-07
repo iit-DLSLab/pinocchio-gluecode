@@ -1,6 +1,9 @@
 #include "aliengo.hpp"
 #include "aliengo_leg.hpp"
 #include "urdf_params_getter.h"
+
+#include "robcogen/utils.h"
+
 #include <urdf/model.h>
 
 namespace aliengolib
@@ -57,7 +60,8 @@ namespace aliengolib
             }
         }
         
-        std::string robot_description{readURDFPugixml("../include/aliengo.urdf")};
+        //TODO: improvements --> fix the path!
+        std::string robot_description{readURDFPugixml("/home/marcom/aliengo-commons/aliengolib/include/aliengo.urdf")};
         if(robot_description.compare(""))
             std::cout << "Failed to read the urdf using pugixml" << std::endl;
 
@@ -103,6 +107,21 @@ namespace aliengolib
                             robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity,
                             robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_acceleration)
     {
+        homogeneous_transforms_->updateParameters();
+        // Mapping from robotlib structure to robcogen ones, TODO: maybe a function mapping robotlib to eigen structure is needed
+        // NB: this mapping assumes that the robcogen order is the same as the one defining the legs and joints of Crex!
+        Eigen::Matrix<double, NJOINTS_TOT, 1> q_robcogen;
+        int count = 0;
+        for(auto leg : *this->getLegs())
+        {
+            for(auto joint : *leg->getJoints())
+            {
+                q_robcogen[count] = joint_position[joint];
+                count++;
+            }
+        }
+        end_effector_position["LF"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_LF_foot(q_robcogen));
+
 
     }
 
