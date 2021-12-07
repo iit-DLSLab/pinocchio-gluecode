@@ -1,4 +1,7 @@
 #include "utils.hpp"
+#include "pugixml/pugixml.hpp"
+
+#include <iostream>
 
 namespace aliengolib
 {
@@ -203,4 +206,116 @@ namespace aliengolib
             outputs->min_dist_dof = 3;
         }
     }
+
+    const std::string readURDFPugixml(const std::string urdf_path)
+    {
+        // Create empty XML document within memory
+        pugi::xml_document doc;
+        // Load XML file into memory
+        // Remark: to fully read declaration entries you have to specify
+        // "pugi::parse_declaration"
+        pugi::xml_parse_result result = doc.load_file("../include/aliengo.urdf");
+        if (!result){
+            std::cout << "error while loading the aliengo urdf: " << result.description() << std::endl; 
+        }
+        std::stringstream ss;
+        doc.save(ss," ");
+
+        return ss.str();        
+    }
 } // namespace aliengolib
+
+
+namespace iit{
+ 
+    static Eigen::Matrix3d buildCrossProductMatrix(const Eigen::Vector3d& in) {
+        Eigen::Matrix3d out;
+        out <<  0   , -in(2),  in(1),
+               in(2),   0   , -in(0),
+              -in(1),  in(0),   0;
+        return out;
+    }
+    
+    /**
+     * @brief motionVectorTransform Tranforms twists from A to B (b_X_a)   \in R^6 \times 6
+     * where A is the origin frame and B the destination frame.
+     * @param position coordinate vector expressing OaOb in A coordinates
+     * @param rotationMx rotation matrix that transforms 3D vectors from A to B coordinates
+     * @return
+     */
+    iit::rbd::Matrix66d motionVectorTransform(const iit::rbd::Vector3d & position,
+                                        const Eigen::Matrix3d & rotationMx)
+    {
+        iit::rbd::Matrix66d X=iit::rbd::Matrix66d::Zero();
+
+        X.block<3,3>(iit::rbd::AX, iit::rbd::AX) = rotationMx;
+        X.block<3,3>(iit::rbd::LX, iit::rbd::AX) = -rotationMx*buildCrossProductMatrix(position);
+        X.block<3,3>(iit::rbd::LX, iit::rbd::LX) = rotationMx;
+
+        return X;
+    }
+
+    /**
+     * @brief forceVectorTransform Tranforms wrenches from A to B (b_X_a)   \in R^6 \times 6
+     * where A is the origin frame and B the destination frame.
+     * @param position coordinate vector expressing OaOb in A coordinates
+     * @param rotationMx rotation matrix that transforms 3D vectors from A to B coordinates
+     * @return
+     */
+    iit::rbd::Matrix66d forceVectorTransform(const iit::rbd::Vector3d & position,
+                                        const Eigen::Matrix3d & rotationMx)
+    {
+        iit::rbd::Matrix66d X=iit::rbd::Matrix66d::Zero();
+
+        X.block<3,3>(iit::rbd::AX, iit::rbd::AX) = rotationMx;
+        X.block<3,3>(iit::rbd::AX, iit::rbd::LX) = -rotationMx*buildCrossProductMatrix(position);
+        X.block<3,3>(iit::rbd::LX, iit::rbd::LX) = rotationMx;
+
+        return X;
+    }
+
+    int compute_stance_legs(const iit::dog::LegDataMap<bool> & stance_legs)
+    {
+        int cleg_count = 0;
+        for (int i = 0; i<iit::dog::_LEGS_COUNT; i++){
+            if (stance_legs[iit::dog::LegID(i)])
+                cleg_count++;
+        }
+        return cleg_count;
+    }
+    /**
+     * @brief getCoMFromBase
+     * @param q
+     * @param base_orient
+     * @param base_pos  base is supposed to be expressed in the world frame
+     * @param in
+     * @return
+     */
+    Eigen::Vector3d getCoMFromBase(const iit::dog::JointState & q,
+                                const Eigen::Vector3d & base_orient,
+                                const Eigen::Vector3d & base_pos,
+                                iit::dog::InertiaPropertiesBase& in)
+    {
+        Eigen::Matrix3d R = iit::commons::rpyToRot(base_orient);
+        Eigen::Vector3d offCoM = in.getWholeBodyCOM(q);
+        return base_pos + R.transpose()*offCoM; //CoM is in the world frame off CoM is in base frame
+    }
+
+    /**
+     * @brief getBaseFromCoM
+     * @param q
+     * @param base_orient
+     * @param CoM CoM position in world coordinates
+     * @param in
+     * @return
+     */
+    Eigen::Vector3d getBaseFromCoM(const iit::dog::JointState & q,
+                                const Eigen::Vector3d & base_orient,
+                                const Eigen::Vector3d & CoM,
+                                iit::dog::InertiaPropertiesBase &in)
+    {
+            Eigen::Matrix3d b_R_w = iit::commons::rpyToRot(base_orient);
+        Eigen::Vector3d offCoM = in.getWholeBodyCOM(q);
+            return CoM - b_R_w.transpose()*offCoM; //CoM is in the world frame off CoM is in base frame
+    }
+}
