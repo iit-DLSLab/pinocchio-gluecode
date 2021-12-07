@@ -65,8 +65,10 @@ namespace aliengolib
         if (!robot_model.initString(robot_description))
             std::cout << "Failed to parse urdf file" << std::endl;
 
-        // param_getter_.reset(new iit::dog::UrdfParamsGetter(robot_model));
-        
+        param_getter_.reset(new iit::dog::UrdfParamsGetter(robot_model));
+
+        homogeneous_transforms_.reset(new iit::Aliengo::HomogeneousTransforms(*param_getter_));
+
         // Define kinematic parameters
         setKinematicsParameters();
     };
