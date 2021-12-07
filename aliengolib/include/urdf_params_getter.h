@@ -1,9 +1,9 @@
 #ifndef URDF_PARAMS_GETTER_H
 #define URDF_PARAMS_GETTER_H
 
-#include <iit/commons/dog/kin_dyn_params.h>
-#include <iit/commons/geometry/rotations.h>
-#include <iit/locomotionutils/computeJacobians.h>
+#include "dog/kin_dyn_params.h"
+#include "geometry/rotations.h"
+#include "utils.hpp"
 #include <urdf/model.h>
 #include <Eigen/Core>
 
@@ -56,8 +56,8 @@ private:
     //2 - Compute the trunk com
     com_ = Eigen::Vector3d::Zero();
     Eigen::Vector3d curr_com = Eigen::Vector3d::Zero();
-    boost::shared_ptr<urdf::Link> curr_link, start_link, end_link;
-    std::vector<boost::shared_ptr<urdf::Joint> > curr_joints;
+    std::shared_ptr<urdf::Link> curr_link, start_link, end_link;
+    std::vector<std::shared_ptr<urdf::Joint> > curr_joints;
     std::string curr_joint_name;
 
     for(unsigned int i=0; i<links_with_mass_.size(); i++)
@@ -382,7 +382,7 @@ private:
   haa_x_, haa_y_, haa_z_, haa_hfe_, upper_leg_, lower_leg_;
   Eigen::Vector3d com_;
   Eigen::Matrix3d trunk_inertia_;
-  std::vector<boost::shared_ptr<urdf::Link> > links_, links_with_mass_;
+  std::vector<std::shared_ptr<urdf::Link> > links_, links_with_mass_;
 };
 
 
