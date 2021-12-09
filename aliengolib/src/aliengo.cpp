@@ -61,9 +61,9 @@ namespace aliengolib
         }
         
         //TODO: improvements --> fix the path!
-        std::string robot_description{readURDFPugixml("/home/marcom/aliengo-commons/aliengolib/include/aliengo.urdf")};
+        std::string robot_description{readURDFifstream("../include/aliengo.urdf")};
         if(robot_description.compare(""))
-            std::cout << "Failed to read the urdf using pugixml" << std::endl;
+            std::cout << "Failed to read the urdf using ifstream" << std::endl;
 
         urdf::Model robot_model;
         if (!robot_model.initString(robot_description))

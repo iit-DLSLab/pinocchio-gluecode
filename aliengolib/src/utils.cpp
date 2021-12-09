@@ -1,8 +1,8 @@
 #include "utils.hpp"
-#include "pugixml/pugixml.hpp"
 
 #include <iostream>
 
+#include <fstream>
 namespace aliengolib
 {
 	void copy_mat_4x4(double src[16], double dest[16]) {
@@ -207,19 +207,12 @@ namespace aliengolib
         }
     }
 
-    const std::string readURDFPugixml(const std::string& urdf_path)
+    const std::string readURDFifstream(const std::string& urdf_path)
     {
-        // Create empty XML document within memory
-        pugi::xml_document doc;
-        // Load XML file into memory
-        // Remark: to fully read declaration entries you have to specify
-        // "pugi::parse_declaration"
-        pugi::xml_parse_result result = doc.load_file(urdf_path.c_str());
-        if (!result){
-            std::cout << "error while loading the aliengo urdf: " << result.description() << std::endl; 
-        }
-        std::stringstream ss;
-        doc.save(ss," ");
+        std::ifstream myfile{"../include/aliengo.urdf"};
+        std::stringstream ss{};
+        ss << myfile.rdbuf();
+        std::string robot_description{ss.str()};
 
         return ss.str();        
     }

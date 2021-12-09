@@ -24,7 +24,7 @@ namespace aliengolib
     void evaluate_forward_kinematics(struct FK_In* inputs, struct KinematicsConfig* config, struct FK_Out* outputs);
     void evaluate_inverse_kinematics(struct IK_In* inputs, struct KinematicsConfig* config, struct IK_Out* outputs);
 
-    const std::string readURDFPugixml(const std::string& urdf_path);
+    const std::string readURDFifstream(const std::string& urdf_path);
         
 } //namespace aliengolib
 
