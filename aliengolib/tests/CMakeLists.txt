@@ -41,7 +41,6 @@ include_directories(
 
 add_executable(read_urdf_test
 	other_tests/read_urdf_test.cpp
-	../src/pugixml/pugixml.cpp
 )
 
 target_link_libraries(read_urdf_test

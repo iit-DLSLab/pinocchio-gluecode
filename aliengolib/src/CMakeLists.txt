@@ -10,7 +10,6 @@ add_library(aliengolib SHARED
     robcogen/transforms.cpp
     #robcogen/jacobians.cpp
     #other/jacobians.cpp #TODO: robcogen
-    pugixml/pugixml.cpp
 )
 
 
