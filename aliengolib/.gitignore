@@ -4,3 +4,4 @@ build
 *.sw
 *.swo
 .vscode
+*.urdf

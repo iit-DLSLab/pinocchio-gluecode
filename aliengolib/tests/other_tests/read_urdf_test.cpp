@@ -2,9 +2,9 @@
 
 #include <fstream>
 
-TEST(AliengoUnitTests, aliengoModel)
+TEST(AliengoUnitTests, read_urdf_ifstream)
 {
-    std::ifstream myfile{"aliengo.urdf"};
+    std::ifstream myfile{"/usr/include/urdf_robots/aliengo.urdf"};
     std::stringstream ss;
     ss << myfile.rdbuf();
     std::string robot_description{ss.str()};

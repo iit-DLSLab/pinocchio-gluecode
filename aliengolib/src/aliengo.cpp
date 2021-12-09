@@ -61,10 +61,8 @@ namespace aliengolib
         }
         
         //TODO: improvements --> fix the path!
-        std::string robot_description{readURDFifstream("../include/aliengo.urdf")};
-        if(robot_description.compare(""))
-            std::cout << "Failed to read the urdf using ifstream" << std::endl;
-
+        std::string robot_description{readURDFifstream("/usr/include/urdf_robots/aliengo.urdf")};
+        std::cout << robot_description ;
         urdf::Model robot_model;
         if (!robot_model.initString(robot_description))
             std::cout << "Failed to parse urdf file" << std::endl;

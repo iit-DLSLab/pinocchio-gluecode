@@ -209,11 +209,25 @@ namespace aliengolib
 
     const std::string readURDFifstream(const std::string& urdf_path)
     {
-        std::ifstream myfile{"../include/aliengo.urdf"};
+        std::ifstream myfile{urdf_path};
         std::stringstream ss{};
-        ss << myfile.rdbuf();
-        std::string robot_description{ss.str()};
-
+        if (myfile.is_open())
+        {
+            ss << myfile.rdbuf();
+            std::string robot_description{ss.str()};
+        }
+        else
+        {
+            std::cout << "Failed to read the urdf using ifstream\n" << std::endl;
+            std::cout << "Maybe you don't have the urdf file located in /usr/include/urdf_robots. So you have to:" << std::endl;
+            std::cout << "- generate the urdf ->  . ../generate_urdf.txt <path_to_xacro_file> (e.g. $HOME/$ROS_WORKSPACE_NAME/src/dls-distro/robots/aliengo/description/robots/aliengo.urdf.xacro)\n" 
+                      << "    You can skip this passage if you already have in aliengolib the urdf version you want" << std::endl;
+            std::cout << "- install the library as root user -> make install\n" 
+                      << "    It will copy aliengo.urdf file in /usr/include/urdf_robots"<< std::endl;
+            
+            ss << "";
+        }
+        
         return ss.str();        
     }
 } // namespace aliengolib
