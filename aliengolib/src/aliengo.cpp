@@ -62,7 +62,6 @@ namespace aliengolib
         
         //TODO: improvements --> fix the path!
         std::string robot_description{readURDFifstream("/usr/include/urdf_robots/aliengo.urdf")};
-        std::cout << robot_description ;
         urdf::Model robot_model;
         if (!robot_model.initString(robot_description))
             std::cout << "Failed to parse urdf file" << std::endl;
@@ -119,8 +118,9 @@ namespace aliengolib
             }
         }
         end_effector_position["LF"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_LF_foot(q_robcogen));
-
-
+        end_effector_position["RF"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_RF_foot(q_robcogen));
+        end_effector_position["LH"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_LH_foot(q_robcogen));
+        end_effector_position["RH"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_RH_foot(q_robcogen));
     }
 
     void Aliengo::inverseDynamics(const Eigen::Matrix<double, 6, 1> &robot_velocity,
