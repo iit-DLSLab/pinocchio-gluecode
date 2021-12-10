@@ -1,6 +1,7 @@
 include_directories(SYSTEM 
     ${roscpp_INCLUDE_DIRS}
 )
+
 add_library(aliengolib SHARED
     aliengo.cpp
     aliengo_leg.cpp
@@ -8,6 +9,8 @@ add_library(aliengolib SHARED
     #robcogen/inertia_properties.cpp #TODO: robcogen
     #robcogen/inverse_dynamics.cpp
     robcogen/transforms.cpp
+    robcogen/inverse_kinematics.cpp
+    robcogen/jacobians.cpp
     #robcogen/jacobians.cpp
     #other/jacobians.cpp #TODO: robcogen
 )
@@ -17,6 +20,7 @@ target_link_libraries(aliengolib
     robotlib
     ${URDFLIB}
 )
+
 install(
     TARGETS 
         aliengolib

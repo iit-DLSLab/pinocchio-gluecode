@@ -11,8 +11,12 @@
 
 // ROBCOGEN INCLUDES
 #include "robcogen/transforms.h"
+#include "robcogen/inverse_kinematics.h"
 // #include <robcogen/inertia_properties.h>
 // #include <robcogen/inverse_dynamics.h>
+
+#include <urdf/model.h>
+
 
 namespace aliengolib
 {
@@ -269,9 +273,10 @@ namespace aliengolib
                                 Eigen::Matrix<double, 6, 1> &wrench_base, ///output
                                 JointState &tau_joints);                   ///output
         
-
+        
         double getRobotMass() { return 21.525; } ///TODO: compute total mass from links and trunk masses (this could be done in robotlib)
         Eigen::Vector3d getRobotCoM() { return Eigen::Vector3d().setZero(); }
+
         
         // void updateLinearJacobian(const robotlib::RobotBase::JointState &joints_positions,
         //                           const rcg::Jacobians &jacobians,
@@ -283,10 +288,27 @@ namespace aliengolib
         robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 3>> b_R_h_;
         robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 3>> h_R_b_;
         robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> hipPos_;
+        
+        urdf::Model robot_model_;
+
         //**********  RobCoGen variables  **********
 		std::shared_ptr<iit::Aliengo::HomogeneousTransforms> homogeneous_transforms_;
 		std::shared_ptr<iit::dog::KinDynParams> param_getter_;
-
+        std::shared_ptr<iit::Aliengo::InverseKinematics> inverse_kinematics_;
+        
+        
+        // void setJointLimitsFromUrdf();
+        
+        // inv_dyn_.reset(new iit::Aliengo::dyn::InverseDynamics(*aliengo_inertia_props_, *aliengo_motion_transforms_));
+		// fwd_kin_.reset(new iit::Aliengo::ForwardKinematics(*robot_params_));
+		// feet_jacobians_.reset(new iit::Aliengo::FeetJacobians(*aliengo_jacobians_));
+		// shin_jacobians_.reset(new iit::Aliengo::ShinJacobians(*robot_params_));
+		// jsim_.reset(new iit::Aliengo::dyn::JSIM(*aliengo_inertia_props_, *aliengo_force_transforms_));
+		// inertiaProps_.reset(aliengo_inertia_props_.get());
+		// ht_.reset(aliengo_hom_transforms_.get());
+		// robot_limits_.reset(new iit::Aliengo::Limits());
+		// feet_forces_.reset(new iit::Aliengo::FeetContactForces(*feet_jacobians_, *inv_dyn_, *jsim_));
+		// trunk_ctrl_.reset(new iit::dog::TrunkController(*aliengo_hom_transforms_, *aliengo_motion_transforms_, *inv_dyn_, *fwd_kin_, *ik_, *feet_jacobians_, *jsim_, *aliengo_inertia_props_));
         // rcg::MotionTransforms transforms{};
         // rcg::InertiaProperties inertias{};
 	    // rcg::InverseDynamics invdyn_;

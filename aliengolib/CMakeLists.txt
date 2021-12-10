@@ -27,7 +27,8 @@ include_directories(
 	#${CMAKE_CURRENT_SOURCE_DIR}/include/robcogen	#TODO: robcogen
 	SYSTEM
 	/usr/include/eigen3
-	#${CMAKE_CURRENT_SOURCE_DIR}/iit-commons/include
+	/opt/ros/noetic/include
+	${URDFLIB}
 )
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)

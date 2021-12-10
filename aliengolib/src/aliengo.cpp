@@ -4,8 +4,6 @@
 
 #include "robcogen/utils.h"
 
-#include <urdf/model.h>
-
 namespace aliengolib
 {
 
@@ -40,11 +38,10 @@ namespace aliengolib
         {
             for (auto joint : *(leg->getJoints()))
             {
-                // const std::string child_name = leg->jointToChildName(joint);
-
-                // setChildOfJoint(joint, getLink(child_name));
-                // const std::string parent_name = leg->jointToParentName(joint);
-                // setParentOfJoint(joint, getLink(parent_name));
+                const std::string child_name = leg->jointToChildName(joint);
+                setChildOfJoint(joint, getLink(child_name));
+                const std::string parent_name = leg->jointToParentName(joint);
+                setParentOfJoint(joint, getLink(parent_name));
             }
         }
 
@@ -62,19 +59,49 @@ namespace aliengolib
         
         //TODO: improvements --> fix the path!
         std::string robot_description{readURDFifstream("/usr/include/urdf_robots/aliengo.urdf")};
-        urdf::Model robot_model;
-        if (!robot_model.initString(robot_description))
+
+        if (!robot_model_.initString(robot_description))
             std::cout << "Failed to parse urdf file" << std::endl;
 
-        param_getter_.reset(new iit::dog::UrdfParamsGetter(robot_model));
+        param_getter_.reset(new iit::dog::UrdfParamsGetter(robot_model_));
 
         homogeneous_transforms_.reset(new iit::Aliengo::HomogeneousTransforms(*param_getter_));
+
+        inverse_kinematics_.reset(new iit::Aliengo::InverseKinematics(*param_getter_));
+
+        // ik_->setKinematicLimits(q_min_,q_max_);
+        
 
     };
 
     
     Aliengo::~Aliengo(){};
 
+    // void setJointLimitsFromUrdf()
+    // {
+    //     //Get limits from URDF for position, velocity and effort:
+    //     for(std::pair<std::string, boost::shared_ptr<urdf::Joint> > jointPair : robot_model.joints_)
+    //     {
+    //         if (jointPair.second->type == urdf::Joint::REVOLUTE)
+    //         {
+    //             for(unsigned int i = 0; i < joint_names_.size(); i++)
+    //             {
+    //                 if(joint_names_[i] == std::get<0>(jointPair))
+    //                 {
+    //                     q_min_[i] = jointPair.second->limits->lower;
+    //                     q_max_[i] = jointPair.second->limits->upper;
+    //                     std::cerr << "Set kinematics limits for joint " << joint_names_[i] << " to ";
+    //                     std::cerr << q_min_[i] << " and " << q_max_[i] << std::endl;
+    //                     joint_upper_limits_[i] = jointPair.second->limits->upper;
+    //                     joint_lower_limits_[i] = jointPair.second->limits->lower;
+    //                     joint_velocity_limits_[i] = jointPair.second->limits->velocity;
+    //                     joint_effort_limits_[i] = jointPair.second->limits->effort;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    
     void Aliengo::updateLinearJacobian(const robotlib::RobotBase::JointState &joints_positions,
                                     robotlib::RobotBase::LegDataMap<robotlib::RobotBase::Jacobian> &robot_jacobian)
     {
