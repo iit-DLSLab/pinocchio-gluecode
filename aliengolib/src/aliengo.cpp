@@ -183,8 +183,6 @@ namespace aliengolib
 
     }
 
-
-
     Eigen::Matrix<double, 3, 1> Aliengo::getWholeBodyCOM()
     {
         std::cout << "TODO: glue code for getWholeBodyCOM()" << std::endl;
@@ -203,7 +201,6 @@ namespace aliengolib
     {
         std::cout << "TODO: glue code for getCoMFromBase" << std::endl;
         return Eigen::Vector3d::Zero();
-        
     }
 
     Eigen::Vector3d Aliengo::getBaseFromCoM(const JointState &q,
@@ -212,7 +209,6 @@ namespace aliengolib
     {
         std::cout << "TODO: glue code for getBaseFromCoM" << std::endl;
         return Eigen::Vector3d::Zero();
-        
     }
 
     Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVel(const JointState &q,
@@ -229,7 +225,6 @@ namespace aliengolib
     {
         std::cout << "TODO: glue code for getWholeBodyCOMVelFB" << std::endl;
         return Eigen::Matrix<double, 6, 1>::Zero();
-        
     }
 
     std::shared_ptr<AliengoLeg> makeLeg(const std::string &legName) // function used to generate a leg inside the create_function

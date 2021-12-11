@@ -5,4 +5,4 @@ echo "NB: IF YOU WANT TO GENERATE A NEW URDF, YOU HAVE TO DO IT BEFORE INSTALLIN
 
 export xacro_path=$1
 
-rosrun xacro xacro $xacro_path > aliengo.urdf
+rosrun xacro xacro $xacro_path > ../aliengo.urdf
