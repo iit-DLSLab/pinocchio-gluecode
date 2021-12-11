@@ -277,7 +277,26 @@ namespace aliengolib
         double getRobotMass() { return 21.525; } ///TODO: compute total mass from links and trunk masses (this could be done in robotlib)
         Eigen::Vector3d getRobotCoM() { return Eigen::Vector3d().setZero(); }
 
-        
+        virtual Eigen::Matrix<double, 3, 1> getWholeBodyCOM() override;
+
+        virtual Eigen::Matrix<double, 3, 1> getWholeBodyCOM(const JointState &joint_state) override;
+
+        virtual Eigen::Vector3d getCoMFromBase(const JointState &q,
+                                               const Eigen::Vector3d &base_orient,
+                                               const Eigen::Vector3d &base_pos) override;
+
+        virtual Eigen::Vector3d getBaseFromCoM(const JointState &q,
+                                               const Eigen::Vector3d &base_orient,
+                                               const Eigen::Vector3d &CoM) override;
+
+        virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVel(const JointState &q,
+                                                               const JointState &qd) override;
+
+        virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
+                                                                 const Eigen::Matrix3d &rotationMx,
+                                                                 const JointState &q,
+                                                                 const JointState &qd) override;
+
         // void updateLinearJacobian(const robotlib::RobotBase::JointState &joints_positions,
         //                           const rcg::Jacobians &jacobians,
 		// 					      robotlib::RobotBase::LegDataMap<robotlib::RobotBase::Jacobian> &robot_jacobian);

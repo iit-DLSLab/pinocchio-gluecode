@@ -183,6 +183,55 @@ namespace aliengolib
 
     }
 
+
+
+    Eigen::Matrix<double, 3, 1> Aliengo::getWholeBodyCOM()
+    {
+        std::cout << "TODO: glue code for getWholeBodyCOM()" << std::endl;
+        return Eigen::Matrix<double, 3, 1>::Zero();
+    }
+
+    Eigen::Matrix<double, 3, 1> Aliengo::getWholeBodyCOM(const JointState &joint_state)
+    {
+        std::cout << "TODO: glue code for getWholeBodyCOM(JS)" << std::endl;
+        return Eigen::Matrix<double, 3, 1>::Zero();
+    }
+
+    Eigen::Vector3d Aliengo::getCoMFromBase(const JointState &q,
+                                const Eigen::Vector3d &base_orient,
+                                const Eigen::Vector3d &base_pos)
+    {
+        std::cout << "TODO: glue code for getCoMFromBase" << std::endl;
+        return Eigen::Vector3d::Zero();
+        
+    }
+
+    Eigen::Vector3d Aliengo::getBaseFromCoM(const JointState &q,
+                                const Eigen::Vector3d &base_orient,
+                                const Eigen::Vector3d &CoM)
+    {
+        std::cout << "TODO: glue code for getBaseFromCoM" << std::endl;
+        return Eigen::Vector3d::Zero();
+        
+    }
+
+    Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVel(const JointState &q,
+                                                const JointState &qd)
+    {
+        std::cout << "TODO: glue code for getWholeBodyCOMVel" << std::endl;
+        return Eigen::Matrix<double, 6, 1>::Zero();
+    }
+
+    Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
+                                                                const Eigen::Matrix3d &rotationMx,
+                                                                const JointState &q,
+                                                                const JointState &qd)
+    {
+        std::cout << "TODO: glue code for getWholeBodyCOMVelFB" << std::endl;
+        return Eigen::Matrix<double, 6, 1>::Zero();
+        
+    }
+
     std::shared_ptr<AliengoLeg> makeLeg(const std::string &legName) // function used to generate a leg inside the create_function
     {
         std::shared_ptr<robotlib::Joint> haa = std::make_shared<robotlib::Joint>(legName + "_HAA");
