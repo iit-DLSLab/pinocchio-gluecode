@@ -28,7 +28,6 @@ include_directories(
 	SYSTEM
 	/usr/include/eigen3
 	/opt/ros/noetic/include
-	${URDFLIB}
 )
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)
