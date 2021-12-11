@@ -63,11 +63,16 @@ namespace aliengolib
         if (!robot_model_.initString(robot_description))
             std::cout << "Failed to parse urdf file" << std::endl;
 
+        // Getting joint limits from urdf
+        
+        
         param_getter_.reset(new iit::dog::UrdfParamsGetter(robot_model_));
 
         homogeneous_transforms_.reset(new iit::Aliengo::HomogeneousTransforms(*param_getter_));
 
         inverse_kinematics_.reset(new iit::Aliengo::InverseKinematics(*param_getter_));
+
+        setJointLimitsFromUrdf();
 
         // ik_->setKinematicLimits(q_min_,q_max_);
         
@@ -77,30 +82,44 @@ namespace aliengolib
     
     Aliengo::~Aliengo(){};
 
-    // void setJointLimitsFromUrdf()
-    // {
-    //     //Get limits from URDF for position, velocity and effort:
-    //     for(std::pair<std::string, boost::shared_ptr<urdf::Joint> > jointPair : robot_model.joints_)
-    //     {
-    //         if (jointPair.second->type == urdf::Joint::REVOLUTE)
-    //         {
-    //             for(unsigned int i = 0; i < joint_names_.size(); i++)
-    //             {
-    //                 if(joint_names_[i] == std::get<0>(jointPair))
-    //                 {
-    //                     q_min_[i] = jointPair.second->limits->lower;
-    //                     q_max_[i] = jointPair.second->limits->upper;
-    //                     std::cerr << "Set kinematics limits for joint " << joint_names_[i] << " to ";
-    //                     std::cerr << q_min_[i] << " and " << q_max_[i] << std::endl;
-    //                     joint_upper_limits_[i] = jointPair.second->limits->upper;
-    //                     joint_lower_limits_[i] = jointPair.second->limits->lower;
-    //                     joint_velocity_limits_[i] = jointPair.second->limits->velocity;
-    //                     joint_effort_limits_[i] = jointPair.second->limits->effort;
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
+    void Aliengo::setJointLimitsFromUrdf()
+    {
+        //Get limits from URDF for position, velocity and effort:
+        for(std::pair<std::string, std::shared_ptr<urdf::Joint> > jointPair : robot_model_.joints_)
+        {
+            if (jointPair.second->type == urdf::Joint::REVOLUTE)
+            {
+                for (auto leg : *legs_)
+                {
+                    for (auto joint : *leg->getJoints())
+                    {
+                        // **Transform robotlib joint name to urdf one**
+                        std::string urdf_joint_name{joint->getName()};
+                        std::transform(urdf_joint_name.begin(), urdf_joint_name.end(), urdf_joint_name.begin(), ::tolower);
+                        urdf_joint_name.append("_joint");
+
+                        if(urdf_joint_name == std::get<0>(jointPair))
+                        {
+                            const double q_min = jointPair.second->limits->lower;
+                            const double q_max = jointPair.second->limits->upper;
+                            const double qd_max = jointPair.second->limits->velocity;
+                            const double tau_max = jointPair.second->limits->effort;
+
+                            setJointLimits(joint, q_min, q_max, qd_max, tau_max);
+                            
+                            std::cout << "Set limits for joint " << urdf_joint_name << ":" << std::endl;
+                            std::cout << "q_min = " << q_min << std::endl;
+                            std::cout << "q_max = " << q_max << std::endl;
+                            std::cout << "qd_max = " << qd_max << std::endl; 
+                            std::cout << "tau_max = " << tau_max << std::endl;
+                            std::cout << "\n";
+                        }
+                    }
+                    
+                }
+            }
+        }
+    }
     
     void Aliengo::updateLinearJacobian(const robotlib::RobotBase::JointState &joints_positions,
                                     robotlib::RobotBase::LegDataMap<robotlib::RobotBase::Jacobian> &robot_jacobian)
