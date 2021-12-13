@@ -202,6 +202,53 @@ namespace aliengolib
                                  robotlib::RobotBase::JointState &joint_acceleration)
     {
 
+        iit::dog::LegDataMap<Eigen::Vector3d> robcogen_end_effector_position{};
+        iit::dog::LegDataMap<Eigen::Vector3d> robcogen_end_effector_velocity{};
+        iit::dog::LegDataMap<Eigen::Vector3d> robcogen_end_effector_acceleration{};
+        
+        Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_position{};
+        Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_velocity{};
+        Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_acceleration{};
+
+        robcogen_joint_position.setZero();
+        robcogen_joint_velocity.setZero();
+        robcogen_joint_acceleration.setZero();
+
+        for (auto leg : *legs_)
+        {
+            const int leg_id{glue_leg_names_to_ids[leg->getName()]};
+
+            robcogen_end_effector_position[leg_id] = end_effector_position[leg];
+            robcogen_end_effector_velocity[leg_id] = end_effector_velocity[leg];
+            robcogen_end_effector_acceleration[leg_id] = end_effector_acceleration[leg];
+            
+        }
+
+        bool iK_Check = inverse_kinematics_->getJointState(robcogen_end_effector_position,
+                                           robcogen_end_effector_velocity,
+                                           robcogen_end_effector_acceleration,
+                                           robcogen_joint_position,
+                                           robcogen_joint_velocity,
+                                           robcogen_joint_acceleration);
+        
+        for (auto leg : *legs_)
+        {
+            for (auto joint : *leg->getJoints())
+            {   
+                const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+
+                joint_position[joint] = robcogen_joint_position[joint_id];
+                joint_velocity[joint] = robcogen_joint_velocity[joint_id];
+                joint_acceleration[joint] = robcogen_joint_acceleration[joint_id];
+            }   
+        }
+
+        // if(!iK_Check){
+        //     des_q_ = q_;
+        //     des_qd_ = qd_;
+        //     des_qdd_ = JointState::Zero();
+        //     referencesBackTracingPrintOuts(dog::LF);
+        // }
     }
 
     void Aliengo::inverseKinematics(const LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,

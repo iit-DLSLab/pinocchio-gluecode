@@ -33,6 +33,15 @@ namespace aliengolib
         {"RH_KFE", 11}
     };
 
+    // inline is used to avoid the multiple definition error at linking time
+    inline std::map<std::string, int> glue_leg_names_to_ids
+    {
+        {"LF", 0},
+        {"RF", 1},
+        {"LH", 2},
+        {"RH", 3},
+    };
+
     // dfki_fk **********
     void copy_mat_4x4(double src[16], double dest[16]);
     void mult_mat_mat_4x4(double src1[16], double src2[16], double dest[16]);
