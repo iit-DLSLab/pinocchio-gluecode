@@ -66,18 +66,14 @@ namespace aliengolib
         // Getting joint limits from urdf
         
         
-        param_getter_.reset(new iit::dog::UrdfParamsGetter(robot_model_));
-
-        homogeneous_transforms_.reset(new iit::Aliengo::HomogeneousTransforms(*param_getter_));
-
-        inverse_kinematics_.reset(new iit::Aliengo::InverseKinematics(*param_getter_));
+        robot_params_.reset(new iit::dog::UrdfParamsGetter(robot_model_));
+        homogeneous_transforms_.reset(new iit::Aliengo::HomogeneousTransforms(*robot_params_));
+        inverse_kinematics_.reset(new iit::Aliengo::InverseKinematics(*robot_params_));
 
         setJointLimitsFromUrdf();
-
         // Coverting joint kinematic limits to robcogen joint state
         iit::dog::JointState robcogen_q_min{};
         iit::dog::JointState robcogen_q_max{};
-
 
         for (auto leg : *legs_)
         {
@@ -92,6 +88,7 @@ namespace aliengolib
         inverse_kinematics_->setKinematicLimits(robcogen_q_min, robcogen_q_max);
         // TODO: add setTimePeriod function (even if it seems not ot be used)
         
+        inertia_props_.reset(new iit::Aliengo::dyn::InertiaProperties(*robot_params_));
 
     };
 

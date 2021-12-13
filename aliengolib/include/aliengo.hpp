@@ -12,7 +12,7 @@
 // ROBCOGEN INCLUDES
 #include "robcogen/transforms.h"
 #include "robcogen/inverse_kinematics.h"
-// #include <robcogen/inertia_properties.h>
+#include "robcogen/inertia_properties.h"
 // #include <robcogen/inverse_dynamics.h>
 
 #include <urdf/model.h>
@@ -274,7 +274,19 @@ namespace aliengolib
                                 JointState &tau_joints);                   ///output
         
         
-        double getRobotMass() { return 21.525; } ///TODO: compute total mass from links and trunk masses (this could be done in robotlib)
+        // double getRobotMass() const override { return 21.525; }
+
+        double getRobotMass() const
+        {
+            return inertia_props_->getTotalMass();
+        }
+
+        // TODO: remove this override once the dynamic_parameter of trunk_ is correctly set
+        const Eigen::Matrix<double, 3, 1>& getTrunkCOM() const
+        {
+            return inertia_props_->getCOM_trunk();
+        }
+
         Eigen::Vector3d getRobotCoM() { return Eigen::Vector3d().setZero(); }
 
         virtual Eigen::Matrix<double, 3, 1> getWholeBodyCOM() override;
@@ -312,8 +324,9 @@ namespace aliengolib
 
         //**********  RobCoGen variables  **********
 		std::shared_ptr<iit::Aliengo::HomogeneousTransforms> homogeneous_transforms_;
-		std::shared_ptr<iit::dog::KinDynParams> param_getter_;
+		std::shared_ptr<iit::dog::KinDynParams> robot_params_;
         std::shared_ptr<iit::Aliengo::InverseKinematics> inverse_kinematics_;
+		std::shared_ptr<iit::Aliengo::dyn::InertiaProperties> inertia_props_;
         
         void setJointLimitsFromUrdf();
         
