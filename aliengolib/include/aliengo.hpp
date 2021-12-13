@@ -315,7 +315,6 @@ namespace aliengolib
 		std::shared_ptr<iit::dog::KinDynParams> param_getter_;
         std::shared_ptr<iit::Aliengo::InverseKinematics> inverse_kinematics_;
         
-        
         void setJointLimitsFromUrdf();
         
         // inv_dyn_.reset(new iit::Aliengo::dyn::InverseDynamics(*aliengo_inertia_props_, *aliengo_motion_transforms_));

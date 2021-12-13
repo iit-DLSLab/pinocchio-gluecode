@@ -74,7 +74,23 @@ namespace aliengolib
 
         setJointLimitsFromUrdf();
 
-        // ik_->setKinematicLimits(q_min_,q_max_);
+        // Coverting joint kinematic limits to robcogen joint state
+        iit::dog::JointState robcogen_q_min{};
+        iit::dog::JointState robcogen_q_max{};
+
+
+        for (auto leg : *legs_)
+        {
+            for(auto joint : *leg->getJoints())
+            {
+                const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+                RobotBase::getMinJointAngle(joint, robcogen_q_min[joint_id]);
+                RobotBase::getMaxJointAngle(joint, robcogen_q_max[joint_id]);
+            }
+        }
+
+        inverse_kinematics_->setKinematicLimits(robcogen_q_min, robcogen_q_max);
+        // TODO: add setTimePeriod function (even if it seems not ot be used)
         
 
     };
