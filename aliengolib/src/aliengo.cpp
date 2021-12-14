@@ -86,8 +86,6 @@ namespace aliengolib
         }
 
         inverse_kinematics_->setKinematicLimits(robcogen_q_min, robcogen_q_max);
-        // TODO: add setTimePeriod function (even if it seems not ot be used)
-        
         inertia_props_.reset(new iit::Aliengo::dyn::InertiaProperties(*robot_params_));
 
     };
@@ -201,7 +199,6 @@ namespace aliengolib
                                  robotlib::RobotBase::JointState &joint_velocity,
                                  robotlib::RobotBase::JointState &joint_acceleration)
     {
-
         iit::dog::LegDataMap<Eigen::Vector3d> robcogen_end_effector_position{};
         iit::dog::LegDataMap<Eigen::Vector3d> robcogen_end_effector_velocity{};
         iit::dog::LegDataMap<Eigen::Vector3d> robcogen_end_effector_acceleration{};
@@ -305,6 +302,11 @@ namespace aliengolib
         std::cout << "TODO: glue code for getWholeBodyCOMVelFB" << std::endl;
         return Eigen::Matrix<double, 6, 1>::Zero();
     }
+
+    void Aliengo::setInvKinTimePeriod(const double& period)
+    {
+        inverse_kinematics_->setTimePeriod(period);
+    } 
 
     std::shared_ptr<AliengoLeg> makeLeg(const std::string &legName) // function used to generate a leg inside the create_function
     {

@@ -312,6 +312,8 @@ namespace aliengolib
         // void updateLinearJacobian(const robotlib::RobotBase::JointState &joints_positions,
         //                           const rcg::Jacobians &jacobians,
 		// 					      robotlib::RobotBase::LegDataMap<robotlib::RobotBase::Jacobian> &robot_jacobian);
+        
+        virtual void setInvKinTimePeriod(const double& period) override;
 
     private:
         // Define kinematic variables

@@ -24,6 +24,19 @@ target_link_libraries(forward_kinematics_unit_tests
 	gtest
 )
 
+add_executable(inverse_kinematics_unit_tests
+	unit_tests/inverse_kinematics_unit_tests.cpp
+)
+
+target_link_libraries(inverse_kinematics_unit_tests
+	PRIVATE
+	aliengolib
+	robotlib
+	${CMAKE_DL_LIBS}
+	gtest
+)
+
+
 add_executable(inverse_dynamics_unit_tests
 	unit_tests/inverse_dynamics_unit_tests.cpp
 )
