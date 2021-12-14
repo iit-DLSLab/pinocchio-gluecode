@@ -18,10 +18,7 @@ namespace aliengolib
                 kinConfig_(this->makeLegDataMap<KinematicsConfig>()),
                 b_R_h_(this->makeLegDataMap<Eigen::Matrix<double, 3, 3>>()),
                 h_R_b_(this->makeLegDataMap<Eigen::Matrix<double, 3, 3>>()),
-                hipPos_(this->makeLegDataMap<Eigen::Matrix<double, 3, 1>>())                
-                // TODO: robcogen
-                // invdyn_(rcg::InverseDynamics(inertias, transforms)),
-                // jacobians_(rcg::Jacobians())
+                hipPos_(this->makeLegDataMap<Eigen::Matrix<double, 3, 1>>())
     {
         std::array<std::shared_ptr<robotlib::Joint>, NLEGS> children;
 
@@ -193,7 +190,16 @@ namespace aliengolib
                                 Eigen::Matrix<double, 6, 1> &wrench_base, ///output
                                 JointState &tau_joints)                   ///output
     {
+        Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_position{};
+        Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_velocity{};
+        Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_acceleration{};
+        Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_tau_joints{};
 
+        robcogen_joint_position.setZero();
+        robcogen_joint_velocity.setZero();
+        robcogen_joint_acceleration.setZero();
+
+        // inverse_dynamics_->id_fully_actuated(wrench_base, robcogen_tau_joints, gravity_vector, baseVel, baseAccel, robcogen_joint_position, robcogen_joint_velocity, robcogen_joint_acceleration);
     }
 
     void Aliengo::inverseKinematics(const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
@@ -305,6 +311,80 @@ namespace aliengolib
     {
         std::cout << "TODO: glue code for getWholeBodyCOMVelFB" << std::endl;
         return Eigen::Matrix<double, 6, 1>::Zero();
+    }
+
+
+    Eigen::Vector3d Aliengo::getLegContribution(const JointState &q)
+    {
+         Eigen::Vector3d tmpSum = Eigen::Vector3d::Zero();
+
+        iit::Aliengo::HomogeneousTransforms::MatrixType tmpX(iit::Aliengo::HomogeneousTransforms::MatrixType::Identity());
+        iit::Aliengo::HomogeneousTransforms::MatrixType base_X_LF_haa_chain;
+        iit::Aliengo::HomogeneousTransforms::MatrixType base_X_RF_haa_chain;
+        iit::Aliengo::HomogeneousTransforms::MatrixType base_X_LH_haa_chain;
+        iit::Aliengo::HomogeneousTransforms::MatrixType base_X_RH_haa_chain;
+
+        base_X_LF_haa_chain = tmpX * homogeneous_transforms_->fr_trunk_X_fr_LF_hipassembly;
+        tmpSum += inertia_props_->getMass_LF_hipassembly() *
+                (iit::rbd::Utils::transform(base_X_LF_haa_chain, inertia_props_->getCOM_LF_hipassembly()));
+
+        base_X_LF_haa_chain = base_X_LF_haa_chain * homogeneous_transforms_->fr_LF_hipassembly_X_fr_LF_upperleg;
+        tmpSum += inertia_props_->getMass_LF_upperleg() *
+                (iit::rbd::Utils::transform(base_X_LF_haa_chain, inertia_props_->getCOM_LF_upperleg()));
+
+        base_X_LF_haa_chain = base_X_LF_haa_chain * homogeneous_transforms_->fr_LF_upperleg_X_fr_LF_lowerleg;
+        tmpSum += inertia_props_->getMass_LF_lowerleg() *
+                (iit::rbd::Utils::transform(base_X_LF_haa_chain, inertia_props_->getCOM_LF_lowerleg()));
+
+        base_X_RF_haa_chain = tmpX * homogeneous_transforms_->fr_trunk_X_fr_RF_hipassembly;
+        tmpSum += inertia_props_->getMass_RF_hipassembly() *
+                (iit::rbd::Utils::transform(base_X_RF_haa_chain, inertia_props_->getCOM_RF_hipassembly()));
+
+        base_X_RF_haa_chain = base_X_RF_haa_chain * homogeneous_transforms_->fr_RF_hipassembly_X_fr_RF_upperleg;
+        tmpSum += inertia_props_->getMass_RF_upperleg() *
+                (iit::rbd::Utils::transform(base_X_RF_haa_chain, inertia_props_->getCOM_RF_upperleg()));
+
+        base_X_RF_haa_chain = base_X_RF_haa_chain * homogeneous_transforms_->fr_RF_upperleg_X_fr_RF_lowerleg;
+        tmpSum += inertia_props_->getMass_RF_lowerleg() *
+                (iit::rbd::Utils::transform(base_X_RF_haa_chain, inertia_props_->getCOM_RF_lowerleg()));
+
+        base_X_LH_haa_chain = tmpX * homogeneous_transforms_->fr_trunk_X_fr_LH_hipassembly;
+        tmpSum += inertia_props_->getMass_LH_hipassembly() *
+                (iit::rbd::Utils::transform(base_X_LH_haa_chain, inertia_props_->getCOM_LH_hipassembly()));
+
+        base_X_LH_haa_chain = base_X_LH_haa_chain * homogeneous_transforms_->fr_LH_hipassembly_X_fr_LH_upperleg;
+        tmpSum += inertia_props_->getMass_LH_upperleg() *
+                (iit::rbd::Utils::transform(base_X_LH_haa_chain, inertia_props_->getCOM_LH_upperleg()));
+
+        base_X_LH_haa_chain = base_X_LH_haa_chain * homogeneous_transforms_->fr_LH_upperleg_X_fr_LH_lowerleg;
+        tmpSum += inertia_props_->getMass_LH_lowerleg() *
+                (iit::rbd::Utils::transform(base_X_LH_haa_chain, inertia_props_->getCOM_LH_lowerleg()));
+
+        base_X_RH_haa_chain = tmpX * homogeneous_transforms_->fr_trunk_X_fr_RH_hipassembly;
+        tmpSum += inertia_props_->getMass_RH_hipassembly() *
+                (iit::rbd::Utils::transform(base_X_RH_haa_chain, inertia_props_->getCOM_RH_hipassembly()));
+
+        base_X_RH_haa_chain = base_X_RH_haa_chain * homogeneous_transforms_->fr_RH_hipassembly_X_fr_RH_upperleg;
+        tmpSum += inertia_props_->getMass_RH_upperleg() *
+                (iit::rbd::Utils::transform(base_X_RH_haa_chain, inertia_props_->getCOM_RH_upperleg()));
+
+        base_X_RH_haa_chain = base_X_RH_haa_chain * homogeneous_transforms_->fr_RH_upperleg_X_fr_RH_lowerleg;
+        tmpSum += inertia_props_->getMass_RH_lowerleg() *
+                (iit::rbd::Utils::transform(base_X_RH_haa_chain, inertia_props_->getCOM_RH_lowerleg()));
+
+        return tmpSum / (getRobotMass() - getTrunkMass());
+    }
+
+    double Aliengo::getTrunkMass() const
+    {
+        return inertia_props_->getTrunkMass();
+    }
+
+    double Aliengo::getLegsMass() const
+    {
+        std::cout << "\ngetLegsMass() is not a function of iit::Aliengo::dyn::InertiaProperties! Returning 1\n";
+        // return inertia_props_->getLegMass(); // TODO: getLegMass is not here!
+        return 1;
     }
 
     void Aliengo::setInvKinTimePeriod(const double& period)

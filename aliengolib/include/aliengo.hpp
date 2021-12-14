@@ -309,6 +309,13 @@ namespace aliengolib
                                                                  const JointState &q,
                                                                  const JointState &qd) override;
 
+
+        virtual Eigen::Vector3d getLegContribution(const JointState &q) override;
+
+        virtual double getTrunkMass() const override;
+
+        virtual double getLegsMass() const override;
+
         // void updateLinearJacobian(const robotlib::RobotBase::JointState &joints_positions,
         //                           const rcg::Jacobians &jacobians,
 		// 					      robotlib::RobotBase::LegDataMap<robotlib::RobotBase::Jacobian> &robot_jacobian);
