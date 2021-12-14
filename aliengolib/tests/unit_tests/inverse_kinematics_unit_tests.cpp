@@ -109,8 +109,6 @@ TEST(InverseKinematics, inverse_kinematics)
     {
       EXPECT_LE(abs(q_gt[joint]-q[joint]), error_th);
       EXPECT_LE(abs(qd_gt[joint]-qd[joint]), error_th);
-      std::cout << "qdd_gt - qdd: " << abs(qdd_gt[joint]-qdd[joint]) << std::endl;
-      // std::cout << "qdd: " << qdd[joint] << std::endl;
 
       EXPECT_LE(abs(qdd_gt[joint]-qdd[joint]), error_th);
     }

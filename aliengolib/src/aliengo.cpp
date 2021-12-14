@@ -88,6 +88,10 @@ namespace aliengolib
         inverse_kinematics_->setKinematicLimits(robcogen_q_min, robcogen_q_max);
         inertia_props_.reset(new iit::Aliengo::dyn::InertiaProperties(*robot_params_));
 
+        motion_transforms_.reset(new iit::Aliengo::MotionTransforms(*robot_params_));
+        
+        inverse_dynamics_.reset(new iit::Aliengo::dyn::InverseDynamics(*inertia_props_, *motion_transforms_));
+
     };
 
     

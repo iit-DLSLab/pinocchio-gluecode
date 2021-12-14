@@ -6,13 +6,11 @@ add_library(aliengolib SHARED
     aliengo.cpp
     aliengo_leg.cpp
     utils.cpp
-    #robcogen/inverse_dynamics.cpp
     robcogen/transforms.cpp
-    robcogen/inverse_kinematics.cpp
     robcogen/jacobians.cpp
+    robcogen/inverse_dynamics.cpp
+    robcogen/inverse_kinematics.cpp
     robcogen/inertia_properties.cpp
-    #robcogen/jacobians.cpp
-    #other/jacobians.cpp #TODO: robcogen
 )
 
 

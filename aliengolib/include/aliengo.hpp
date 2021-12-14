@@ -10,10 +10,10 @@
 // #include "robcogen/jacobians.h"
 
 // ROBCOGEN INCLUDES
-#include "robcogen/transforms.h"
 #include "robcogen/inverse_kinematics.h"
+#include "robcogen/transforms.h"
+#include "robcogen/inverse_dynamics.h"
 #include "robcogen/inertia_properties.h"
-// #include <robcogen/inverse_dynamics.h>
 
 #include <urdf/model.h>
 
@@ -329,6 +329,8 @@ namespace aliengolib
 		std::shared_ptr<iit::dog::KinDynParams> robot_params_;
         std::shared_ptr<iit::Aliengo::InverseKinematics> inverse_kinematics_;
 		std::shared_ptr<iit::Aliengo::dyn::InertiaProperties> inertia_props_;
+        std::shared_ptr<iit::Aliengo::dyn::InverseDynamics> inverse_dynamics_;
+        std::shared_ptr<iit::Aliengo::MotionTransforms> motion_transforms_;
         
         void setJointLimitsFromUrdf();
         
