@@ -198,8 +198,20 @@ namespace aliengolib
         robcogen_joint_position.setZero();
         robcogen_joint_velocity.setZero();
         robcogen_joint_acceleration.setZero();
+        robcogen_tau_joints.setZero();
+        
+        for (auto leg : *legs_)
+        {
+            for (auto joint : *leg->getJoints())
+            {
+                const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+                robcogen_joint_position[joint_id] = joint_position[joint];
+                robcogen_joint_velocity[joint_id] = joint_velocity[joint];
+                robcogen_joint_acceleration[joint_id] = joint_acceleration[joint];
+            }
+        }
 
-        inverse_dynamics_->id_fully_actuated(wrench_base, robcogen_tau_joints, gravity_vector, robot_acceleration, robot_acceleration, robcogen_joint_position, robcogen_joint_velocity, robcogen_joint_acceleration);
+        inverse_dynamics_->id_fully_actuated(wrench_base, robcogen_tau_joints, gravity_vector, robot_velocity, robot_acceleration, robcogen_joint_position, robcogen_joint_velocity, robcogen_joint_acceleration);
         
         for (auto leg : *legs_)
         {
