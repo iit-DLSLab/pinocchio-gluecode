@@ -181,8 +181,8 @@ namespace aliengolib
         end_effector_position["RH"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_RH_foot(q_robcogen));
     }
 
-    void Aliengo::inverseDynamics(const Eigen::Matrix<double, 6, 1> &robot_velocity,
-                                const Eigen::Matrix<double, 6, 1> &robot_acceleration,
+    void Aliengo::inverseDynamics(const Eigen::Matrix<double, 6, 1> &robot_velocity,    // robot base
+                                const Eigen::Matrix<double, 6, 1> &robot_acceleration,  // robot base
                                 const Eigen::Matrix<double, 6, 1> &gravity_vector,
                                 const JointState &joint_position,
                                 const JointState &joint_velocity,
@@ -199,7 +199,16 @@ namespace aliengolib
         robcogen_joint_velocity.setZero();
         robcogen_joint_acceleration.setZero();
 
-        // inverse_dynamics_->id_fully_actuated(wrench_base, robcogen_tau_joints, gravity_vector, baseVel, baseAccel, robcogen_joint_position, robcogen_joint_velocity, robcogen_joint_acceleration);
+        inverse_dynamics_->id_fully_actuated(wrench_base, robcogen_tau_joints, gravity_vector, robot_acceleration, robot_acceleration, robcogen_joint_position, robcogen_joint_velocity, robcogen_joint_acceleration);
+        
+        for (auto leg : *legs_)
+        {
+            for (auto joint : *leg->getJoints())
+            {
+                const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+                tau_joints[joint] = robcogen_tau_joints[joint_id];
+            }
+        }
     }
 
     void Aliengo::inverseKinematics(const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
