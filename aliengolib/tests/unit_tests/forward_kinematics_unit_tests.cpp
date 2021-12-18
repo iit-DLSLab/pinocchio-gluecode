@@ -7,6 +7,9 @@
 #include "robcogen/rbd.h"
 
 
+//TODO: improvements --> fix the path!
+std::string robot_urdf{aliengolib::readURDFifstream("/usr/include/urdf_robots/aliengo.urdf")};
+
 /**
  * @brief Set of unit tests for Aliengo::forwardKinematics
  * The ground truth values are taken executing the RCF controller of the aliengo_dev branch, after the initRFC command
@@ -14,7 +17,7 @@
  */
 TEST(ForwardKinematics, forward_kinematics)
 {
-  std::shared_ptr<robotlib::RobotBase> robot = createRobot_t();
+  std::shared_ptr<robotlib::RobotBase> robot = createRobotWithUrdf_t(robot_urdf);
 
   Eigen::VectorXd q_gt_eigen{};
   Eigen::VectorXd qd_gt_eigen{};

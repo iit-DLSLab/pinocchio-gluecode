@@ -7,6 +7,9 @@
 #include "robcogen/rbd.h"
 
 
+//TODO: improvements --> fix the path!
+std::string robot_urdf{aliengolib::readURDFifstream("/usr/include/urdf_robots/aliengo.urdf")};
+
 /**
  * @brief Set of unit tests for Aliengo::inverse_kinematics
  * The ground truth values are taken executing the RCF controller of the aliengo_dev branch, after the initRFC,stw,ictp (three times f) commands and letting aliengo walking on a ramp
@@ -14,7 +17,7 @@
  */
 TEST(InverseKinematics, inverse_kinematics)
 {
-  std::shared_ptr<robotlib::RobotBase> robot = createRobot_t();
+  std::shared_ptr<robotlib::RobotBase> robot = createRobotWithUrdf_t(robot_urdf);
   
   robot->setInvKinTimePeriod(0.004);
 

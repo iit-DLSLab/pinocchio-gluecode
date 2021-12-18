@@ -9,7 +9,7 @@ namespace aliengolib
 
     Aliengo::Aliengo(const std::shared_ptr<robotlib::Trunk> trunk,
                 const std::array<std::shared_ptr<robotlib::LimbBase>, NLEGS> legs,
-                const std::array<std::shared_ptr<robotlib::LimbBase>, NARMS> arms)
+                const std::array<std::shared_ptr<robotlib::LimbBase>, NARMS> arms, const std::string& robot_urdf)
         : Robot<NJOINTS_TOT, NLINKS_TOT, NLEGS, NARMS>(
                 "Aliengo",
                 trunk,
@@ -53,11 +53,8 @@ namespace aliengolib
                 setParentOfLink(link, getJoint(parent_name));
             }
         }
-        
-        //TODO: improvements --> fix the path!
-        std::string robot_description{readURDFifstream("/usr/include/urdf_robots/aliengo.urdf")};
 
-        if (!robot_model_.initString(robot_description))
+        if (!robot_model_.initString(robot_urdf))
             std::cout << "Failed to parse urdf file" << std::endl;
 
         // Getting joint limits from urdf
@@ -428,7 +425,7 @@ namespace aliengolib
                                             std::array<std::shared_ptr<robotlib::Link>, NLINKS>({assembly, upperleg, lowerleg}));
     }
 
-    extern "C" std::shared_ptr<robotlib::RobotBase> createRobot_t()
+    extern "C" std::shared_ptr<robotlib::RobotBase> createRobotWithUrdf_t(const std::string& robot_urdf)
     {
         const std::shared_ptr<robotlib::Trunk> trunk = std::make_shared<robotlib::Trunk>("TRUNK");
         const std::array<std::shared_ptr<robotlib::LimbBase>, NLEGS> legs(
@@ -438,7 +435,7 @@ namespace aliengolib
              makeLeg("RH")});
         const std::array<std::shared_ptr<robotlib::LimbBase>, NARMS> arms({});
 
-        return std::make_shared<Aliengo>(trunk, legs, arms);
+        return std::make_shared<Aliengo>(trunk, legs, arms, robot_urdf);
     }
     extern "C" void destroyRobot_t(std::shared_ptr<robotlib::RobotBase> robot)
     {

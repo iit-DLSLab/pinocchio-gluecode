@@ -30,7 +30,7 @@ namespace aliengolib
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         Aliengo(const std::shared_ptr<robotlib::Trunk> trunk,
                 const std::array<std::shared_ptr<robotlib::LimbBase>, NLEGS> legs,
-                const std::array<std::shared_ptr<robotlib::LimbBase>, NARMS> arms);
+                const std::array<std::shared_ptr<robotlib::LimbBase>, NARMS> arms, const std::string& robot_urdf);
         virtual ~Aliengo();
 
         Eigen::Vector3d getFramePosition(const robotlib::RobotBase::JointState &q,
@@ -358,6 +358,8 @@ namespace aliengolib
     };
 } //namespace aliengolib
 
-extern "C" std::shared_ptr<robotlib::RobotBase> createRobot_t();
+// TODO
+// extern "C" std::shared_ptr<robotlib::RobotBase> createRobot_t();
+extern "C" std::shared_ptr<robotlib::RobotBase> createRobotWithUrdf_t(const std::string& robot_urdf);
 
 #endif // _ALIENGOLIB_CREX_HPP_

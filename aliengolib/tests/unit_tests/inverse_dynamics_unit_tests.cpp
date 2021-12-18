@@ -10,6 +10,10 @@
 #include <robotlib/robot_base.hpp>
 #include "aliengo.hpp"
 
+
+//TODO: improvements --> fix the path!
+std::string robot_urdf{aliengolib::readURDFifstream("/usr/include/urdf_robots/aliengo.urdf")};
+
 // copy of the rpyToRot function inside rotations.h of iit::commons
 Eigen::Matrix3d inline rpyToRot(const Eigen::Vector3d & rpy){
 
@@ -50,7 +54,7 @@ TEST(InverseDynamics, inverse_dynamics)
    */
 
   // ** Create robot **
-  std::shared_ptr<robotlib::RobotBase> robot = createRobot_t();
+  std::shared_ptr<robotlib::RobotBase> robot = createRobotWithUrdf_t(robot_urdf);
   
   // ** Inputs **
   robotlib::RobotBase::JointState q_input = robot->makeJointState();	

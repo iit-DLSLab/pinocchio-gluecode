@@ -4,9 +4,12 @@
 #include <gtest/gtest.h>
 #include <memory>
 
+//TODO: improvements --> fix the path!
+std::string robot_urdf{aliengolib::readURDFifstream("/usr/include/urdf_robots/aliengo.urdf")};
+
 TEST(AliengoUnitTests, aliengoModel)
 {
-    std::shared_ptr<robotlib::RobotBase> aliengo = createRobot_t();
+    std::shared_ptr<robotlib::RobotBase> aliengo = createRobotWithUrdf_t(robot_urdf);
 
     auto q = aliengo->makeJointState();
     auto feet = aliengo->getFeet();
@@ -27,14 +30,14 @@ TEST(AliengoUnitTests, aliengoModel)
 
 TEST(RobotBaseUnitTests, getRobotMass)
 {
-    std::shared_ptr<robotlib::RobotBase> aliengo = createRobot_t();
+    std::shared_ptr<robotlib::RobotBase> aliengo = createRobotWithUrdf_t(robot_urdf);
     std::cout << aliengo->getRobotMass() << std::endl;
 }
 
 TEST(RobotBaseUnitTests, inverseDynamics)
 {
     /// Dummy quadruped
-    std::shared_ptr<robotlib::RobotBase> aliengo = createRobot_t();
+    std::shared_ptr<robotlib::RobotBase> aliengo = createRobotWithUrdf_t(robot_urdf);
 
     Eigen::Matrix<double, 6, 1> v;
     Eigen::Matrix<double, 6, 1> a;
@@ -52,7 +55,7 @@ TEST(RobotBaseUnitTests, inverseDynamics)
 TEST(RobotBaseUnitTests, dataMap_constructor_with_initialization)
 {
     /// Dummy quadruped
-    std::shared_ptr<robotlib::RobotBase> aliengo = createRobot_t();
+    std::shared_ptr<robotlib::RobotBase> aliengo = createRobotWithUrdf_t(robot_urdf);
     double data_double{1};
     double data{1};
     typedef double type;
@@ -98,7 +101,7 @@ TEST(RobotBaseUnitTests, dataMap_constructor_with_initialization)
 TEST(RobotBaseUnitTests, getRobotCoM)
 {
     /// Dummy quadruped
-    std::shared_ptr<robotlib::RobotBase> aliengo = createRobot_t();
+    std::shared_ptr<robotlib::RobotBase> aliengo = createRobotWithUrdf_t(robot_urdf);
 
     std::cout << aliengo->getRobotCoM() << std::endl;
 }
