@@ -360,6 +360,8 @@ namespace aliengolib
 
 // TODO
 // extern "C" std::shared_ptr<robotlib::RobotBase> createRobot_t();
+// extern "C" void destroyRobot_t(std::shared_ptr<robotlib::RobotBase>);
 extern "C" std::shared_ptr<robotlib::RobotBase> createRobotWithUrdf_t(const std::string& robot_urdf);
+extern "C" void destroyRobotWithUrdf_t(std::shared_ptr<robotlib::RobotBase>);
 
 #endif // _ALIENGOLIB_CREX_HPP_

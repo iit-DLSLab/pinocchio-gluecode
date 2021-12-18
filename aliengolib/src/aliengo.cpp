@@ -437,7 +437,7 @@ namespace aliengolib
 
         return std::make_shared<Aliengo>(trunk, legs, arms, robot_urdf);
     }
-    extern "C" void destroyRobot_t(std::shared_ptr<robotlib::RobotBase> robot)
+    extern "C" void destroyRobotWithUrdf_t(std::shared_ptr<robotlib::RobotBase> robot)
     {
     }
 } // namespace hyqlib
