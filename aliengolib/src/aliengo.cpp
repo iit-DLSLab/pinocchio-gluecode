@@ -84,8 +84,11 @@ namespace aliengolib
 
         motion_transforms_.reset(new iit::Aliengo::MotionTransforms(*robot_params_));
         
+        jacobians_.reset(new iit::Aliengo::Jacobians(*robot_params_));
+
         inverse_dynamics_.reset(new iit::Aliengo::dyn::InverseDynamics(*inertia_props_, *motion_transforms_));
 
+    	
     };
 
     
@@ -133,7 +136,8 @@ namespace aliengolib
     void Aliengo::updateLinearJacobian(const robotlib::RobotBase::JointState &joints_positions,
                                     robotlib::RobotBase::LegDataMap<robotlib::RobotBase::Jacobian> &robot_jacobian)
     {
-        Eigen::Matrix<double, 18, 1> joints_positions_matrix;
+        // TODO: test
+        Eigen::Matrix<double, NJOINTS_TOT, 1> joints_positions_matrix;
         int count{0};
 
         for (auto leg : *this->getLegs())
@@ -145,10 +149,10 @@ namespace aliengolib
             }
         }
         // TODO: robcogen
-        // robot_jacobian["LF"].block<3,3>(0,0) = jacobians_.fr_trunk_J_lf_foot(joints_positions_matrix).block<3,3>(3,0);
-		// robot_jacobian["RF"].block<3,3>(0,0) = jacobians_.fr_trunk_J_rf_foot(joints_positions_matrix).block<3,3>(3,0);
-		// robot_jacobian["LH"].block<3,3>(0,0) = jacobians_.fr_trunk_J_lh_foot(joints_positions_matrix).block<3,3>(3,0);
-		// robot_jacobian["RH"].block<3,3>(0,0) = jacobians_.fr_trunk_J_rh_foot(joints_positions_matrix).block<3,3>(3,0);
+        robot_jacobian["LF"].block<3,3>(0,0) = jacobians_->fr_trunk_J_LF_foot(joints_positions_matrix).block<3,3>(3,0);
+		robot_jacobian["RF"].block<3,3>(0,0) = jacobians_->fr_trunk_J_RF_foot(joints_positions_matrix).block<3,3>(3,0);
+		robot_jacobian["LH"].block<3,3>(0,0) = jacobians_->fr_trunk_J_LH_foot(joints_positions_matrix).block<3,3>(3,0);
+		robot_jacobian["RH"].block<3,3>(0,0) = jacobians_->fr_trunk_J_RH_foot(joints_positions_matrix).block<3,3>(3,0);
     }
 
     /// TODO: Robotlib - joint_velocity and joint_acceleration variables are not used

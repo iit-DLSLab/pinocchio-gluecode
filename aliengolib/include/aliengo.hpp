@@ -338,7 +338,8 @@ namespace aliengolib
 		std::shared_ptr<iit::Aliengo::dyn::InertiaProperties> inertia_props_;
         std::shared_ptr<iit::Aliengo::dyn::InverseDynamics> inverse_dynamics_;
         std::shared_ptr<iit::Aliengo::MotionTransforms> motion_transforms_;
-        
+        std::shared_ptr<iit::Aliengo::Jacobians> jacobians_;
+		
         void setJointLimitsFromUrdf();
         
         // inv_dyn_.reset(new iit::Aliengo::dyn::InverseDynamics(*aliengo_inertia_props_, *aliengo_motion_transforms_));
