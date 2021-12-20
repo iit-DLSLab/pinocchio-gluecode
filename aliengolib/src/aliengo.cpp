@@ -11,7 +11,7 @@ namespace aliengolib
                 const std::array<std::shared_ptr<robotlib::LimbBase>, NLEGS> legs,
                 const std::array<std::shared_ptr<robotlib::LimbBase>, NARMS> arms, const std::string& robot_urdf)
         : Robot<NJOINTS_TOT, NLINKS_TOT, NLEGS, NARMS>(
-                "Aliengo",
+                "aliengo",
                 trunk,
                 std::make_shared<const robotlib::Container<std::shared_ptr<robotlib::LimbBase>, NLEGS>>(legs),
                 std::make_shared<const robotlib::Container<std::shared_ptr<robotlib::LimbBase>, NARMS>>(arms)),
