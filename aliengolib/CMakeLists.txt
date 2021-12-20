@@ -32,11 +32,3 @@ include_directories(
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests)
-
-# Installing the urdf
-install(
-    FILES 
-        aliengo.urdf
-    DESTINATION
-        /usr/include/urdf_robots/
-)
