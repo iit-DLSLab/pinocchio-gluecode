@@ -190,7 +190,7 @@ bool InverseKinematics::getJointState(const FootPosition& foot_position,
             // compute inverse kinematics for joint accelerations
             qdd_leg = (*feet_jacobians_[leg_id]).block<3, 3>(rbd::LX, 0).inverse() *
                       (foot_acceleration - (1.0 / dt_) * ((*feet_jacobians_[leg_id]).block<3, 3>(rbd::LX, 0)
-                              - old_feet_jacobians_[leg_id]) * foot_velocity);
+                              - old_feet_jacobians_[leg_id]) * qd_leg);
 
             old_feet_jacobians_[leg_id] = (*feet_jacobians_[leg_id]).block<3, 3>(rbd::LX, 0);
 
