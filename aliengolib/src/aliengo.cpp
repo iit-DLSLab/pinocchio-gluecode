@@ -392,16 +392,18 @@ namespace aliengolib
                                 const Eigen::Vector3d &base_orient,
                                 const Eigen::Vector3d &base_pos)
     {
-        std::cout << "TODO: glue code for getCoMFromBase" << std::endl;
-        return Eigen::Vector3d::Zero();
+        Eigen::Matrix3d R = iit::commons::rpyToRot(base_orient);
+        Eigen::Vector3d offCoM = getWholeBodyCOM(q);
+        return base_pos + R.transpose() * offCoM;         //CoM is in the world frame off CoM is in base frame
     }
 
     Eigen::Vector3d Aliengo::getBaseFromCoM(const JointState &q,
                                 const Eigen::Vector3d &base_orient,
                                 const Eigen::Vector3d &CoM)
     {
-        std::cout << "TODO: glue code for getBaseFromCoM" << std::endl;
-        return Eigen::Vector3d::Zero();
+        Eigen::Matrix3d b_R_w = iit::commons::rpyToRot(base_orient);
+        Eigen::Vector3d offCoM = getWholeBodyCOM(q);
+        return CoM - b_R_w.transpose() * offCoM;          //CoM is in the world frame off CoM is in base frame
     }
 
     Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVel(const JointState &q,
