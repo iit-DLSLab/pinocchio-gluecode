@@ -154,7 +154,6 @@ namespace aliengolib
 		robot_jacobian["RH"].block<3,3>(0,0) = jacobians_->fr_trunk_J_RH_foot(joints_positions_matrix).block<3,3>(3,0);
     }
 
-    /// TODO: Robotlib - joint_velocity and joint_acceleration variables are not used
     void Aliengo::forwardKinematics(const robotlib::RobotBase::JointState &joint_position,
                             const robotlib::RobotBase::JointState &joint_velocity,
                             const robotlib::RobotBase::JointState &joint_acceleration,
@@ -166,19 +165,41 @@ namespace aliengolib
         // Mapping from robotlib structure to robcogen ones, TODO: maybe a function mapping robotlib to eigen structure is needed
         // NB: this mapping assumes that the robcogen order is the same as the one defining the legs and joints of Crex!
         Eigen::Matrix<double, NJOINTS_TOT, 1> q_robcogen;
-        int count = 0;
+        
         for(auto leg : *this->getLegs())
         {
             for(auto joint : *leg->getJoints())
             {
-                q_robcogen[count] = joint_position[joint];
-                count++;
+                const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+                q_robcogen[joint_id] = joint_position[joint];
             }
         }
+        
         end_effector_position["LF"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_LF_foot(q_robcogen));
         end_effector_position["RF"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_RF_foot(q_robcogen));
         end_effector_position["LH"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_LH_foot(q_robcogen));
         end_effector_position["RH"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_RH_foot(q_robcogen));
+
+        for (auto leg : *this->getLegs())
+        {
+            //TODO improve getting the jacobian from one leg only NRT!
+            robotlib::RobotBase::LegDataMap<robotlib::RobotBase::Jacobian> full_feet_jacobian_tmp = this->makeFeetJacobian();
+            updateLinearJacobian(joint_position, full_feet_jacobian_tmp);
+
+            Eigen::Vector3d joint_velocity_leg{Eigen::Vector3d::Zero()};
+
+            for(auto joint: *leg->getJoints())
+            {
+                const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+                joint_velocity_leg[joint_id] = joint_velocity[joint];
+            }
+
+            end_effector_velocity[leg] =  full_feet_jacobian_tmp[leg].block<3,3>(0,0)*joint_velocity_leg;
+
+            end_effector_acceleration[leg].setZero();
+        }
+
+        
     }
 
     void Aliengo::inverseDynamics(const Eigen::Matrix<double, 6, 1> &robot_velocity,    // robot base
