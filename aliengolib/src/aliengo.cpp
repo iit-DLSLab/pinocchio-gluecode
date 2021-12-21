@@ -292,7 +292,8 @@ namespace aliengolib
     }
 
     Eigen::Matrix<double, 3, 1> Aliengo::getWholeBodyCOM()
-    {
+    {        
+
         std::cout << "TODO: glue code for getWholeBodyCOM()" << std::endl;
         return Eigen::Matrix<double, 3, 1>::Zero();
     }
@@ -404,9 +405,7 @@ namespace aliengolib
 
     double Aliengo::getLegsMass() const
     {
-        std::cout << "\ngetLegsMass() is not a function of iit::Aliengo::dyn::InertiaProperties! Returning 1\n";
-        // return inertia_props_->getLegMass(); // TODO: getLegMass is not here!
-        return 1;
+        return inertia_props_->getLegMass();
     }
 
     void Aliengo::setInvKinTimePeriod(const double& period)

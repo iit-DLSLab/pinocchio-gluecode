@@ -69,6 +69,7 @@ public:
         double getTotalMass() const;
         const iit::rbd::Vector3d& getTrunkCOM();
         double getTrunkMass();
+        double getLegMass();
 
         double getHipAssemblyMass(const dog::LegID& leg) const;
         double getUpperLegMass(const dog::LegID& leg) const;

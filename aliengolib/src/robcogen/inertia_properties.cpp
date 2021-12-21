@@ -188,6 +188,14 @@ double iit::Aliengo::dyn::InertiaProperties::getTrunkMass() {
     updateParameters();
     return this->getMass_trunk();
 }
+
+double iit::Aliengo::dyn::InertiaProperties::getLegMass() {
+    return this->getMass_LF_hipassembly() + this->getMass_LF_upperleg() + this->getMass_LF_lowerleg() + 
+           + this->getMass_RF_hipassembly() + this->getMass_RF_upperleg() + this->getMass_RF_lowerleg() +
+           + this->getMass_LH_hipassembly() + this->getMass_LH_upperleg() + this->getMass_LH_lowerleg() +
+           + this->getMass_RH_hipassembly() + this->getMass_RH_upperleg() + this->getMass_RH_lowerleg();
+}
+
 double iit::Aliengo::dyn::InertiaProperties::getHipAssemblyMass(const dog::LegID& leg) const{
     switch(leg){
     case dog::LF:
