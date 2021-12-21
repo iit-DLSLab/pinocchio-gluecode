@@ -304,6 +304,10 @@ namespace aliengolib
         virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVel(const JointState &q,
                                                                const JointState &qd) override;
 
+
+        //compute spatial velocity of the CoM (base and joint influence)
+        //the twist should be expressed in base frame and the velocity is rotated according to matrix R
+        //compute spatial velocity of the CoM (base and joint influence) with update
         virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
                                                                  const Eigen::Matrix3d &rotationMx,
                                                                  const JointState &q,

@@ -406,11 +406,16 @@ namespace aliengolib
         return CoM - b_R_w.transpose() * offCoM;          //CoM is in the world frame off CoM is in base frame
     }
 
+    //compute spatial velocity of the CoM (in base frame) (only joint influence)
     Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVel(const JointState &q,
                                                 const JointState &qd)
     {
-        std::cout << "TODO: glue code for getWholeBodyCOMVel" << std::endl;
-        return Eigen::Matrix<double, 6, 1>::Zero();
+        Eigen::Matrix<double, 6, 1> CoMvel = Eigen::Matrix<double, 6, 1>::Zero();
+
+        // The actual calculus
+        //TODO1
+        //CoMvel = Crex::rcg::getWholeBodyCOMJacobian(q, inertiaProps, ht)*qd;
+        return CoMvel;
     }
 
     Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
@@ -418,8 +423,15 @@ namespace aliengolib
                                                                 const JointState &q,
                                                                 const JointState &qd)
     {
-        std::cout << "TODO: glue code for getWholeBodyCOMVelFB" << std::endl;
-        return Eigen::Matrix<double, 6, 1>::Zero();
+        Eigen::Matrix<double, 6, 1> CoMVel = Eigen::Matrix<double, 6, 1>::Zero();
+        //compute joint influence
+        //TODO1
+        //CoMVel = motionVectorTransform(Eigen::Vector3d::Zero(), rotationMx) * getWholeBodyCOMJacobian(q) * qd;
+        //add base motion shifted to the COM
+
+        CoMVel += iit::motionVectorTransform(getWholeBodyCOM(q), rotationMx) * baseVel;
+
+        return CoMVel;
     }
 
 
