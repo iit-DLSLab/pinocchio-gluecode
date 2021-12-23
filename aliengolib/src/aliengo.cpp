@@ -187,11 +187,11 @@ namespace aliengolib
             updateLinearJacobian(joint_position, full_feet_jacobian_tmp);
 
             Eigen::Vector3d joint_velocity_leg{Eigen::Vector3d::Zero()};
-
+            int count{0};
             for(auto joint: *leg->getJoints())
             {
-                const int joint_id{glue_joint_names_to_ids[joint->getName()]};
-                joint_velocity_leg[joint_id] = joint_velocity[joint];
+                joint_velocity_leg[count] = joint_velocity[joint];
+                count++;
             }
 
             end_effector_velocity[leg] =  full_feet_jacobian_tmp[leg].block<3,3>(0,0)*joint_velocity_leg;
