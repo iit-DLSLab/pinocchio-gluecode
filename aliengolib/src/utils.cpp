@@ -1,8 +1,8 @@
 #include "utils.hpp"
 
 #include <iostream>
-
 #include <fstream>
+
 namespace aliengolib
 {
 	void copy_mat_4x4(double src[16], double dest[16]) {
@@ -219,11 +219,10 @@ namespace aliengolib
         else
         {
             std::cout << "Failed to read the urdf using ifstream\n" << std::endl;
-            std::cout << "Maybe you don't have the urdf file located in /usr/include/urdf_robots. So you have to:" << std::endl;
-            std::cout << "- generate the urdf from the build folder ->  . ../generate_urdf.txt <path_to_xacro_file> (e.g. $HOME/$ROS_WORKSPACE_NAME/src/dls-distro/robots/aliengo/description/robots/aliengo.urdf.xacro)\n" 
+            std::cout << "Maybe you don't have the urdf file located in the project folder. So you have to:" << std::endl;
+            std::cout << "- generate the urdf from the build folder ->  . ../generate_urdf.txt <path_to_xacro_file> (e.g. . ../generate_urdf.txt $HOME/$ROS_WORKSPACE_NAME/src/dls-distro/robots/aliengo/description/robots/aliengo.urdf.xacro)\n" 
                       << "    You can skip this passage if you already have in aliengolib the urdf version you want" << std::endl;
-            std::cout << "- install the library as root user -> make install\n" 
-                      << "    It will copy aliengo.urdf file in /usr/include/urdf_robots"<< std::endl;
+            std::cout << "- launch the tests from within the build folder" << std::endl;
             
             ss << "";
         }
