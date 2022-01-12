@@ -531,6 +531,13 @@ namespace aliengolib
         inverse_kinematics_->setTimePeriod(period);
     } 
 
+    void Aliengo::setTrunkCom(const Eigen::Vector3d &trunk_com)
+    {
+        robot_params_->setValue_trunk_com_x(trunk_com(0));
+        robot_params_->setValue_trunk_com_y(trunk_com(1));
+        robot_params_->setValue_trunk_com_z(trunk_com(2));
+    }
+
     std::shared_ptr<AliengoLeg> makeLeg(const std::string &legName) // function used to generate a leg inside the create_function
     {
         std::shared_ptr<robotlib::Joint> haa = std::make_shared<robotlib::Joint>(legName + "_HAA");

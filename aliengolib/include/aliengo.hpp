@@ -326,6 +326,8 @@ namespace aliengolib
         
         virtual void setInvKinTimePeriod(const double& period) override;
 
+        virtual void setTrunkCom(const Eigen::Vector3d &trunk_com) override;
+
     private:
         // Define kinematic variables
         robotlib::RobotBase::LegDataMap<KinematicsConfig> kinConfig_;	
