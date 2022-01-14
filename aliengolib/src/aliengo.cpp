@@ -538,6 +538,11 @@ namespace aliengolib
         robot_params_->setValue_trunk_com_z(trunk_com(2));
     }
 
+    void Aliengo::setTrunkMass(const double& trunk_mass)
+    {
+        robot_params_->setValue_trunk_mass(trunk_mass);   
+    }
+
     std::shared_ptr<AliengoLeg> makeLeg(const std::string &legName) // function used to generate a leg inside the create_function
     {
         std::shared_ptr<robotlib::Joint> haa = std::make_shared<robotlib::Joint>(legName + "_HAA");

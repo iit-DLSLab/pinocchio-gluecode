@@ -327,6 +327,8 @@ namespace aliengolib
         virtual void setInvKinTimePeriod(const double& period) override;
 
         virtual void setTrunkCom(const Eigen::Vector3d &trunk_com) override;
+        
+        virtual void setTrunkMass(const double& trunk_mass) override;
 
     private:
         // Define kinematic variables
