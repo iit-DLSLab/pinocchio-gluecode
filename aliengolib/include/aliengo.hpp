@@ -1,10 +1,10 @@
-#ifndef _ALIENGOLIB_CREX_HPP_
-#define _ALIENGOLIB_CREX_HPP_
+#ifndef _ALIENGOLIB_ALIENGO_HPP_
+#define _ALIENGOLIB_ALIENGO_HPP_
 
 #include <robotlib/robot.hpp>
 #include <robotlib/limb.hpp>
 #include "aliengo_leg.hpp"
-#include "types.hpp"
+
 #include "utils.hpp"
 //TODO: robcogen
 // #include "robcogen/jacobians.h"
@@ -27,7 +27,6 @@ namespace aliengolib
     class Aliengo : public robotlib::Robot<NJOINTS_TOT, NLINKS_TOT, NLEGS, NARMS>
     {
     public:
-        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         Aliengo(const std::shared_ptr<robotlib::Trunk> trunk,
                 const std::array<std::shared_ptr<robotlib::LimbBase>, NLEGS> legs,
                 const std::array<std::shared_ptr<robotlib::LimbBase>, NARMS> arms, const std::string& robot_urdf);
@@ -330,13 +329,7 @@ namespace aliengolib
         
         virtual void setTrunkMass(const double& trunk_mass) override;
 
-    private:
-        // Define kinematic variables
-        robotlib::RobotBase::LegDataMap<KinematicsConfig> kinConfig_;	
-        robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 3>> b_R_h_;
-        robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 3>> h_R_b_;
-        robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> hipPos_;
-        
+    private: 
         urdf::Model robot_model_;
 
         //**********  RobCoGen variables  **********
@@ -373,4 +366,4 @@ namespace aliengolib
 extern "C" std::shared_ptr<robotlib::RobotBase> createRobotWithUrdf_t(const std::string& robot_urdf);
 extern "C" void destroyRobotWithUrdf_t(std::shared_ptr<robotlib::RobotBase>);
 
-#endif // _ALIENGOLIB_CREX_HPP_
+#endif // _ALIENGOLIB_ALIENGO_HPP_

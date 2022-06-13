@@ -14,11 +14,8 @@ namespace aliengolib
                 "aliengo",
                 trunk,
                 std::make_shared<const robotlib::Container<std::shared_ptr<robotlib::LimbBase>, NLEGS>>(legs),
-                std::make_shared<const robotlib::Container<std::shared_ptr<robotlib::LimbBase>, NARMS>>(arms)),
-                kinConfig_(this->makeLegDataMap<KinematicsConfig>()),
-                b_R_h_(this->makeLegDataMap<Eigen::Matrix<double, 3, 3>>()),
-                h_R_b_(this->makeLegDataMap<Eigen::Matrix<double, 3, 3>>()),
-                hipPos_(this->makeLegDataMap<Eigen::Matrix<double, 3, 1>>())
+                std::make_shared<const robotlib::Container<std::shared_ptr<robotlib::LimbBase>, NARMS>>(arms))
+                
     {
         std::array<std::shared_ptr<robotlib::Joint>, NLEGS> children;
 
@@ -391,6 +388,7 @@ namespace aliengolib
         }
 
         // First updates the coordinate transforms that will be used by the routine
+        
         homogeneous_transforms_->fr_trunk_X_fr_LF_hipassembly(joint_state_matrix);
         homogeneous_transforms_->fr_trunk_X_fr_RF_hipassembly(joint_state_matrix);
         homogeneous_transforms_->fr_trunk_X_fr_LH_hipassembly(joint_state_matrix);

@@ -1,5 +1,5 @@
-#ifndef _ALIENGOLIB_CREX_LEG_HPP_
-#define _ALIENGOLIB_CREX_LEG_HPP_
+#ifndef _ALIENGOLIB_ALIENGO_LEG_HPP_
+#define _ALIENGOLIB_ALIENGO_LEG_HPP_
 
 #include <robotlib/leg.hpp>
 #include <map>
@@ -12,7 +12,6 @@ namespace aliengolib
     class AliengoLeg : public robotlib::Leg<NJOINTS, NLINKS>
     {
     public:
-        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         AliengoLeg(const std::string &name,
                 const std::array<std::shared_ptr<robotlib::Joint>, NJOINTS> &joints,
                 const std::array<std::shared_ptr<robotlib::Link>, NLINKS> &links);
@@ -30,4 +29,4 @@ namespace aliengolib
     };
 } // namespace aliengolib
 
-#endif // _ALIENGOLIB_CREX_LEG_HPP_
+#endif // _ALIENGOLIB_ALIENGO_LEG_HPP_

@@ -1,5 +1,5 @@
-#ifndef ALIENGO_COMMONS_INVERSE_KINEMATICS_H_
-#define ALIENGO_COMMONS_INVERSE_KINEMATICS_H_
+#ifndef _ALIENGO_COMMONS_INVERSE_KINEMATICS_H_
+#define _ALIENGO_COMMONS_INVERSE_KINEMATICS_H_
 
 #include "dog/inverse_kinematics.h"
 
@@ -336,4 +336,4 @@ private:
 } // namespace Aliengo
 } // namespace iit
 
-#endif // ALIENGO_COMMONS_INVERSE_KINEMATICS_H_
+#endif // _ALIENGO_COMMONS_INVERSE_KINEMATICS_H_

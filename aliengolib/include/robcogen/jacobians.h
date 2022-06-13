@@ -1,5 +1,5 @@
-#ifndef ALIENGO_JACOBIANS_H_
-#define ALIENGO_JACOBIANS_H_
+#ifndef _ALIENGO_JACOBIANS_H_
+#define _ALIENGO_JACOBIANS_H_
 
 #include "robcogen/TransformsBase.h"
 #include "dog/declarations.h"
@@ -86,4 +86,4 @@ public:
 }
 }
 
-#endif
+#endif // _ALIENGO_JACOBIANS_H_
