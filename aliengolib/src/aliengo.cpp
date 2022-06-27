@@ -152,11 +152,11 @@ namespace aliengolib
     }
 
     void Aliengo::forwardKinematics(const robotlib::RobotBase::JointState &joint_position,
-                            const robotlib::RobotBase::JointState &joint_velocity,
-                            const robotlib::RobotBase::JointState &joint_acceleration,
-                            robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
-                            robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity,
-                            robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_acceleration)
+                                    const robotlib::RobotBase::JointState &joint_velocity,
+                                    const robotlib::RobotBase::JointState &joint_acceleration,
+                                    robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
+                                    robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity,
+                                    robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_acceleration)
     {
         homogeneous_transforms_->updateParameters();
         // Mapping from robotlib structure to robcogen ones, TODO: maybe a function mapping robotlib to eigen structure is needed
@@ -295,17 +295,6 @@ namespace aliengolib
         //     des_qdd_ = JointState::Zero();
         //     referencesBackTracingPrintOuts(dog::LF);
         // }
-    }
-
-    void Aliengo::inverseKinematics(const LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
-                                 const LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity,
-                                 const LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_acceleration,
-                                 const robotlib::RobotBase::LegDataMap<robotlib::RobotBase::Jacobian> &robot_jacobian,
-                                 JointState &joint_position,
-                                 JointState &joint_velocity,
-                                 JointState &joint_acceleration)
-    {
-
     }
 
     Eigen::Matrix<double, 3, 1> Aliengo::getWholeBodyCOM()

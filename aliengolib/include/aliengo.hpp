@@ -220,33 +220,11 @@ namespace aliengolib
         };
 
         virtual void forwardKinematics(const robotlib::RobotBase::JointState &joint_position,
-                                const robotlib::RobotBase::JointState &joint_velocity,
-                                const robotlib::RobotBase::JointState &joint_acceleration,
-                                LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
-                                LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity,
-                                LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_acceleration) override;
-
-        virtual void forwardKinematics(const Eigen::Vector3d &joint_position,
-                                const Eigen::Vector3d &joint_velocity,
-                                const Eigen::Vector3d &joint_acceleration,
-                                Eigen::Vector3d &end_effector_position,
-                                Eigen::Vector3d &end_effector_velocity,
-                                Eigen::Vector3d &end_effector_acceleration,
-                                const std::shared_ptr<robotlib::Frame> end_effector) override
-        {
-            std::cout << "Forward Kinematics 2" << std::endl;
-        };
-
-        virtual void inverseKinematics(const Eigen::Vector3d &end_effector_position,
-                                const Eigen::Vector3d &end_effector_velocity,
-                                const Eigen::Vector3d &end_effector_acceleration,
-                                Eigen::Vector3d &joint_position,
-                                Eigen::Vector3d &joint_velocity,
-                                Eigen::Vector3d &joint_acceleration,
-                                const std::shared_ptr<robotlib::Frame> end_effector) override
-        {
-            std::cout << "Inverse Kinematics 1" << std::endl;
-        };
+                                       const robotlib::RobotBase::JointState &joint_velocity,
+                                       const robotlib::RobotBase::JointState &joint_acceleration,
+                                       LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
+                                       LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity,
+                                       LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_acceleration) override;
 
         virtual void inverseKinematics(const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
                                 const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity,
@@ -254,14 +232,6 @@ namespace aliengolib
                                 robotlib::RobotBase::JointState &joint_position,
                                 robotlib::RobotBase::JointState &joint_velocity,
                                 robotlib::RobotBase::JointState &joint_acceleration) override;
-
-        virtual void inverseKinematics(const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
-                                       const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity,
-                                       const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_acceleration,
-                                       const robotlib::RobotBase::LegDataMap<robotlib::RobotBase::Jacobian> &robot_jacobian,
-                                       robotlib::RobotBase::JointState &joint_position,
-                                       robotlib::RobotBase::JointState &joint_velocity,
-                                       robotlib::RobotBase::JointState &joint_acceleration) override;
 
         virtual void inverseDynamics(const Eigen::Matrix<double, 6, 1> &robot_velocity,
                                 const Eigen::Matrix<double, 6, 1> &robot_acceleration,
