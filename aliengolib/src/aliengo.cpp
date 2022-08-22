@@ -241,6 +241,37 @@ namespace aliengolib
         }
     }
 
+    void Aliengo::computeGravityCompensation(const Eigen::Matrix<double, 6, 1> &gravity_vector,
+                                                      const JointState &joint_position,
+                                                      Eigen::Matrix<double, 6, 1> &wrench_base, ///output
+                                                      JointState &tau_joints)              ///output
+    {
+        Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_position{};
+        Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_tau_joints{};
+
+        robcogen_joint_position.setZero();
+        robcogen_tau_joints.setZero();
+        
+        for (auto leg : *legs_)
+        {
+            for (auto joint : *leg->getJoints())
+            {
+                const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+                robcogen_joint_position[joint_id] = joint_position[joint];
+            }
+        }
+
+        inverse_dynamics_->G_terms_fully_actuated(wrench_base, robcogen_tau_joints, gravity_vector, robcogen_joint_position);
+        
+        for (auto leg : *legs_)
+        {
+            for (auto joint : *leg->getJoints())
+            {
+                const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+                tau_joints[joint] = robcogen_tau_joints[joint_id];
+            }
+        }
+    }
     void Aliengo::inverseKinematics(const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
                                  const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity,
                                  const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_acceleration,

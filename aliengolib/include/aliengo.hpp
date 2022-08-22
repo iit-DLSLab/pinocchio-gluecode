@@ -156,6 +156,11 @@ namespace aliengolib
                                 Eigen::Matrix<double, 6, 1> &wrench_base, ///output
                                 JointState &tau_joints);                   ///output
         
+        // Hypothesis of fully actuated base
+        virtual void computeGravityCompensation(const Eigen::Matrix<double, 6, 1> &gravity_vector,
+                                                const JointState &joint_position,
+                                                Eigen::Matrix<double, 6, 1> &wrench_base, ///output
+                                                JointState &tau_joints);              ///output
         
         // double getRobotMass() const override { return 21.525; }
 
