@@ -271,6 +271,7 @@ inline void computeQR(const MatrixXR & A,
                       const double& tolerance)
 {
     // FIXME why tolerance is not used??
+    std::cout << tolerance << std::endl;   // TODO: Not used. Created to remove warning
 
     //compute the QR decomposition of the Jacobian
     //Q = U ; R = EPS*V^T

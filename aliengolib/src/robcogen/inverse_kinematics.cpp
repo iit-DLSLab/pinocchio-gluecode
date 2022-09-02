@@ -61,7 +61,8 @@ bool InverseKinematics::getJointPosition(const FootPosition &foot_position,
     double max_knee_angle = std::max(std::abs(q_min_(jid)), std::abs(q_max_(jid)));
 
     double p_x, p_y, p_z;
-    double R, r;
+    //double R;   // TODO: Not used. Commented to remove warning
+    double r;
     double haa2foot, hfe2foot, shorten_factor;
     double hfe2foot_min, hfe2foot_max, haa2foot_min, haa2foot_max;
     double sin_alpha, cos_alpha, cos_beta, sin_beta;
@@ -98,7 +99,7 @@ bool InverseKinematics::getJointPosition(const FootPosition &foot_position,
     p_y = shorten_factor * delta_foot_position(1);
     p_z = shorten_factor * delta_foot_position(2);
 
-    R = sqrt( p_y * p_y + p_z * p_z);
+    //R = sqrt( p_y * p_y + p_z * p_z);   // TODO: Not used. Commented to remove warning
     r = sqrt( p_y * p_y + p_z * p_z - a1 * a1);
 
     q_leg(0) = -atan2(haa_sign_flip[leg_id] * p_y * r + p_z * a1, - p_z * r +
@@ -377,7 +378,8 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
                                     rbd::Vector3d& joint_velocity,
                                     rbd::Vector3d& joint_acceleration,
                                     const dog::JointState& q_) {
-
+    
+    q_.size();   // TODO: Not used. Created to remove warning
     bool sanityCheckFlag = true;
 
     joint_velocity.setZero();
@@ -391,7 +393,8 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
 
 
     double p_x, p_y, p_z;
-    double R, r;
+    //double R;   // TODO: Not used. Commented to remove warning
+    double r;
     double haa2foot, hfe2foot, shorten_factor;
     double hfe2foot_min, hfe2foot_max, haa2foot_min, haa2foot_max;
     double sin_alpha, cos_alpha, cos_beta, sin_beta;
@@ -438,7 +441,7 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
         p_y = shorten_factor * delta_foot_position(1);
         p_z = shorten_factor * delta_foot_position(2);
 
-        R = sqrt( p_y * p_y + p_z * p_z);
+        //R = sqrt( p_y * p_y + p_z * p_z);   // TODO: Not used. Commented to remove warning
         r = sqrt( p_y * p_y + p_z * p_z - a1 * a1);
 
         joint_position(0) = -atan2( HIP * p_y * r + p_z * a1, - HIP * p_z * r + p_y * a1);
@@ -519,7 +522,7 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
         p_y = shorten_factor * delta_foot_position(1);
         p_z = shorten_factor * delta_foot_position(2);
 
-        R = sqrt( p_y * p_y + p_z * p_z);
+        //R = sqrt( p_y * p_y + p_z * p_z);   // TODO: Not used. Created to remove warning
         r = sqrt( p_y * p_y + p_z * p_z - a1 * a1);
 
         joint_position(0) = -atan2( HIP * p_y * r + p_z * a1, HIP * p_z * r - p_y * a1);
@@ -604,7 +607,7 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
         p_z = shorten_factor * delta_foot_position(2);
 
 
-        R = sqrt( p_y * p_y + p_z * p_z);
+       // R = sqrt( p_y * p_y + p_z * p_z);   // TODO: Not used. Commented to remove warning
         r = sqrt( p_y * p_y + p_z * p_z - a1 * a1);
 
         joint_position(0) = -atan2( HIP * p_y * r + p_z * a1, - HIP * p_z * r + p_y * a1);
@@ -677,7 +680,7 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
         p_y = shorten_factor * delta_foot_position(1);
         p_z = shorten_factor * delta_foot_position(2);
 
-        R = sqrt( p_y * p_y + p_z * p_z);
+        //R = sqrt( p_y * p_y + p_z * p_z);   // TODO: Not used. Commented to remove warning
         r = sqrt( p_y * p_y + p_z * p_z - a1 * a1);
 
         joint_position(0) = -atan2( HIP * p_y * r + p_z * a1, HIP * p_z * r - p_y * a1);
@@ -749,7 +752,7 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
                                     rbd::Vector3d& joint_acceleration,
                                     const dog::JointState& q_,
                                     const int& knee_bent_backward) {
-
+    q_.size(); // TODO: Not used. Created to remove warning
     bool sanityCheckFlag = true;
 
     joint_velocity.setZero();
@@ -763,7 +766,8 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
 
 
     double p_x, p_y, p_z;
-    double R, r;
+    //double R;   // TODO: Not used. Commented to remove warning
+    double r;
     double haa2foot, hfe2foot, shorten_factor;
     double hfe2foot_min, hfe2foot_max, haa2foot_min, haa2foot_max;
     double sin_alpha, cos_alpha, cos_beta, sin_beta;
@@ -813,7 +817,7 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
             p_y = shorten_factor * delta_foot_position(1);
             p_z = shorten_factor * delta_foot_position(2);
 
-            R = sqrt( p_y * p_y + p_z * p_z);
+            //R = sqrt( p_y * p_y + p_z * p_z);   // TODO: Not used. Commented to remove warning
             r = sqrt( p_y * p_y + p_z * p_z - a1 * a1);
 
             joint_position(0) = -atan2( HIP * p_y * r + p_z * a1, - HIP * p_z * r + p_y * a1);
@@ -868,7 +872,7 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
             p_z = shorten_factor * delta_foot_position(2);
 
 
-            R = sqrt( p_y * p_y + p_z * p_z);
+            //R = sqrt( p_y * p_y + p_z * p_z);   // TODO: Not used. Commented to remove warning
             r = sqrt( p_y * p_y + p_z * p_z - a1 * a1);
 
             joint_position(0) = -atan2( HIP * p_y * r + p_z * a1, - HIP * p_z * r + p_y * a1);
@@ -951,7 +955,7 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
             p_y = shorten_factor * delta_foot_position(1);
             p_z = shorten_factor * delta_foot_position(2);
 
-            R = sqrt( p_y * p_y + p_z * p_z);
+            //R = sqrt( p_y * p_y + p_z * p_z);   // TODO: Not used. Commented to remove warning
             r = sqrt( p_y * p_y + p_z * p_z - a1 * a1);
 
             joint_position(0) = -atan2( HIP * p_y * r + p_z * a1, HIP * p_z * r - p_y * a1);
@@ -1004,7 +1008,7 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
             p_y = shorten_factor * delta_foot_position(1);
             p_z = shorten_factor * delta_foot_position(2);
 
-            R = sqrt( p_y * p_y + p_z * p_z);
+            //R = sqrt( p_y * p_y + p_z * p_z);   // TODO: Not used. Commented to remove warning
             r = sqrt( p_y * p_y + p_z * p_z - a1 * a1);
 
             joint_position(0) = -atan2( HIP * p_y * r + p_z * a1, HIP * p_z * r - p_y * a1);
@@ -1086,7 +1090,7 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
             p_y = shorten_factor * delta_foot_position(1);
             p_z = shorten_factor * delta_foot_position(2);
 
-            R = sqrt( p_y * p_y + p_z * p_z);
+            //R = sqrt( p_y * p_y + p_z * p_z);   // TODO: Not used. Commented to remove warning
             r = sqrt( p_y * p_y + p_z * p_z - a1 * a1);
 
             joint_position(0) = -atan2( HIP * p_y * r + p_z * a1, - HIP * p_z * r + p_y * a1);
@@ -1141,7 +1145,7 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
             p_z = shorten_factor * delta_foot_position(2);
 
 
-            R = sqrt( p_y * p_y + p_z * p_z);
+            //R = sqrt( p_y * p_y + p_z * p_z);   // TODO: Not used. Commented to remove warning
             r = sqrt( p_y * p_y + p_z * p_z - a1 * a1);
 
             joint_position(0) = -atan2( HIP * p_y * r + p_z * a1, - HIP * p_z * r + p_y * a1);
@@ -1223,7 +1227,7 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
             p_y = shorten_factor * delta_foot_position(1);
             p_z = shorten_factor * delta_foot_position(2);
 
-            R = sqrt( p_y * p_y + p_z * p_z);
+            //R = sqrt( p_y * p_y + p_z * p_z);   // TODO: Not used. Commented to remove warning
             r = sqrt( p_y * p_y + p_z * p_z - a1 * a1);
 
             joint_position(0) = -atan2( HIP * p_y * r + p_z * a1, HIP * p_z * r - p_y * a1);
@@ -1276,7 +1280,7 @@ bool InverseKinematics::singleLegIK(const rbd::Vector3d& foot_position,
             p_y = shorten_factor * delta_foot_position(1);
             p_z = shorten_factor * delta_foot_position(2);
 
-            R = sqrt( p_y * p_y + p_z * p_z);
+            //R = sqrt( p_y * p_y + p_z * p_z);   // TODO: Not used. Commented to remove warning
             r = sqrt( p_y * p_y + p_z * p_z - a1 * a1);
 
             joint_position(0) = -atan2( HIP * p_y * r + p_z * a1, HIP * p_z * r - p_y * a1);

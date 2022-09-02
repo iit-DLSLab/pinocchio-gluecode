@@ -60,7 +60,7 @@ namespace aliengolib
 
 namespace iit{
  
-    static Eigen::Matrix3d buildCrossProductMatrix(const Eigen::Vector3d& in) {
+    Eigen::Matrix3d buildCrossProductMatrix(const Eigen::Vector3d& in) {
         Eigen::Matrix3d out;
         out <<  0   , -in(2),  in(1),
                in(2),   0   , -in(0),

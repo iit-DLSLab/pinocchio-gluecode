@@ -206,6 +206,10 @@ double iit::Aliengo::dyn::InertiaProperties::getHipAssemblyMass(const dog::LegID
         return getMass_LH_hipassembly();
     case dog::RH:
         return getMass_RH_hipassembly();
+    default:
+        std::cout << "Error - Switch default case" << std::endl;
+        return 0.0;
+        break;
     }
 }
 double iit::Aliengo::dyn::InertiaProperties::getUpperLegMass(const dog::LegID& leg) const{
@@ -218,6 +222,10 @@ double iit::Aliengo::dyn::InertiaProperties::getUpperLegMass(const dog::LegID& l
         return getMass_LH_upperleg();
     case dog::RH:
         return getMass_RH_upperleg();
+    default:
+        std::cout << "Error - Switch default case" << std::endl;
+        return 0.0;
+        break;
     }
 }
 double iit::Aliengo::dyn::InertiaProperties::getLowerLegMass(const dog::LegID& leg) const{
@@ -230,6 +238,10 @@ double iit::Aliengo::dyn::InertiaProperties::getLowerLegMass(const dog::LegID& l
         return getMass_LH_lowerleg();
     case dog::RH:
         return getMass_RH_lowerleg();
+    default:
+        std::cout << "Error - Switch default case" << std::endl;
+        return 0.0;
+        break;
     }
 }
 iit::rbd::Vector3d iit::Aliengo::dyn::InertiaProperties::getHipAssemblyCOM(const dog::LegID& leg) const{
@@ -242,6 +254,10 @@ iit::rbd::Vector3d iit::Aliengo::dyn::InertiaProperties::getHipAssemblyCOM(const
         return getCOM_LH_hipassembly();
     case dog::RH:
         return getCOM_RH_hipassembly();
+    default:
+        std::cout << "Error - Switch default case" << std::endl;
+        return Eigen::Vector3d::Zero();
+        break;
     }
 }
 iit::rbd::Vector3d iit::Aliengo::dyn::InertiaProperties::getUpperLegCOM(const dog::LegID& leg) const{
@@ -254,6 +270,10 @@ iit::rbd::Vector3d iit::Aliengo::dyn::InertiaProperties::getUpperLegCOM(const do
         return getCOM_LH_upperleg();
     case dog::RH:
         return getCOM_RH_upperleg();
+    default:
+        std::cout << "Error - Switch default case" << std::endl;
+        return Eigen::Vector3d::Zero();
+        break;
     }
 }
 iit::rbd::Vector3d iit::Aliengo::dyn::InertiaProperties::getLowerLegCOM(const dog::LegID& leg) const{
@@ -266,6 +286,10 @@ iit::rbd::Vector3d iit::Aliengo::dyn::InertiaProperties::getLowerLegCOM(const do
         return getCOM_LH_lowerleg();
     case dog::RH:
         return getCOM_RH_lowerleg();
+    default:
+        std::cout << "Error - Switch default case" << std::endl;
+        return Eigen::Vector3d::Zero();
+        break;
     }
 }
 iit::rbd::Vector3d iit::Aliengo::dyn::InertiaProperties::getWholeBodyCOM(const dog::JointState &q){

@@ -170,22 +170,22 @@ inline void forceCrossProductMx(const VelocityVector& v, Matrix66d& vx)
 
 namespace internal {
 
-static void fillInertia(double mass, const Vector3d& com, const SymmMat3x3Coefficients& I3x3,
-        InertiaMatrixDense& I)
-{
-    I(AX,AX) = I3x3.XX;
-    I(AY,AY) = I3x3.YY;
-    I(AZ,AZ) = I3x3.ZZ;
-    I(AY,AX) = I(AX,AY) = I3x3.XY;
-    I(AZ,AX) = I(AX,AZ) = I3x3.XZ;
-    I(AZ,AY) = I(AY,AZ) = I3x3.YZ;
-
-    I(AX,LY) = I(LY,AX) = - ( I(AY,LX) = I(LX,AY) = mass*com(Z) );
-    I(AZ,LX) = I(LX,AZ) = - ( I(AX,LZ) = I(LZ,AX) = mass*com(Y) );
-    I(AY,LZ) = I(LZ,AY) = - ( I(AZ,LY) = I(LY,AZ) = mass*com(X) );
-
-    I(LX,LX) = I(LY,LY) = I(LZ,LZ) = mass;
-}
+//static void fillInertia(double mass, const Vector3d& com, const SymmMat3x3Coefficients& I3x3,
+//        InertiaMatrixDense& I)
+//{
+//    I(AX,AX) = I3x3.XX;
+//    I(AY,AY) = I3x3.YY;
+//    I(AZ,AZ) = I3x3.ZZ;
+//    I(AY,AX) = I(AX,AY) = I3x3.XY;
+//    I(AZ,AX) = I(AX,AZ) = I3x3.XZ;
+//    I(AZ,AY) = I(AY,AZ) = I3x3.YZ;
+//
+//    I(AX,LY) = I(LY,AX) = - ( I(AY,LX) = I(LX,AY) = mass*com(Z) );
+//    I(AZ,LX) = I(LX,AZ) = - ( I(AX,LZ) = I(LZ,AX) = mass*com(Y) );
+//    I(AY,LZ) = I(LZ,AY) = - ( I(AZ,LY) = I(LY,AZ) = mass*com(X) );
+//
+//    I(LX,LX) = I(LY,LY) = I(LZ,LZ) = mass;
+//}
 
 }
 
@@ -203,75 +203,75 @@ static void fillInertia(double mass, const Vector3d& com, const SymmMat3x3Coeffi
  * \param[out] I_B the output tensor, expressing the same inertial properties with
  *       coordinates of frame \c B
  */
-static void transformInertia(
-        const InertiaMatrixDense& I_A,
-        const Matrix66d& XF,
-        InertiaMatrixDense& I_B)
-{
-    // The coefficients of the 3x3 rotation matrix
-    internal::Mat3x3Coefficients E(
-            XF(AX,AX),XF(AX,AY),XF(AX,AZ),
-            XF(AY,AX),XF(AY,AY),XF(AY,AZ),
-            XF(AZ,AX),XF(AZ,AY),XF(AZ,AZ));
-    double    mass = I_A.getMass();
-
-    // The relative position 'r' of the origin of frame B wrt A (in A coordinates).
-    //   The vector is basically "reconstructed" from the matrix XF, which has
-    // this form:
-    //      | E   -E rx |
-    //      | 0    E    |
-    // where 'rx' is the cross product matrix. The strategy is to compute
-    //  E^T (-E rx) = -rx  , and then get the coordinates of 'r' from 'rx'.
-    // This code is a manual implementation of the E transpose multiplication,
-    // limited to the elements of interest.
-    //    Note that this is necessary because, currently, spatial transforms do
-    // not carry explicitly the information about the translation vector.
-    double rx = E.XY * XF(AX,LZ) + E.YY * XF(AY,LZ) + E.ZY * XF(AZ,LZ);
-    double ry = E.XZ * XF(AX,LX) + E.YZ * XF(AY,LX) + E.ZZ * XF(AZ,LX);
-    double rz = E.XX * XF(AX,LY) + E.YX * XF(AY,LY) + E.ZX * XF(AZ,LY);
-
-    // The relative position of the CoM wrt A (in A coordinates)
-    double comAx = I_A(AZ,LY)/mass;
-    double comAy = I_A(AX,LZ)/mass;
-    double comAz = I_A(AY,LX)/mass;
-
-    // The relative position of the CoM wrt B (in A coordinates)
-    Vector3d p(comAx-rx, comAy-ry, comAz-rz);
-
-    // Pre-computation of some recurring squares
-    double cx2 = comAx*comAx;
-    double cy2 = comAy*comAy;
-    double cz2 = comAz*comAz;
-    double px2 = p(X)*p(X);
-    double py2 = p(Y)*p(Y);
-    double pz2 = p(Z)*p(Z);
-
-    // Manual implementation of the parallel axis theorem, to translate the
-    //  3x3 tensor from frame A to frame B :
-    internal::SymmMat3x3Coefficients I_translated(
-            I_A(AX,AX), I_A(AX,AY), I_A(AX,AZ)
-                      , I_A(AY,AY), I_A(AY,AZ)
-                                  , I_A(AZ,AZ));
-    I_translated.XX += mass*( py2 + pz2   - cy2 - cz2 );
-    I_translated.YY += mass*( px2 + pz2   - cx2 - cz2 );
-    I_translated.ZZ += mass*( px2 + py2   - cx2 - cy2 );
-    I_translated.XY += mass*( comAx*comAy - p(X)*p(Y) );
-    I_translated.XZ += mass*( comAx*comAz - p(X)*p(Z) );
-    I_translated.YZ += mass*( comAy*comAz - p(Y)*p(Z) );
-
-    // Rotate the 3x3 tensor
-    internal::SymmMat3x3Coefficients I3x3_B;
-    internal::rot_symmetric_EAET(E, I_translated, I3x3_B);
-    // Rotate the CoM vector
-    Vector3d p_B(
-            E.XX*p(X) + E.XY*p(Y) + E.XZ*p(Z),
-            E.YX*p(X) + E.YY*p(Y) + E.YZ*p(Z),
-            E.ZX*p(X) + E.ZY*p(Y) + E.ZZ*p(Z)
-    );
-
-    // Finally copy the coefficients into the destination matrix
-    internal::fillInertia(mass, p_B, I3x3_B, I_B);
-}
+//static void transformInertia(
+//        const InertiaMatrixDense& I_A,
+//        const Matrix66d& XF,
+//        InertiaMatrixDense& I_B)
+//{
+//    // The coefficients of the 3x3 rotation matrix
+//    internal::Mat3x3Coefficients E(
+//            XF(AX,AX),XF(AX,AY),XF(AX,AZ),
+//            XF(AY,AX),XF(AY,AY),XF(AY,AZ),
+//            XF(AZ,AX),XF(AZ,AY),XF(AZ,AZ));
+//    double    mass = I_A.getMass();
+//
+//    // The relative position 'r' of the origin of frame B wrt A (in A coordinates).
+//    //   The vector is basically "reconstructed" from the matrix XF, which has
+//    // this form:
+//    //      | E   -E rx |
+//    //      | 0    E    |
+//    // where 'rx' is the cross product matrix. The strategy is to compute
+//    //  E^T (-E rx) = -rx  , and then get the coordinates of 'r' from 'rx'.
+//    // This code is a manual implementation of the E transpose multiplication,
+//    // limited to the elements of interest.
+//    //    Note that this is necessary because, currently, spatial transforms do
+//    // not carry explicitly the information about the translation vector.
+//    double rx = E.XY * XF(AX,LZ) + E.YY * XF(AY,LZ) + E.ZY * XF(AZ,LZ);
+//    double ry = E.XZ * XF(AX,LX) + E.YZ * XF(AY,LX) + E.ZZ * XF(AZ,LX);
+//    double rz = E.XX * XF(AX,LY) + E.YX * XF(AY,LY) + E.ZX * XF(AZ,LY);
+//
+//    // The relative position of the CoM wrt A (in A coordinates)
+//    double comAx = I_A(AZ,LY)/mass;
+//    double comAy = I_A(AX,LZ)/mass;
+//    double comAz = I_A(AY,LX)/mass;
+//
+//    // The relative position of the CoM wrt B (in A coordinates)
+//    Vector3d p(comAx-rx, comAy-ry, comAz-rz);
+//
+//    // Pre-computation of some recurring squares
+//    double cx2 = comAx*comAx;
+//    double cy2 = comAy*comAy;
+//    double cz2 = comAz*comAz;
+//    double px2 = p(X)*p(X);
+//    double py2 = p(Y)*p(Y);
+//    double pz2 = p(Z)*p(Z);
+//
+//    // Manual implementation of the parallel axis theorem, to translate the
+//    //  3x3 tensor from frame A to frame B :
+//    internal::SymmMat3x3Coefficients I_translated(
+//            I_A(AX,AX), I_A(AX,AY), I_A(AX,AZ)
+//                      , I_A(AY,AY), I_A(AY,AZ)
+//                                  , I_A(AZ,AZ));
+//    I_translated.XX += mass*( py2 + pz2   - cy2 - cz2 );
+//    I_translated.YY += mass*( px2 + pz2   - cx2 - cz2 );
+//    I_translated.ZZ += mass*( px2 + py2   - cx2 - cy2 );
+//    I_translated.XY += mass*( comAx*comAy - p(X)*p(Y) );
+//    I_translated.XZ += mass*( comAx*comAz - p(X)*p(Z) );
+//    I_translated.YZ += mass*( comAy*comAz - p(Y)*p(Z) );
+//
+//    // Rotate the 3x3 tensor
+//    internal::SymmMat3x3Coefficients I3x3_B;
+//    internal::rot_symmetric_EAET(E, I_translated, I3x3_B);
+//    // Rotate the CoM vector
+//    Vector3d p_B(
+//            E.XX*p(X) + E.XY*p(Y) + E.XZ*p(Z),
+//            E.YX*p(X) + E.YY*p(Y) + E.YZ*p(Z),
+//            E.ZX*p(X) + E.ZY*p(Y) + E.ZZ*p(Z)
+//    );
+//
+//    // Finally copy the coefficients into the destination matrix
+//    internal::fillInertia(mass, p_B, I3x3_B, I_B);
+//}
 
 ///@} // end of implicit in-group elements [Doxygen]
 
