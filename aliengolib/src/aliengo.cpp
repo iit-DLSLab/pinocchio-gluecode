@@ -10,7 +10,7 @@ namespace aliengolib
     Aliengo::Aliengo(const std::shared_ptr<robotlib::Trunk> trunk,
                 const std::array<std::shared_ptr<robotlib::LimbBase>, NLEGS> legs,
                 const std::array<std::shared_ptr<robotlib::LimbBase>, NARMS> arms, const std::string& robot_urdf)
-        : Robot<NJOINTS_TOT, NLINKS_TOT, NLEGS, NARMS>(
+        :  Robot<NJOINTS_TOT, NLINKS_TOT, NLEGS, NARMS>(
                 "aliengo",
                 trunk,
                 std::make_shared<const robotlib::Container<std::shared_ptr<robotlib::LimbBase>, NLEGS>>(legs),
@@ -28,7 +28,7 @@ namespace aliengolib
 
         setParentOfLink(trunk_, nullptr);
 
-        for (auto leg : *(this->getLegs()))
+        for (auto leg : *legs_)
         {
             for (auto joint : *(leg->getJoints()))
             {
@@ -39,7 +39,7 @@ namespace aliengolib
             }
         }
 
-        for (auto leg : *(this->getLegs()))
+        for (auto leg : *legs_)
         {
             for (auto link : *(leg->getLinks()))
             {
@@ -51,6 +51,14 @@ namespace aliengolib
             }
         }
 
+        for (auto leg : *legs_)
+        {
+            for (auto joint : *(leg->getJoints()))
+            {
+                const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+                auxiliar_joints_variable_[joint_id] = joint;
+            }
+        }
         if (!robot_model_.initString(robot_urdf))
             std::cout << "Failed to parse urdf file" << std::endl;
 
@@ -66,14 +74,21 @@ namespace aliengolib
         iit::dog::JointState robcogen_q_min{};
         iit::dog::JointState robcogen_q_max{};
 
-        for (auto leg : *legs_)
+        // for (auto leg : *legs_)
+        // {
+        //     for(auto joint : *leg->getJoints())
+        //     {
+        //         const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+        //         RobotBase::getMinJointAngle(joint, robcogen_q_min[joint_id]);
+        //         RobotBase::getMaxJointAngle(joint, robcogen_q_max[joint_id]);
+        //     }
+        // }
+        
+        for(auto joint : auxiliar_joints_variable_)
         {
-            for(auto joint : *leg->getJoints())
-            {
-                const int joint_id{glue_joint_names_to_ids[joint->getName()]};
-                RobotBase::getMinJointAngle(joint, robcogen_q_min[joint_id]);
-                RobotBase::getMaxJointAngle(joint, robcogen_q_max[joint_id]);
-            }
+            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            RobotBase::getMinJointAngle(joint, robcogen_q_min[joint_id]);
+            RobotBase::getMaxJointAngle(joint, robcogen_q_max[joint_id]);
         }
 
         inverse_kinematics_->setKinematicLimits(robcogen_q_min, robcogen_q_max);
@@ -98,34 +113,59 @@ namespace aliengolib
         {
             if (jointPair.second->type == urdf::Joint::REVOLUTE)
             {
-                for (auto leg : *legs_)
-                {
-                    for (auto joint : *leg->getJoints())
-                    {
-                        // **Transform robotlib joint name to urdf one**
-                        std::string urdf_joint_name{joint->getName()};
-                        std::transform(urdf_joint_name.begin(), urdf_joint_name.end(), urdf_joint_name.begin(), ::tolower);
-                        urdf_joint_name.append("_joint");
+                // for (auto leg : *legs_)
+                // {
+                //     for (auto joint : *leg->getJoints())
+                //     {
+                //         // **Transform robotlib joint name to urdf one**
+                //         std::string urdf_joint_name{joint->getName()};
+                //         std::transform(urdf_joint_name.begin(), urdf_joint_name.end(), urdf_joint_name.begin(), ::tolower);
+                //         urdf_joint_name.append("_joint");
 
-                        if(urdf_joint_name == std::get<0>(jointPair))
-                        {
-                            const double q_min = jointPair.second->limits->lower;
-                            const double q_max = jointPair.second->limits->upper;
-                            const double qd_max = jointPair.second->limits->velocity;
-                            const double tau_max = jointPair.second->limits->effort;
+                //         if(urdf_joint_name == std::get<0>(jointPair))
+                //         {
+                //             const double q_min = jointPair.second->limits->lower;
+                //             const double q_max = jointPair.second->limits->upper;
+                //             const double qd_max = jointPair.second->limits->velocity;
+                //             const double tau_max = jointPair.second->limits->effort;
 
-                            setJointLimits(joint, q_min, q_max, qd_max, tau_max);
+                //             setJointLimits(joint, q_min, q_max, qd_max, tau_max);
                             
-                            std::cout << "Set limits for joint " << urdf_joint_name << ":" << std::endl;
-                            std::cout << "q_min = " << q_min << std::endl;
-                            std::cout << "q_max = " << q_max << std::endl;
-                            std::cout << "qd_max = " << qd_max << std::endl; 
-                            std::cout << "tau_max = " << tau_max << std::endl;
-                            std::cout << "\n";
-                        }
-                    }
+                //             std::cout << "Set limits for joint " << urdf_joint_name << ":" << std::endl;
+                //             std::cout << "q_min = " << q_min << std::endl;
+                //             std::cout << "q_max = " << q_max << std::endl;
+                //             std::cout << "qd_max = " << qd_max << std::endl; 
+                //             std::cout << "tau_max = " << tau_max << std::endl;
+                //             std::cout << "\n";
+                //         }
+                //     }
                     
+                // }
+                for(auto joint : auxiliar_joints_variable_)
+                {
+                    // **Transform robotlib joint name to urdf one**
+                    std::string urdf_joint_name{joint->getName()};
+                    std::transform(urdf_joint_name.begin(), urdf_joint_name.end(), urdf_joint_name.begin(), ::tolower);
+                    urdf_joint_name.append("_joint");
+
+                    if(urdf_joint_name == std::get<0>(jointPair))
+                    {
+                        const double q_min = jointPair.second->limits->lower;
+                        const double q_max = jointPair.second->limits->upper;
+                        const double qd_max = jointPair.second->limits->velocity;
+                        const double tau_max = jointPair.second->limits->effort;
+
+                        setJointLimits(joint, q_min, q_max, qd_max, tau_max);
+                        
+                        std::cout << "Set limits for joint " << urdf_joint_name << ":" << std::endl;
+                        std::cout << "q_min = " << q_min << std::endl;
+                        std::cout << "q_max = " << q_max << std::endl;
+                        std::cout << "qd_max = " << qd_max << std::endl; 
+                        std::cout << "tau_max = " << tau_max << std::endl;
+                        std::cout << "\n";
+                    }
                 }
+
             }
         }
     }
@@ -137,13 +177,18 @@ namespace aliengolib
         Eigen::Matrix<double, NJOINTS_TOT, 1> joints_positions_matrix;
         int count{0};
 
-        for (auto leg : *this->getLegs())
-        {
-            for(auto joint : *leg->getJoints())
-			{
-                joints_positions_matrix[count] = joints_positions[joint];
-                count++;
-            }
+        // for (auto leg : legs_)
+        // {
+        //     for(auto joint : *leg->getJoints())
+		// 	{
+        //         joints_positions_matrix[count] = joints_positions[joint];
+        //         count++;
+        //     }
+        // }
+        for(auto joint : auxiliar_joints_variable_)
+        {                
+            joints_positions_matrix[count] = joints_positions[joint];
+            count++;
         }
         robot_jacobian["LF"].block<3,3>(0,0) = jacobians_->fr_trunk_J_LF_foot(joints_positions_matrix).block<3,3>(3,0);
 		robot_jacobian["RF"].block<3,3>(0,0) = jacobians_->fr_trunk_J_RF_foot(joints_positions_matrix).block<3,3>(3,0);
@@ -163,21 +208,25 @@ namespace aliengolib
         // NB: this mapping assumes that the robcogen order is the same as the one defining the legs and joints of Crex!
         Eigen::Matrix<double, NJOINTS_TOT, 1> q_robcogen;
         
-        for(auto leg : *this->getLegs())
+        // for(auto leg : legs_)
+        // {
+        //     for(auto joint : *leg->getJoints())
+        //     {
+        //         const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+        //         q_robcogen[joint_id] = joint_position[joint];
+        //     }
+        // }
+        for(auto joint : auxiliar_joints_variable_)
         {
-            for(auto joint : *leg->getJoints())
-            {
-                const int joint_id{glue_joint_names_to_ids[joint->getName()]};
-                q_robcogen[joint_id] = joint_position[joint];
-            }
+            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            q_robcogen[joint_id] = joint_position[joint];
         }
-        
         end_effector_position["LF"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_LF_foot(q_robcogen));
         end_effector_position["RF"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_RF_foot(q_robcogen));
         end_effector_position["LH"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_LH_foot(q_robcogen));
         end_effector_position["RH"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_RH_foot(q_robcogen));
 
-        for (auto leg : *this->getLegs())
+        for (auto leg : *legs_)
         {
             //TODO improve getting the jacobian from one leg only NRT!
             robotlib::RobotBase::LegDataMap<robotlib::RobotBase::Jacobian> full_feet_jacobian_tmp = this->makeFeetJacobian();
@@ -218,26 +267,40 @@ namespace aliengolib
         robcogen_joint_acceleration.setZero();
         robcogen_tau_joints.setZero();
         
-        for (auto leg : *legs_)
+        // for (auto leg : *legs_)
+        // {
+        //     for (auto joint : *leg->getJoints())
+        //     {
+        //         const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+        //         robcogen_joint_position[joint_id] = joint_position[joint];
+        //         robcogen_joint_velocity[joint_id] = joint_velocity[joint];
+        //         robcogen_joint_acceleration[joint_id] = joint_acceleration[joint];
+        //     }
+        // }0
+
+        for(auto joint : auxiliar_joints_variable_)
         {
-            for (auto joint : *leg->getJoints())
-            {
-                const int joint_id{glue_joint_names_to_ids[joint->getName()]};
-                robcogen_joint_position[joint_id] = joint_position[joint];
-                robcogen_joint_velocity[joint_id] = joint_velocity[joint];
-                robcogen_joint_acceleration[joint_id] = joint_acceleration[joint];
-            }
+            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            robcogen_joint_position[joint_id] = joint_position[joint];
+            robcogen_joint_velocity[joint_id] = joint_velocity[joint];
+            robcogen_joint_acceleration[joint_id] = joint_acceleration[joint];
         }
 
         inverse_dynamics_->id_fully_actuated(wrench_base, robcogen_tau_joints, gravity_vector, robot_velocity, robot_acceleration, robcogen_joint_position, robcogen_joint_velocity, robcogen_joint_acceleration);
         
-        for (auto leg : *legs_)
+        // for (auto leg : *legs_)
+        // {
+        //     for (auto joint : *leg->getJoints())
+        //     {
+        //         const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+        //         tau_joints[joint] = robcogen_tau_joints[joint_id];
+        //     }
+        // }
+
+        for(auto joint : auxiliar_joints_variable_)
         {
-            for (auto joint : *leg->getJoints())
-            {
-                const int joint_id{glue_joint_names_to_ids[joint->getName()]};
-                tau_joints[joint] = robcogen_tau_joints[joint_id];
-            }
+            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            tau_joints[joint] = robcogen_tau_joints[joint_id];
         }
     }
 
@@ -252,24 +315,35 @@ namespace aliengolib
         robcogen_joint_position.setZero();
         robcogen_tau_joints.setZero();
         
-        for (auto leg : *legs_)
+        // for (auto leg : *legs_)
+        // {
+        //     for (auto joint : *leg->getJoints())
+        //     {
+        //         const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+        //         robcogen_joint_position[joint_id] = joint_position[joint];
+        //     }
+        // }
+
+        for(auto joint : auxiliar_joints_variable_)
         {
-            for (auto joint : *leg->getJoints())
-            {
-                const int joint_id{glue_joint_names_to_ids[joint->getName()]};
-                robcogen_joint_position[joint_id] = joint_position[joint];
-            }
+            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            robcogen_joint_position[joint_id] = joint_position[joint];
         }
 
         inverse_dynamics_->G_terms_fully_actuated(wrench_base, robcogen_tau_joints, gravity_vector, robcogen_joint_position);
         
-        for (auto leg : *legs_)
+        // for (auto leg : *legs_)
+        // {
+        //     for (auto joint : *leg->getJoints())
+        //     {
+        //         const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+        //         tau_joints[joint] = robcogen_tau_joints[joint_id];
+        //     }
+        // }
+        for(auto joint : auxiliar_joints_variable_)
         {
-            for (auto joint : *leg->getJoints())
-            {
-                const int joint_id{glue_joint_names_to_ids[joint->getName()]};
-                tau_joints[joint] = robcogen_tau_joints[joint_id];
-            }
+            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            tau_joints[joint] = robcogen_tau_joints[joint_id];
         }
     }
     void Aliengo::inverseKinematics(const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
@@ -308,18 +382,24 @@ namespace aliengolib
                                            robcogen_joint_velocity,
                                            robcogen_joint_acceleration);
         
-        for (auto leg : *legs_)
+        // for (auto leg : *legs_)
+        // {
+        //     for (auto joint : *leg->getJoints())
+        //     {   
+        //         const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+
+        //         joint_position[joint] = robcogen_joint_position[joint_id];
+        //         joint_velocity[joint] = robcogen_joint_velocity[joint_id];
+        //         joint_acceleration[joint] = robcogen_joint_acceleration[joint_id];
+        //     }   
+        // }
+        for(auto joint : auxiliar_joints_variable_)
         {
-            for (auto joint : *leg->getJoints())
-            {   
-                const int joint_id{glue_joint_names_to_ids[joint->getName()]};
-
-                joint_position[joint] = robcogen_joint_position[joint_id];
-                joint_velocity[joint] = robcogen_joint_velocity[joint_id];
-                joint_acceleration[joint] = robcogen_joint_acceleration[joint_id];
-            }   
+            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            joint_position[joint] = robcogen_joint_position[joint_id];
+            joint_velocity[joint] = robcogen_joint_velocity[joint_id];
+            joint_acceleration[joint] = robcogen_joint_acceleration[joint_id];
         }
-
         // if(!iK_Check){
         //     des_q_ = q_;
         //     des_qd_ = qd_;
@@ -398,15 +478,19 @@ namespace aliengolib
 
         Eigen::Matrix<double, NJOINTS_TOT, 1> joint_state_matrix = Eigen::Matrix<double, NJOINTS_TOT, 1>::Zero();
 
-        for (auto leg : *this->getLegs())
+        // for (auto leg : legs_)
+        // {
+        //     for (auto joint : *leg->getJoints())
+        //     {
+        //         const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+        //         joint_state_matrix[joint_id] = joint_state[joint];
+        //     }
+        // }
+        for(auto joint : auxiliar_joints_variable_)
         {
-            for (auto joint : *leg->getJoints())
-            {
-                const int joint_id{glue_joint_names_to_ids[joint->getName()]};
-                joint_state_matrix[joint_id] = joint_state[joint];
-            }
+            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            joint_state_matrix[joint_id] = joint_state[joint];
         }
-
         // First updates the coordinate transforms that will be used by the routine
         
         homogeneous_transforms_->fr_trunk_X_fr_LF_hipassembly(joint_state_matrix);

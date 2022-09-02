@@ -226,6 +226,9 @@ namespace aliengolib
     private: 
         urdf::Model robot_model_;
 
+        std::array<std::shared_ptr<robotlib::Joint>,NJOINTS_TOT> auxiliar_joints_variable_;
+        // std::map<std::shared_ptr<robotlib::Joint>, std::shared_ptr<robotlib::LimbBase>> map_joint_to_limb_;
+
         //**********  RobCoGen variables  **********
 		std::shared_ptr<iit::Aliengo::HomogeneousTransforms> homogeneous_transforms_;
 		std::shared_ptr<iit::dog::KinDynParams> robot_params_;
