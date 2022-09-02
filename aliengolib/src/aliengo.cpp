@@ -472,6 +472,22 @@ namespace aliengolib
         return CoMVel;
     }
 
+    Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
+                                                            const Eigen::Matrix3d &rotationMx,
+                                                            const JointState &q,
+                                                            const JointState &qd,
+                                                            const Eigen::Vector3d offset_com)
+    {
+        Eigen::Matrix<double, 6, 1> CoMVel = Eigen::Matrix<double, 6, 1>::Zero();
+        //compute joint influence
+        //TODO1
+        //CoMVel = motionVectorTransform(Eigen::Vector3d::Zero(), rotationMx) * getWholeBodyCOMJacobian(q) * qd;
+        //add base motion shifted to the COM
+
+        CoMVel += iit::motionVectorTransform(offset_com, rotationMx) * baseVel;
+
+        return CoMVel;
+    }
 
     Eigen::Vector3d Aliengo::getLegContribution(const JointState &q)
     {

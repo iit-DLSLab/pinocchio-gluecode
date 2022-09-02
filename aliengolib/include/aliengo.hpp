@@ -201,6 +201,11 @@ namespace aliengolib
                                                                  const JointState &q,
                                                                  const JointState &qd) override;
 
+        virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
+                                                            const Eigen::Matrix3d &rotationMx,
+                                                            const JointState &q,
+                                                            const JointState &qd,
+                                                            const Eigen::Vector3d offset_com);
 
         virtual Eigen::Vector3d getLegContribution(const JointState &q) override;
 
