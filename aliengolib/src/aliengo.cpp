@@ -99,12 +99,9 @@ namespace aliengolib
         jacobians_.reset(new iit::Aliengo::Jacobians(*robot_params_));
 
         inverse_dynamics_.reset(new iit::Aliengo::dyn::InverseDynamics(*inertias_, *motion_transforms_));
+    }
 
-    	
-    };
-
-    
-    Aliengo::~Aliengo(){};
+    Aliengo::~Aliengo(){}
 
     void Aliengo::setJointLimitsFromUrdf()
     {
@@ -203,6 +200,8 @@ namespace aliengolib
                                     robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity,
                                     robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_acceleration)
     {
+        joint_acceleration.size();   // TODO: Not used. Created to remove warning
+
         homogeneous_transforms_->updateParameters();
         // Mapping from robotlib structure to robcogen ones, TODO: maybe a function mapping robotlib to eigen structure is needed
         // NB: this mapping assumes that the robcogen order is the same as the one defining the legs and joints of Crex!
@@ -347,11 +346,11 @@ namespace aliengolib
         }
     }
     void Aliengo::inverseKinematics(const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
-                                 const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity,
-                                 const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_acceleration,
-                                 robotlib::RobotBase::JointState &joint_position,
-                                 robotlib::RobotBase::JointState &joint_velocity,
-                                 robotlib::RobotBase::JointState &joint_acceleration)
+                                    const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity,
+                                    const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_acceleration,
+                                    robotlib::RobotBase::JointState &joint_position,
+                                    robotlib::RobotBase::JointState &joint_velocity,
+                                    robotlib::RobotBase::JointState &joint_acceleration)
     {
         iit::dog::LegDataMap<Eigen::Vector3d> robcogen_end_effector_position{};
         iit::dog::LegDataMap<Eigen::Vector3d> robcogen_end_effector_velocity{};
@@ -375,7 +374,7 @@ namespace aliengolib
             
         }
 
-        bool iK_Check = inverse_kinematics_->getJointState(robcogen_end_effector_position,
+        inverse_kinematics_->getJointState(robcogen_end_effector_position,
                                            robcogen_end_effector_velocity,
                                            robcogen_end_effector_acceleration,
                                            robcogen_joint_position,
@@ -393,6 +392,7 @@ namespace aliengolib
         //         joint_acceleration[joint] = robcogen_joint_acceleration[joint_id];
         //     }   
         // }
+
         for(auto joint : auxiliar_joints_variable_)
         {
             const int joint_id{glue_joint_names_to_ids[joint->getName()]};
@@ -532,7 +532,12 @@ namespace aliengolib
     Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVel(const JointState &q,
                                                 const JointState &qd)
     {
+        q.size();   // TODO: Not used. Created to remove warning
+        qd.size();   // TODO: Not used. Created to remove warning
+
         Eigen::Matrix<double, 6, 1> CoMvel = Eigen::Matrix<double, 6, 1>::Zero();
+        
+        std::cout << "TODO: getWholeBodyCOMVel\n";
 
         // The actual calculus
         //TODO1
@@ -545,11 +550,15 @@ namespace aliengolib
                                                                 const JointState &q,
                                                                 const JointState &qd)
     {
+        qd.size();   // TODO: Not used. Created to remove warning
+
         Eigen::Matrix<double, 6, 1> CoMVel = Eigen::Matrix<double, 6, 1>::Zero();
         //compute joint influence
         //TODO1
         //CoMVel = motionVectorTransform(Eigen::Vector3d::Zero(), rotationMx) * getWholeBodyCOMJacobian(q) * qd;
         //add base motion shifted to the COM
+
+        std::cout << "TODO: getWholeBodyCOMVelFB - compute joint influence\n";
 
         CoMVel += iit::motionVectorTransform(getWholeBodyCOM(q), rotationMx) * baseVel;
 
@@ -557,24 +566,31 @@ namespace aliengolib
     }
 
     Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
+                                                                const Eigen::Matrix3d &rotationMx,
+                                                                const JointState &q)
+    {
+        Eigen::Matrix<double, 6, 1> CoMVel = Eigen::Matrix<double, 6, 1>::Zero();
+
+        CoMVel = iit::motionVectorTransform(getWholeBodyCOM(q), rotationMx) * baseVel;
+
+        return CoMVel;
+    }
+
+    Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
                                                             const Eigen::Matrix3d &rotationMx,
-                                                            const JointState &q,
-                                                            const JointState &qd,
                                                             const Eigen::Vector3d offset_com)
     {
         Eigen::Matrix<double, 6, 1> CoMVel = Eigen::Matrix<double, 6, 1>::Zero();
-        //compute joint influence
-        //TODO1
-        //CoMVel = motionVectorTransform(Eigen::Vector3d::Zero(), rotationMx) * getWholeBodyCOMJacobian(q) * qd;
-        //add base motion shifted to the COM
 
-        CoMVel += iit::motionVectorTransform(offset_com, rotationMx) * baseVel;
+        CoMVel = iit::motionVectorTransform(offset_com, rotationMx) * baseVel;
 
         return CoMVel;
     }
 
     Eigen::Vector3d Aliengo::getLegContribution(const JointState &q)
     {
+        q.size();   // TODO: Not used. Created to remove warning
+
          Eigen::Vector3d tmpSum = Eigen::Vector3d::Zero();
 
         iit::Aliengo::HomogeneousTransforms::MatrixType tmpX(iit::Aliengo::HomogeneousTransforms::MatrixType::Identity());
@@ -690,5 +706,6 @@ namespace aliengolib
     }
     extern "C" void destroyRobotWithUrdf_t(std::shared_ptr<robotlib::RobotBase> robot)
     {
+        robot->getName();
     }
 } // namespace hyqlib

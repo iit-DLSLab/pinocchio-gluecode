@@ -52,7 +52,7 @@ namespace aliengolib
 namespace iit{
 
     // ******************** FROM iit/commons/rbd/utils.h ********************    
-    static Eigen::Matrix3d buildCrossProductMatrix(const Eigen::Vector3d& in);
+    Eigen::Matrix3d buildCrossProductMatrix(const Eigen::Vector3d& in);
     // ******************** ___FROM iit/commons/rbd/utils.h___ ********************
     
 

@@ -91,6 +91,7 @@ iit::Aliengo::dyn::InverseDynamics::Velocity iit::Aliengo::dyn::InverseDynamics:
         return this->getVelocity_RH_lowerleg();
     default:
         std::cerr<<"getLinkVelocity ERROR: spatial velocity not available for linkid : " << link_id << std::endl;
+        return Eigen::Matrix<double, 6, 1>::Zero();
         break;        
     }
 }
@@ -122,15 +123,18 @@ iit::Aliengo::dyn::InverseDynamics::Acceleration iit::Aliengo::dyn::InverseDynam
         return this->getAcceleration_LH_upperleg();
     case RH_UPPERLEG:
         return this->getAcceleration_RH_upperleg();
+    default:
+        std::cerr<< "getLinkAcceleration ERROR: spatial acceleration not available for linkid : " << link_id << std::endl;
+        return Eigen::Matrix<double, 6, 1>::Zero();
+        break;        
     }
 }
-
 
 void iit::Aliengo::dyn::InverseDynamics::propagateVelAcc(
     const Acceleration& g, const Velocity& trunk_v,
     const JointState& qd, const JointState& qdd)
 {
-
+    g.size();   // TODO: Not used. Created to remove warning
 	// First pass, link 'LF_hipassembly'
 	    LF_hipassembly_v = ((xm->fr_LF_hipassembly_X_fr_trunk) * trunk_v);
 	    LF_hipassembly_v(iit::rbd::AZ) += qd(LF_HAA);

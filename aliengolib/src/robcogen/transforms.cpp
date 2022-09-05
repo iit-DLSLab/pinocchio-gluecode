@@ -6,268 +6,296 @@ using namespace iit::Aliengo;
 
 SpatialTransformPlain MotionTransforms::getTransform(const dog::JointState &q,
                                                  const dog::OriginFrame &orig,
-                                                 const dog::DestFrame &dest){
+                                                 const dog::DestFrame &dest)
+{
     this->updateParameters();
-    switch(dest){
-    case DestFrame::TRUNK:
-        switch(orig){
-        case OriginFrame::LF_HIPASSEMBLY_COM:
-            return this->fr_trunk_X_LF_hipassemblyCOM(q);
-        case OriginFrame::RF_HIPASSEMBLY_COM:
-            return this->fr_trunk_X_RF_hipassemblyCOM(q);
-        case OriginFrame::LH_HIPASSEMBLY_COM:
-            return this->fr_trunk_X_LH_hipassemblyCOM(q);
-        case OriginFrame::RH_HIPASSEMBLY_COM:
-            return this->fr_trunk_X_RH_hipassemblyCOM(q);
-        case OriginFrame::LF_HIPASSEMBLY:
-            return this->fr_trunk_X_fr_LF_hipassembly(q);
-        case OriginFrame::RF_HIPASSEMBLY:
-            return this->fr_trunk_X_fr_RF_hipassembly(q);
-        case OriginFrame::LH_HIPASSEMBLY:
-            return this->fr_trunk_X_fr_LH_hipassembly(q);
-        case OriginFrame::RH_HIPASSEMBLY:
-            return this->fr_trunk_X_fr_RH_hipassembly(q);
-        case OriginFrame::LF_UPPERLEG_COM:
-            return this->fr_trunk_X_LF_upperlegCOM(q);
-        case OriginFrame::RF_UPPERLEG_COM:
-            return this->fr_trunk_X_RF_upperlegCOM(q);
-        case OriginFrame::LH_UPPERLEG_COM:
-            return this->fr_trunk_X_LH_upperlegCOM(q);
-        case OriginFrame::RH_UPPERLEG_COM:
-            return this->fr_trunk_X_RH_upperlegCOM(q);
 
-        case OriginFrame::LF_LOWERLEG_COM:
-            return this->fr_trunk_X_LF_lowerlegCOM(q);
-        case OriginFrame::RF_LOWERLEG_COM:
-            return this->fr_trunk_X_RF_lowerlegCOM(q);
-        case OriginFrame::LH_LOWERLEG_COM:
-            return this->fr_trunk_X_LH_lowerlegCOM(q);
-        case OriginFrame::RH_LOWERLEG_COM:
-            return this->fr_trunk_X_RH_lowerlegCOM(q);
+    switch(dest)
+    {
+        case DestFrame::TRUNK:
+            switch(orig){
+                case OriginFrame::LF_HIPASSEMBLY_COM:
+                    return this->fr_trunk_X_LF_hipassemblyCOM(q);
+                case OriginFrame::RF_HIPASSEMBLY_COM:
+                    return this->fr_trunk_X_RF_hipassemblyCOM(q);
+                case OriginFrame::LH_HIPASSEMBLY_COM:
+                    return this->fr_trunk_X_LH_hipassemblyCOM(q);
+                case OriginFrame::RH_HIPASSEMBLY_COM:
+                    return this->fr_trunk_X_RH_hipassemblyCOM(q);
+                case OriginFrame::LF_HIPASSEMBLY:
+                    return this->fr_trunk_X_fr_LF_hipassembly(q);
+                case OriginFrame::RF_HIPASSEMBLY:
+                    return this->fr_trunk_X_fr_RF_hipassembly(q);
+                case OriginFrame::LH_HIPASSEMBLY:
+                    return this->fr_trunk_X_fr_LH_hipassembly(q);
+                case OriginFrame::RH_HIPASSEMBLY:
+                    return this->fr_trunk_X_fr_RH_hipassembly(q);
 
-        case OriginFrame::LF_FOOT:
-            return this->fr_trunk_X_LF_foot(q);
-        case OriginFrame::RF_FOOT:
-            return this->fr_trunk_X_RF_foot(q);
-        case OriginFrame::LH_FOOT:
-            return this->fr_trunk_X_LH_foot(q);
-        case OriginFrame::RH_FOOT:
-            return this->fr_trunk_X_RH_foot(q);
+                case OriginFrame::LF_UPPERLEG_COM:
+                    return this->fr_trunk_X_LF_upperlegCOM(q);
+                case OriginFrame::RF_UPPERLEG_COM:
+                    return this->fr_trunk_X_RF_upperlegCOM(q);
+                case OriginFrame::LH_UPPERLEG_COM:
+                    return this->fr_trunk_X_LH_upperlegCOM(q);
+                case OriginFrame::RH_UPPERLEG_COM:
+                    return this->fr_trunk_X_RH_upperlegCOM(q);
 
-            // TODO there is no shin in Aliengo
-        //case OriginFrame::LF_SHIN:
-        //    return this->fr_trunk_X_LF_shin(q);
-        //case OriginFrame::RF_SHIN:
-        //    return this->fr_trunk_X_RF_shin(q);
-        //case OriginFrame::LH_SHIN:
-        //    return this->fr_trunk_X_LH_shin(q);
-        //case OriginFrame::RH_SHIN:
-        //    return this->fr_trunk_X_RH_shin(q);
+                case OriginFrame::LF_LOWERLEG_COM:
+                    return this->fr_trunk_X_LF_lowerlegCOM(q);
+                case OriginFrame::RF_LOWERLEG_COM:
+                    return this->fr_trunk_X_RF_lowerlegCOM(q);
+                case OriginFrame::LH_LOWERLEG_COM:
+                    return this->fr_trunk_X_LH_lowerlegCOM(q);
+                case OriginFrame::RH_LOWERLEG_COM:
+                    return this->fr_trunk_X_RH_lowerlegCOM(q);
 
-        case OriginFrame::LF_HAA:
-            return this->fr_trunk_X_fr_LF_HAA(q);
-        case OriginFrame::RF_HAA:
-            return this->fr_trunk_X_fr_RF_HAA(q);
-        case OriginFrame::LH_HAA:
-            return this->fr_trunk_X_fr_LH_HAA(q);
-        case OriginFrame::RH_HAA:
-            return this->fr_trunk_X_fr_RH_HAA(q);
+                case OriginFrame::LF_FOOT:
+                    return this->fr_trunk_X_LF_foot(q);
+                case OriginFrame::RF_FOOT:
+                    return this->fr_trunk_X_RF_foot(q);
+                case OriginFrame::LH_FOOT:
+                    return this->fr_trunk_X_LH_foot(q);
+                case OriginFrame::RH_FOOT:
+                    return this->fr_trunk_X_RH_foot(q);
 
-        case OriginFrame::LF_HFE:
-            return this->fr_trunk_X_fr_LF_HFE(q);
-        case OriginFrame::RF_HFE:
-            return this->fr_trunk_X_fr_RF_HFE(q);
-        case OriginFrame::LH_HFE:
-            return this->fr_trunk_X_fr_LH_HFE(q);
-        case OriginFrame::RH_HFE:
-            return this->fr_trunk_X_fr_RH_HFE(q);
+                    // TODO there is no shin in Aliengo
+                //case OriginFrame::LF_SHIN:
+                //    return this->fr_trunk_X_LF_shin(q);
+                //case OriginFrame::RF_SHIN:
+                //    return this->fr_trunk_X_RF_shin(q);
+                //case OriginFrame::LH_SHIN:
+                //    return this->fr_trunk_X_LH_shin(q);
+                //case OriginFrame::RH_SHIN:
+                //    return this->fr_trunk_X_RH_shin(q);
 
-        case OriginFrame::LF_KFE:
-            return this->fr_trunk_X_fr_LF_KFE(q);
-        case OriginFrame::RF_KFE:
-            return this->fr_trunk_X_fr_RF_KFE(q);
-        case OriginFrame::LH_KFE:
-            return this->fr_trunk_X_fr_LH_KFE(q);
-        case OriginFrame::RH_KFE:
-            return this->fr_trunk_X_fr_RH_KFE(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
+                case OriginFrame::LF_HAA:
+                    return this->fr_trunk_X_fr_LF_HAA(q);
+                case OriginFrame::RF_HAA:
+                    return this->fr_trunk_X_fr_RF_HAA(q);
+                case OriginFrame::LH_HAA:
+                    return this->fr_trunk_X_fr_LH_HAA(q);
+                case OriginFrame::RH_HAA:
+                    return this->fr_trunk_X_fr_RH_HAA(q);
 
-    case DestFrame::LF_FOOT:
-        switch(orig){
-        case OriginFrame::LF_LOWERLEG:
-            return this->LF_foot_X_fr_LF_lowerleg(q);
-        case OriginFrame::TRUNK:
-            return this->LF_foot_X_fr_trunk(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                case OriginFrame::LF_HFE:
+                    return this->fr_trunk_X_fr_LF_HFE(q);
+                case OriginFrame::RF_HFE:
+                    return this->fr_trunk_X_fr_RF_HFE(q);
+                case OriginFrame::LH_HFE:
+                    return this->fr_trunk_X_fr_LH_HFE(q);
+                case OriginFrame::RH_HFE:
+                    return this->fr_trunk_X_fr_RH_HFE(q);
+
+                case OriginFrame::LF_KFE:
+                    return this->fr_trunk_X_fr_LF_KFE(q);
+                case OriginFrame::RF_KFE:
+                    return this->fr_trunk_X_fr_RF_KFE(q);
+                case OriginFrame::LH_KFE:
+                    return this->fr_trunk_X_fr_LH_KFE(q);
+                case OriginFrame::RH_KFE:
+                    return this->fr_trunk_X_fr_RH_KFE(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 6, 6>::Zero();
+                    break;
+            }
             break;
-        }
-        break;
-
-    case DestFrame::RF_FOOT:
-        switch(orig){
-        case OriginFrame::RF_LOWERLEG:
-            return this->RF_foot_X_fr_RF_lowerleg(q);
-        case OriginFrame::TRUNK:
-            return this->RF_foot_X_fr_trunk(q);
+        case DestFrame::LF_FOOT:
+            switch(orig)
+            {
+                case OriginFrame::LF_LOWERLEG:
+                    return this->LF_foot_X_fr_LF_lowerleg(q);
+                case OriginFrame::TRUNK:
+                    return this->LF_foot_X_fr_trunk(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 6, 6>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::RF_FOOT:
+            switch(orig)
+            {
+                case OriginFrame::RF_LOWERLEG:
+                    return this->RF_foot_X_fr_RF_lowerleg(q);
+                case OriginFrame::TRUNK:
+                    return this->RF_foot_X_fr_trunk(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 6, 6>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::LH_FOOT:
+            switch(orig)
+            {
+                case OriginFrame::LH_LOWERLEG:
+                    return this->LH_foot_X_fr_LH_lowerleg(q);
+                case OriginFrame::TRUNK:
+                    return this->LH_foot_X_fr_trunk(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 6, 6>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::RH_FOOT:
+            switch(orig)
+            {
+                case OriginFrame::RH_LOWERLEG:
+                    return this->RH_foot_X_fr_RH_lowerleg(q);
+                case OriginFrame::TRUNK:
+                    return this->RH_foot_X_fr_trunk(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 6, 6>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::LF_LOWERLEG:
+            switch(orig)
+            {
+                case OriginFrame::LF_FOOT:
+                    return this->fr_LF_lowerleg_X_LF_foot(q);
+                case OriginFrame::TRUNK:
+                    return this->fr_LF_lowerleg_X_fr_trunk(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 6, 6>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::RF_LOWERLEG:
+            switch(orig)
+            {
+                case OriginFrame::RF_FOOT:
+                    return this->fr_RF_lowerleg_X_RF_foot(q);
+                case OriginFrame::TRUNK:
+                    return this->fr_RF_lowerleg_X_fr_trunk(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 6, 6>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::LH_LOWERLEG:
+            switch(orig)
+            {
+                case OriginFrame::LH_FOOT:
+                    return this->fr_LH_lowerleg_X_LH_foot(q);
+                case OriginFrame::TRUNK:
+                    return this->fr_LH_lowerleg_X_fr_trunk(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 6, 6>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::RH_LOWERLEG:
+            switch(orig)
+            {
+                case OriginFrame::RH_FOOT:
+                    return this->fr_RH_lowerleg_X_RH_foot(q);
+                case OriginFrame::TRUNK:
+                    return this->fr_RH_lowerleg_X_fr_trunk(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 6, 6>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::LF_HIPASSEMBLY:
+            switch(orig)
+            {
+                case OriginFrame::LF_UPPERLEG:
+                    return this->fr_LF_hipassembly_X_fr_LF_upperleg(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 6, 6>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::RF_HIPASSEMBLY:
+            switch(orig)
+            {
+                case OriginFrame::RF_UPPERLEG:
+                    return this->fr_RF_hipassembly_X_fr_RF_upperleg(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 6, 6>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::LH_HIPASSEMBLY:
+            switch(orig)
+            {
+                case OriginFrame::LH_UPPERLEG:
+                    return this->fr_LH_hipassembly_X_fr_LH_upperleg(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 6, 6>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::RH_HIPASSEMBLY:
+            switch(orig)
+            {
+                case OriginFrame::RH_UPPERLEG:
+                    return this->fr_RH_hipassembly_X_fr_RH_upperleg(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 6, 6>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::LF_UPPERLEG:
+            switch(orig)
+            {
+                case OriginFrame::LF_LOWERLEG:
+                    return this->fr_LF_upperleg_X_fr_LF_lowerleg(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 6, 6>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::RF_UPPERLEG:
+            switch(orig)
+            {
+                case OriginFrame::RF_LOWERLEG:
+                    return this->fr_RF_upperleg_X_fr_RF_lowerleg(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 6, 6>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::LH_UPPERLEG:
+            switch(orig)
+            {
+                case OriginFrame::LH_LOWERLEG:
+                    return this->fr_LH_upperleg_X_fr_LH_lowerleg(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 6, 6>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::RH_UPPERLEG:
+            switch(orig)
+            {
+                case OriginFrame::RH_LOWERLEG:
+                    return this->fr_RH_upperleg_X_fr_RH_lowerleg(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 6, 6>::Zero();
+                    break;
+            }
+            break;
         default:
             std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-
-    case DestFrame::LH_FOOT:
-        switch(orig){
-        case OriginFrame::LH_LOWERLEG:
-            return this->LH_foot_X_fr_LH_lowerleg(q);
-        case OriginFrame::TRUNK:
-            return this->LH_foot_X_fr_trunk(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-
-    case DestFrame::RH_FOOT:
-        switch(orig){
-        case OriginFrame::RH_LOWERLEG:
-            return this->RH_foot_X_fr_RH_lowerleg(q);
-        case OriginFrame::TRUNK:
-            return this->RH_foot_X_fr_trunk(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-
-    case DestFrame::LF_LOWERLEG:
-        switch(orig){
-        case OriginFrame::LF_FOOT:
-            return this->fr_LF_lowerleg_X_LF_foot(q);
-        case OriginFrame::TRUNK:
-            return this->fr_LF_lowerleg_X_fr_trunk(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-
-    case DestFrame::RF_LOWERLEG:
-        switch(orig){
-        case OriginFrame::RF_FOOT:
-            return this->fr_RF_lowerleg_X_RF_foot(q);
-        case OriginFrame::TRUNK:
-            return this->fr_RF_lowerleg_X_fr_trunk(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-
-    case DestFrame::LH_LOWERLEG:
-        switch(orig){
-        case OriginFrame::LH_FOOT:
-            return this->fr_LH_lowerleg_X_LH_foot(q);
-        case OriginFrame::TRUNK:
-            return this->fr_LH_lowerleg_X_fr_trunk(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-
-    case DestFrame::RH_LOWERLEG:
-        switch(orig){
-        case OriginFrame::RH_FOOT:
-            return this->fr_RH_lowerleg_X_RH_foot(q);
-        case OriginFrame::TRUNK:
-            return this->fr_RH_lowerleg_X_fr_trunk(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-    case DestFrame::LF_HIPASSEMBLY:
-        switch(orig){
-        case OriginFrame::LF_UPPERLEG:
-            return this->fr_LF_hipassembly_X_fr_LF_upperleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-    case DestFrame::RF_HIPASSEMBLY:
-        switch(orig){
-        case OriginFrame::RF_UPPERLEG:
-            return this->fr_RF_hipassembly_X_fr_RF_upperleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-
-    case DestFrame::LH_HIPASSEMBLY:
-        switch(orig){
-        case OriginFrame::LH_UPPERLEG:
-            return this->fr_LH_hipassembly_X_fr_LH_upperleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-
-    case DestFrame::RH_HIPASSEMBLY:
-        switch(orig){
-        case OriginFrame::RH_UPPERLEG:
-            return this->fr_RH_hipassembly_X_fr_RH_upperleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-    case DestFrame::LF_UPPERLEG:
-        switch(orig){
-        case OriginFrame::LF_LOWERLEG:
-            return this->fr_LF_upperleg_X_fr_LF_lowerleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-    case DestFrame::RF_UPPERLEG:
-        switch(orig){
-        case OriginFrame::RF_LOWERLEG:
-            return this->fr_RF_upperleg_X_fr_RF_lowerleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-    case DestFrame::LH_UPPERLEG:
-        switch(orig){
-        case OriginFrame::LH_LOWERLEG:
-            return this->fr_LH_upperleg_X_fr_LH_lowerleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-    case DestFrame::RH_UPPERLEG:
-        switch(orig){
-        case OriginFrame::RH_LOWERLEG:
-            return this->fr_RH_upperleg_X_fr_RH_lowerleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-    default:
-        std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-        break;
+            return Eigen::Matrix<double, 6, 6>::Zero();
+            break;
     }
 }
 
@@ -356,267 +384,295 @@ void iit::Aliengo::MotionTransforms::updateParameters() {
 
 SpatialTransformPlain ForceTransforms::getTransform(const dog::JointState &q,
                                                      const dog::OriginFrame &orig,
-                                                     const dog::DestFrame &dest){
+                                                     const dog::DestFrame &dest)
+{
     this->updateParameters();
-    switch(dest){
-    case DestFrame::TRUNK:
-        switch(orig){
-        case OriginFrame::LF_HIPASSEMBLY_COM:
-            return this->fr_trunk_X_LF_hipassemblyCOM(q);
-        case OriginFrame::RF_HIPASSEMBLY_COM:
-            return this->fr_trunk_X_RF_hipassemblyCOM(q);
-        case OriginFrame::LH_HIPASSEMBLY_COM:
-            return this->fr_trunk_X_LH_hipassemblyCOM(q);
-        case OriginFrame::RH_HIPASSEMBLY_COM:
-            return this->fr_trunk_X_RH_hipassemblyCOM(q);
-        case OriginFrame::LF_HIPASSEMBLY:
-            return this->fr_trunk_X_fr_LF_hipassembly(q);
-        case OriginFrame::RF_HIPASSEMBLY:
-            return this->fr_trunk_X_fr_RF_hipassembly(q);
-        case OriginFrame::LH_HIPASSEMBLY:
-            return this->fr_trunk_X_fr_LH_hipassembly(q);
-        case OriginFrame::RH_HIPASSEMBLY:
-            return this->fr_trunk_X_fr_RH_hipassembly(q);
-        case OriginFrame::LF_UPPERLEG_COM:
-            return this->fr_trunk_X_LF_upperlegCOM(q);
-        case OriginFrame::RF_UPPERLEG_COM:
-            return this->fr_trunk_X_RF_upperlegCOM(q);
-        case OriginFrame::LH_UPPERLEG_COM:
-            return this->fr_trunk_X_LH_upperlegCOM(q);
-        case OriginFrame::RH_UPPERLEG_COM:
-            return this->fr_trunk_X_RH_upperlegCOM(q);
 
-        case OriginFrame::LF_LOWERLEG_COM:
-            return this->fr_trunk_X_LF_lowerlegCOM(q);
-        case OriginFrame::RF_LOWERLEG_COM:
-            return this->fr_trunk_X_RF_lowerlegCOM(q);
-        case OriginFrame::LH_LOWERLEG_COM:
-            return this->fr_trunk_X_LH_lowerlegCOM(q);
-        case OriginFrame::RH_LOWERLEG_COM:
-            return this->fr_trunk_X_RH_lowerlegCOM(q);
+    switch(dest)
+    {
+        case DestFrame::TRUNK:
+            switch(orig){
+            case OriginFrame::LF_HIPASSEMBLY_COM:
+                return this->fr_trunk_X_LF_hipassemblyCOM(q);
+            case OriginFrame::RF_HIPASSEMBLY_COM:
+                return this->fr_trunk_X_RF_hipassemblyCOM(q);
+            case OriginFrame::LH_HIPASSEMBLY_COM:
+                return this->fr_trunk_X_LH_hipassemblyCOM(q);
+            case OriginFrame::RH_HIPASSEMBLY_COM:
+                return this->fr_trunk_X_RH_hipassemblyCOM(q);
+            case OriginFrame::LF_HIPASSEMBLY:
+                return this->fr_trunk_X_fr_LF_hipassembly(q);
+            case OriginFrame::RF_HIPASSEMBLY:
+                return this->fr_trunk_X_fr_RF_hipassembly(q);
+            case OriginFrame::LH_HIPASSEMBLY:
+                return this->fr_trunk_X_fr_LH_hipassembly(q);
+            case OriginFrame::RH_HIPASSEMBLY:
+                return this->fr_trunk_X_fr_RH_hipassembly(q);
 
-        case OriginFrame::LF_FOOT:
-            return this->fr_trunk_X_LF_foot(q);
-        case OriginFrame::RF_FOOT:
-            return this->fr_trunk_X_RF_foot(q);
-        case OriginFrame::LH_FOOT:
-            return this->fr_trunk_X_LH_foot(q);
-        case OriginFrame::RH_FOOT:
-            return this->fr_trunk_X_RH_foot(q);
+            case OriginFrame::LF_UPPERLEG_COM:
+                return this->fr_trunk_X_LF_upperlegCOM(q);
+            case OriginFrame::RF_UPPERLEG_COM:
+                return this->fr_trunk_X_RF_upperlegCOM(q);
+            case OriginFrame::LH_UPPERLEG_COM:
+                return this->fr_trunk_X_LH_upperlegCOM(q);
+            case OriginFrame::RH_UPPERLEG_COM:
+                return this->fr_trunk_X_RH_upperlegCOM(q);
 
-            // TODO there is no shin in Aliengo
-        //case OriginFrame::LF_SHIN:
-        //    return this->fr_trunk_X_LF_shin(q);
-        //case OriginFrame::RF_SHIN:
-        //    return this->fr_trunk_X_RF_shin(q);
-        //case OriginFrame::LH_SHIN:
-        //    return this->fr_trunk_X_LH_shin(q);
-        //case OriginFrame::RH_SHIN:
-        //    return this->fr_trunk_X_RH_shin(q);
+            case OriginFrame::LF_LOWERLEG_COM:
+                return this->fr_trunk_X_LF_lowerlegCOM(q);
+            case OriginFrame::RF_LOWERLEG_COM:
+                return this->fr_trunk_X_RF_lowerlegCOM(q);
+            case OriginFrame::LH_LOWERLEG_COM:
+                return this->fr_trunk_X_LH_lowerlegCOM(q);
+            case OriginFrame::RH_LOWERLEG_COM:
+                return this->fr_trunk_X_RH_lowerlegCOM(q);
 
-        case OriginFrame::LF_HAA:
-            return this->fr_trunk_X_fr_LF_HAA(q);
-        case OriginFrame::RF_HAA:
-            return this->fr_trunk_X_fr_RF_HAA(q);
-        case OriginFrame::LH_HAA:
-            return this->fr_trunk_X_fr_LH_HAA(q);
-        case OriginFrame::RH_HAA:
-            return this->fr_trunk_X_fr_RH_HAA(q);
+            case OriginFrame::LF_FOOT:
+                return this->fr_trunk_X_LF_foot(q);
+            case OriginFrame::RF_FOOT:
+                return this->fr_trunk_X_RF_foot(q);
+            case OriginFrame::LH_FOOT:
+                return this->fr_trunk_X_LH_foot(q);
+            case OriginFrame::RH_FOOT:
+                return this->fr_trunk_X_RH_foot(q);
 
-        case OriginFrame::LF_HFE:
-            return this->fr_trunk_X_fr_LF_HFE(q);
-        case OriginFrame::RF_HFE:
-            return this->fr_trunk_X_fr_RF_HFE(q);
-        case OriginFrame::LH_HFE:
-            return this->fr_trunk_X_fr_LH_HFE(q);
-        case OriginFrame::RH_HFE:
-            return this->fr_trunk_X_fr_RH_HFE(q);
+                // TODO there is no shin in Aliengo
+            //case OriginFrame::LF_SHIN:
+            //    return this->fr_trunk_X_LF_shin(q);
+            //case OriginFrame::RF_SHIN:
+            //    return this->fr_trunk_X_RF_shin(q);
+            //case OriginFrame::LH_SHIN:
+            //    return this->fr_trunk_X_LH_shin(q);
+            //case OriginFrame::RH_SHIN:
+            //    return this->fr_trunk_X_RH_shin(q);
 
-        case OriginFrame::LF_KFE:
-            return this->fr_trunk_X_fr_LF_KFE(q);
-        case OriginFrame::RF_KFE:
-            return this->fr_trunk_X_fr_RF_KFE(q);
-        case OriginFrame::LH_KFE:
-            return this->fr_trunk_X_fr_LH_KFE(q);
-        case OriginFrame::RH_KFE:
-            return this->fr_trunk_X_fr_RH_KFE(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
+            case OriginFrame::LF_HAA:
+                return this->fr_trunk_X_fr_LF_HAA(q);
+            case OriginFrame::RF_HAA:
+                return this->fr_trunk_X_fr_RF_HAA(q);
+            case OriginFrame::LH_HAA:
+                return this->fr_trunk_X_fr_LH_HAA(q);
+            case OriginFrame::RH_HAA:
+                return this->fr_trunk_X_fr_RH_HAA(q);
+
+            case OriginFrame::LF_HFE:
+                return this->fr_trunk_X_fr_LF_HFE(q);
+            case OriginFrame::RF_HFE:
+                return this->fr_trunk_X_fr_RF_HFE(q);
+            case OriginFrame::LH_HFE:
+                return this->fr_trunk_X_fr_LH_HFE(q);
+            case OriginFrame::RH_HFE:
+                return this->fr_trunk_X_fr_RH_HFE(q);
+
+            case OriginFrame::LF_KFE:
+                return this->fr_trunk_X_fr_LF_KFE(q);
+            case OriginFrame::RF_KFE:
+                return this->fr_trunk_X_fr_RF_KFE(q);
+            case OriginFrame::LH_KFE:
+                return this->fr_trunk_X_fr_LH_KFE(q);
+            case OriginFrame::RH_KFE:
+                return this->fr_trunk_X_fr_RH_KFE(q);
+            default:
+                std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                return Eigen::Matrix<double, 6, 6>::Zero();
+                break;
         }
         break;
-
     case DestFrame::LF_FOOT:
-        switch(orig){
-        case OriginFrame::LF_LOWERLEG:
-            return this->LF_foot_X_fr_LF_lowerleg(q);
-        case OriginFrame::TRUNK:
-            return this->LF_foot_X_fr_trunk(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-            break;
+        switch(orig)
+        {
+            case OriginFrame::LF_LOWERLEG:
+                return this->LF_foot_X_fr_LF_lowerleg(q);
+            case OriginFrame::TRUNK:
+                return this->LF_foot_X_fr_trunk(q);
+            default:
+                std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                return Eigen::Matrix<double, 6, 6>::Zero();
+                break;
         }
         break;
-
     case DestFrame::RF_FOOT:
-        switch(orig){
-        case OriginFrame::RF_LOWERLEG:
-            return this->RF_foot_X_fr_RF_lowerleg(q);
-        case OriginFrame::TRUNK:
-            return this->RF_foot_X_fr_trunk(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
+        switch(orig)
+        {
+            case OriginFrame::RF_LOWERLEG:
+                return this->RF_foot_X_fr_RF_lowerleg(q);
+            case OriginFrame::TRUNK:
+                return this->RF_foot_X_fr_trunk(q);
+            default:
+                std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                return Eigen::Matrix<double, 6, 6>::Zero();
+                break;
         }
         break;
-
     case DestFrame::LH_FOOT:
-        switch(orig){
-        case OriginFrame::LH_LOWERLEG:
-            return this->LH_foot_X_fr_LH_lowerleg(q);
-        case OriginFrame::TRUNK:
-            return this->LH_foot_X_fr_trunk(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
+        switch(orig)
+        {
+            case OriginFrame::LH_LOWERLEG:
+                return this->LH_foot_X_fr_LH_lowerleg(q);
+            case OriginFrame::TRUNK:
+                return this->LH_foot_X_fr_trunk(q);
+            default:
+                std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                return Eigen::Matrix<double, 6, 6>::Zero();
+                break;
         }
         break;
-
     case DestFrame::RH_FOOT:
-        switch(orig){
-        case OriginFrame::RH_LOWERLEG:
-            return this->RH_foot_X_fr_RH_lowerleg(q);
-        case OriginFrame::TRUNK:
-            return this->RH_foot_X_fr_trunk(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
+        switch(orig)
+        {
+            case OriginFrame::RH_LOWERLEG:
+                return this->RH_foot_X_fr_RH_lowerleg(q);
+            case OriginFrame::TRUNK:
+                return this->RH_foot_X_fr_trunk(q);
+            default:
+                std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                return Eigen::Matrix<double, 6, 6>::Zero();
+                break;
         }
         break;
-
     case DestFrame::LF_LOWERLEG:
-        switch(orig){
-        case OriginFrame::LF_FOOT:
-            return this->fr_LF_lowerleg_X_LF_foot(q);
-        case OriginFrame::TRUNK:
-            return this->fr_LF_lowerleg_X_fr_trunk(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
+        switch(orig)
+        {
+            case OriginFrame::LF_FOOT:
+                return this->fr_LF_lowerleg_X_LF_foot(q);
+            case OriginFrame::TRUNK:
+                return this->fr_LF_lowerleg_X_fr_trunk(q);
+            default:
+                std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                return Eigen::Matrix<double, 6, 6>::Zero();
+                break;
         }
         break;
-
     case DestFrame::RF_LOWERLEG:
-        switch(orig){
-        case OriginFrame::RF_FOOT:
-            return this->fr_RF_lowerleg_X_RF_foot(q);
-        case OriginFrame::TRUNK:
-            return this->fr_RF_lowerleg_X_fr_trunk(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
+        switch(orig)
+        {
+            case OriginFrame::RF_FOOT:
+                return this->fr_RF_lowerleg_X_RF_foot(q);
+            case OriginFrame::TRUNK:
+                return this->fr_RF_lowerleg_X_fr_trunk(q);
+            default:
+                std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                return Eigen::Matrix<double, 6, 6>::Zero();
+                break;
         }
         break;
-
     case DestFrame::LH_LOWERLEG:
-        switch(orig){
-        case OriginFrame::LH_FOOT:
-            return this->fr_LH_lowerleg_X_LH_foot(q);
-        case OriginFrame::TRUNK:
-            return this->fr_LH_lowerleg_X_fr_trunk(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
+        switch(orig)
+        {
+            case OriginFrame::LH_FOOT:
+                return this->fr_LH_lowerleg_X_LH_foot(q);
+            case OriginFrame::TRUNK:
+                return this->fr_LH_lowerleg_X_fr_trunk(q);
+            default:
+                std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                return Eigen::Matrix<double, 6, 6>::Zero();
+                break;
         }
         break;
-
     case DestFrame::RH_LOWERLEG:
-        switch(orig){
-        case OriginFrame::RH_FOOT:
-            return this->fr_RH_lowerleg_X_RH_foot(q);
-        case OriginFrame::TRUNK:
-            return this->fr_RH_lowerleg_X_fr_trunk(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
+        switch(orig)
+        {
+            case OriginFrame::RH_FOOT:
+                return this->fr_RH_lowerleg_X_RH_foot(q);
+            case OriginFrame::TRUNK:
+                return this->fr_RH_lowerleg_X_fr_trunk(q);
+            default:
+                std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                return Eigen::Matrix<double, 6, 6>::Zero();
+                break;
         }
         break;
     case DestFrame::LF_HIPASSEMBLY:
-        switch(orig){
-        case OriginFrame::LF_UPPERLEG:
-            return this->fr_LF_hipassembly_X_fr_LF_upperleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
+        switch(orig)
+        {
+            case OriginFrame::LF_UPPERLEG:
+                return this->fr_LF_hipassembly_X_fr_LF_upperleg(q);
+            default:
+                std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                return Eigen::Matrix<double, 6, 6>::Zero();
+                break;
         }
         break;
     case DestFrame::RF_HIPASSEMBLY:
-        switch(orig){
-        case OriginFrame::RF_UPPERLEG:
-            return this->fr_RF_hipassembly_X_fr_RF_upperleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
+        switch(orig)
+        {
+            case OriginFrame::RF_UPPERLEG:
+                return this->fr_RF_hipassembly_X_fr_RF_upperleg(q);
+            default:
+                std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                return Eigen::Matrix<double, 6, 6>::Zero();
+                break;
         }
         break;
-
     case DestFrame::LH_HIPASSEMBLY:
-        switch(orig){
-        case OriginFrame::LH_UPPERLEG:
-            return this->fr_LH_hipassembly_X_fr_LH_upperleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
+        switch(orig)
+        {
+            case OriginFrame::LH_UPPERLEG:
+                return this->fr_LH_hipassembly_X_fr_LH_upperleg(q);
+            default:
+                std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                return Eigen::Matrix<double, 6, 6>::Zero();
+                break;
         }
         break;
-
     case DestFrame::RH_HIPASSEMBLY:
-        switch(orig){
-        case OriginFrame::RH_UPPERLEG:
-            return this->fr_RH_hipassembly_X_fr_RH_upperleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
+        switch(orig)
+        {
+            case OriginFrame::RH_UPPERLEG:
+                return this->fr_RH_hipassembly_X_fr_RH_upperleg(q);
+            default:
+                std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                return Eigen::Matrix<double, 6, 6>::Zero();
+                break;
         }
         break;
     case DestFrame::LF_UPPERLEG:
-        switch(orig){
-        case OriginFrame::LF_LOWERLEG:
-            return this->fr_LF_upperleg_X_fr_LF_lowerleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
+        switch(orig)
+        {
+            case OriginFrame::LF_LOWERLEG:
+                return this->fr_LF_upperleg_X_fr_LF_lowerleg(q);
+            default:
+                std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                return Eigen::Matrix<double, 6, 6>::Zero();
+                break;
         }
         break;
     case DestFrame::RF_UPPERLEG:
-        switch(orig){
-        case OriginFrame::RF_LOWERLEG:
-            return this->fr_RF_upperleg_X_fr_RF_lowerleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
+        switch(orig)
+        {
+            case OriginFrame::RF_LOWERLEG:
+                return this->fr_RF_upperleg_X_fr_RF_lowerleg(q);
+            default:
+                std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                return Eigen::Matrix<double, 6, 6>::Zero();
+                break;
         }
         break;
     case DestFrame::LH_UPPERLEG:
-        switch(orig){
-        case OriginFrame::LH_LOWERLEG:
-            return this->fr_LH_upperleg_X_fr_LH_lowerleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
+        switch(orig)
+        {
+            case OriginFrame::LH_LOWERLEG:
+                return this->fr_LH_upperleg_X_fr_LH_lowerleg(q);
+            default:
+                std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                return Eigen::Matrix<double, 6, 6>::Zero();
+                break;
         }
         break;
     case DestFrame::RH_UPPERLEG:
-        switch(orig){
-        case OriginFrame::RH_LOWERLEG:
-            return this->fr_RH_upperleg_X_fr_RH_lowerleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
+        switch(orig)
+        {
+            case OriginFrame::RH_LOWERLEG:
+                return this->fr_RH_upperleg_X_fr_RH_lowerleg(q);
+            default:
+                std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                return Eigen::Matrix<double, 6, 6>::Zero();
+                break;
         }
         break;
     default:
         std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+        return Eigen::Matrix<double, 6, 6>::Zero();
         break;
     }
 }
@@ -707,269 +763,298 @@ void iit::Aliengo::ForceTransforms::updateParameters() {
 
 HomogeneousTransformPlain HomogeneousTransforms::getTransform(const dog::JointState &q,
                                                      const dog::OriginFrame &orig,
-                                                     const dog::DestFrame &dest){
+                                                     const dog::DestFrame &dest)
+{
     this->updateParameters();
-    switch(dest){
-    case DestFrame::TRUNK:
-        switch(orig){
-        case OriginFrame::LF_HIPASSEMBLY_COM:
-            return this->fr_trunk_X_LF_hipassemblyCOM(q);
-        case OriginFrame::RF_HIPASSEMBLY_COM:
-            return this->fr_trunk_X_RF_hipassemblyCOM(q);
-        case OriginFrame::LH_HIPASSEMBLY_COM:
-            return this->fr_trunk_X_LH_hipassemblyCOM(q);
-        case OriginFrame::RH_HIPASSEMBLY_COM:
-            return this->fr_trunk_X_RH_hipassemblyCOM(q);
-        case OriginFrame::LF_HIPASSEMBLY:
-            return this->fr_trunk_X_fr_LF_hipassembly(q);
-        case OriginFrame::RF_HIPASSEMBLY:
-            return this->fr_trunk_X_fr_RF_hipassembly(q);
-        case OriginFrame::LH_HIPASSEMBLY:
-            return this->fr_trunk_X_fr_LH_hipassembly(q);
-        case OriginFrame::RH_HIPASSEMBLY:
-            return this->fr_trunk_X_fr_RH_hipassembly(q);
-        case OriginFrame::LF_UPPERLEG_COM:
-            return this->fr_trunk_X_LF_upperlegCOM(q);
-        case OriginFrame::RF_UPPERLEG_COM:
-            return this->fr_trunk_X_RF_upperlegCOM(q);
-        case OriginFrame::LH_UPPERLEG_COM:
-            return this->fr_trunk_X_LH_upperlegCOM(q);
-        case OriginFrame::RH_UPPERLEG_COM:
-            return this->fr_trunk_X_RH_upperlegCOM(q);
 
-        case OriginFrame::LF_LOWERLEG_COM:
-            return this->fr_trunk_X_LF_lowerlegCOM(q);
-        case OriginFrame::RF_LOWERLEG_COM:
-            return this->fr_trunk_X_RF_lowerlegCOM(q);
-        case OriginFrame::LH_LOWERLEG_COM:
-            return this->fr_trunk_X_LH_lowerlegCOM(q);
-        case OriginFrame::RH_LOWERLEG_COM:
-            return this->fr_trunk_X_RH_lowerlegCOM(q);
+    switch(dest)
+    {
+        case DestFrame::TRUNK:
+            switch(orig)
+            {
+                case OriginFrame::LF_HIPASSEMBLY_COM:
+                    return this->fr_trunk_X_LF_hipassemblyCOM(q);
+                case OriginFrame::RF_HIPASSEMBLY_COM:
+                    return this->fr_trunk_X_RF_hipassemblyCOM(q);
+                case OriginFrame::LH_HIPASSEMBLY_COM:
+                    return this->fr_trunk_X_LH_hipassemblyCOM(q);
+                case OriginFrame::RH_HIPASSEMBLY_COM:
+                    return this->fr_trunk_X_RH_hipassemblyCOM(q);
+                case OriginFrame::LF_HIPASSEMBLY:
+                    return this->fr_trunk_X_fr_LF_hipassembly(q);
+                case OriginFrame::RF_HIPASSEMBLY:
+                    return this->fr_trunk_X_fr_RF_hipassembly(q);
+                case OriginFrame::LH_HIPASSEMBLY:
+                    return this->fr_trunk_X_fr_LH_hipassembly(q);
+                case OriginFrame::RH_HIPASSEMBLY:
+                    return this->fr_trunk_X_fr_RH_hipassembly(q);
 
-        case OriginFrame::LF_FOOT:
-            return this->fr_trunk_X_LF_foot(q);
-        case OriginFrame::RF_FOOT:
-            return this->fr_trunk_X_RF_foot(q);
-        case OriginFrame::LH_FOOT:
-            return this->fr_trunk_X_LH_foot(q);
-        case OriginFrame::RH_FOOT:
-            return this->fr_trunk_X_RH_foot(q);
+                case OriginFrame::LF_UPPERLEG_COM:
+                    return this->fr_trunk_X_LF_upperlegCOM(q);
+                case OriginFrame::RF_UPPERLEG_COM:
+                    return this->fr_trunk_X_RF_upperlegCOM(q);
+                case OriginFrame::LH_UPPERLEG_COM:
+                    return this->fr_trunk_X_LH_upperlegCOM(q);
+                case OriginFrame::RH_UPPERLEG_COM:
+                    return this->fr_trunk_X_RH_upperlegCOM(q);
 
-            // TODO
-            // There is no shin in Aliengo
-        //case OriginFrame::LF_SHIN:
-        //    return this->fr_trunk_X_LF_shin(q);
-        //case OriginFrame::RF_SHIN:
-        //    return this->fr_trunk_X_RF_shin(q);
-        //case OriginFrame::LH_SHIN:
-        //    return this->fr_trunk_X_LH_shin(q);
-        //case OriginFrame::RH_SHIN:
-        //    return this->fr_trunk_X_RH_shin(q);
+                case OriginFrame::LF_LOWERLEG_COM:
+                    return this->fr_trunk_X_LF_lowerlegCOM(q);
+                case OriginFrame::RF_LOWERLEG_COM:
+                    return this->fr_trunk_X_RF_lowerlegCOM(q);
+                case OriginFrame::LH_LOWERLEG_COM:
+                    return this->fr_trunk_X_LH_lowerlegCOM(q);
+                case OriginFrame::RH_LOWERLEG_COM:
+                    return this->fr_trunk_X_RH_lowerlegCOM(q);
 
-        case OriginFrame::LF_HAA:
-            return this->fr_trunk_X_fr_LF_HAA(q);
-        case OriginFrame::RF_HAA:
-            return this->fr_trunk_X_fr_RF_HAA(q);
-        case OriginFrame::LH_HAA:
-            return this->fr_trunk_X_fr_LH_HAA(q);
-        case OriginFrame::RH_HAA:
-            return this->fr_trunk_X_fr_RH_HAA(q);
+                case OriginFrame::LF_FOOT:
+                    return this->fr_trunk_X_LF_foot(q);
+                case OriginFrame::RF_FOOT:
+                    return this->fr_trunk_X_RF_foot(q);
+                case OriginFrame::LH_FOOT:
+                    return this->fr_trunk_X_LH_foot(q);
+                case OriginFrame::RH_FOOT:
+                    return this->fr_trunk_X_RH_foot(q);
 
-        case OriginFrame::LF_HFE:
-            return this->fr_trunk_X_fr_LF_HFE(q);
-        case OriginFrame::RF_HFE:
-            return this->fr_trunk_X_fr_RF_HFE(q);
-        case OriginFrame::LH_HFE:
-            return this->fr_trunk_X_fr_LH_HFE(q);
-        case OriginFrame::RH_HFE:
-            return this->fr_trunk_X_fr_RH_HFE(q);
+                    // TODO
+                    // There is no shin in Aliengo
+                //case OriginFrame::LF_SHIN:
+                //    return this->fr_trunk_X_LF_shin(q);
+                //case OriginFrame::RF_SHIN:
+                //    return this->fr_trunk_X_RF_shin(q);
+                //case OriginFrame::LH_SHIN:
+                //    return this->fr_trunk_X_LH_shin(q);
+                //case OriginFrame::RH_SHIN:
+                //    return this->fr_trunk_X_RH_shin(q);
 
-        case OriginFrame::LF_KFE:
-            return this->fr_trunk_X_fr_LF_KFE(q);
-        case OriginFrame::RF_KFE:
-            return this->fr_trunk_X_fr_RF_KFE(q);
-        case OriginFrame::LH_KFE:
-            return this->fr_trunk_X_fr_LH_KFE(q);
-        case OriginFrame::RH_KFE:
-            return this->fr_trunk_X_fr_RH_KFE(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
+                case OriginFrame::LF_HAA:
+                    return this->fr_trunk_X_fr_LF_HAA(q);
+                case OriginFrame::RF_HAA:
+                    return this->fr_trunk_X_fr_RF_HAA(q);
+                case OriginFrame::LH_HAA:
+                    return this->fr_trunk_X_fr_LH_HAA(q);
+                case OriginFrame::RH_HAA:
+                    return this->fr_trunk_X_fr_RH_HAA(q);
 
-    case DestFrame::LF_FOOT:
-        switch(orig){
-        case OriginFrame::LF_LOWERLEG:
-            return this->LF_foot_X_fr_LF_lowerleg(q);
-        case OriginFrame::TRUNK:
-            return this->LF_foot_X_fr_trunk(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                case OriginFrame::LF_HFE:
+                    return this->fr_trunk_X_fr_LF_HFE(q);
+                case OriginFrame::RF_HFE:
+                    return this->fr_trunk_X_fr_RF_HFE(q);
+                case OriginFrame::LH_HFE:
+                    return this->fr_trunk_X_fr_LH_HFE(q);
+                case OriginFrame::RH_HFE:
+                    return this->fr_trunk_X_fr_RH_HFE(q);
+
+                case OriginFrame::LF_KFE:
+                    return this->fr_trunk_X_fr_LF_KFE(q);
+                case OriginFrame::RF_KFE:
+                    return this->fr_trunk_X_fr_RF_KFE(q);
+                case OriginFrame::LH_KFE:
+                    return this->fr_trunk_X_fr_LH_KFE(q);
+                case OriginFrame::RH_KFE:
+                    return this->fr_trunk_X_fr_RH_KFE(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 4, 4>::Zero();
+                    break;
+            }
             break;
-        }
-        break;
-
-    case DestFrame::RF_FOOT:
-        switch(orig){
-        case OriginFrame::RF_LOWERLEG:
-            return this->RF_foot_X_fr_RF_lowerleg(q);
-        case OriginFrame::TRUNK:
-            return this->RF_foot_X_fr_trunk(q);
+        case DestFrame::LF_FOOT:
+            switch(orig)
+            {
+                case OriginFrame::LF_LOWERLEG:
+                    return this->LF_foot_X_fr_LF_lowerleg(q);
+                case OriginFrame::TRUNK:
+                    return this->LF_foot_X_fr_trunk(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 4, 4>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::RF_FOOT:
+            switch(orig)
+            {
+                case OriginFrame::RF_LOWERLEG:
+                    return this->RF_foot_X_fr_RF_lowerleg(q);
+                case OriginFrame::TRUNK:
+                    return this->RF_foot_X_fr_trunk(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 4, 4>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::LH_FOOT:
+            switch(orig)
+            {
+                case OriginFrame::LH_LOWERLEG:
+                    return this->LH_foot_X_fr_LH_lowerleg(q);
+                case OriginFrame::TRUNK:
+                    return this->LH_foot_X_fr_trunk(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 4, 4>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::RH_FOOT:
+            switch(orig)
+            {
+                case OriginFrame::RH_LOWERLEG:
+                    return this->RH_foot_X_fr_RH_lowerleg(q);
+                case OriginFrame::TRUNK:
+                    return this->RH_foot_X_fr_trunk(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 4, 4>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::LF_LOWERLEG:
+            switch(orig)
+            {
+                case OriginFrame::LF_FOOT:
+                    return this->fr_LF_lowerleg_X_LF_foot(q);
+                case OriginFrame::TRUNK:
+                    return this->fr_LF_lowerleg_X_fr_trunk(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 4, 4>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::RF_LOWERLEG:
+            switch(orig)
+            {
+                case OriginFrame::RF_FOOT:
+                    return this->fr_RF_lowerleg_X_RF_foot(q);
+                case OriginFrame::TRUNK:
+                    return this->fr_RF_lowerleg_X_fr_trunk(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 4, 4>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::LH_LOWERLEG:
+            switch(orig)
+            {
+                case OriginFrame::LH_FOOT:
+                    return this->fr_LH_lowerleg_X_LH_foot(q);
+                case OriginFrame::TRUNK:
+                    return this->fr_LH_lowerleg_X_fr_trunk(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 4, 4>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::RH_LOWERLEG:
+            switch(orig)
+            {
+                case OriginFrame::RH_FOOT:
+                    return this->fr_RH_lowerleg_X_RH_foot(q);
+                case OriginFrame::TRUNK:
+                    return this->fr_RH_lowerleg_X_fr_trunk(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 4, 4>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::LF_HIPASSEMBLY:
+            switch(orig)
+            {
+                case OriginFrame::LF_UPPERLEG:
+                    return this->fr_LF_hipassembly_X_fr_LF_upperleg(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 4, 4>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::RF_HIPASSEMBLY:
+            switch(orig)
+            {
+                case OriginFrame::RF_UPPERLEG:
+                    return this->fr_RF_hipassembly_X_fr_RF_upperleg(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 4, 4>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::LH_HIPASSEMBLY:
+            switch(orig)
+            {
+                case OriginFrame::LH_UPPERLEG:
+                    return this->fr_LH_hipassembly_X_fr_LH_upperleg(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 4, 4>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::RH_HIPASSEMBLY:
+            switch(orig)
+            {
+                case OriginFrame::RH_UPPERLEG:
+                    return this->fr_RH_hipassembly_X_fr_RH_upperleg(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 4, 4>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::LF_UPPERLEG:
+            switch(orig)
+            {
+                case OriginFrame::LF_LOWERLEG:
+                    return this->fr_LF_upperleg_X_fr_LF_lowerleg(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 4, 4>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::RF_UPPERLEG:
+            switch(orig)
+            {
+                case OriginFrame::RF_LOWERLEG:
+                    return this->fr_RF_upperleg_X_fr_RF_lowerleg(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 4, 4>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::LH_UPPERLEG:
+            switch(orig)
+            {
+                case OriginFrame::LH_LOWERLEG:
+                    return this->fr_LH_upperleg_X_fr_LH_lowerleg(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 4, 4>::Zero();
+                    break;
+            }
+            break;
+        case DestFrame::RH_UPPERLEG:
+            switch(orig)
+            {
+                case OriginFrame::RH_LOWERLEG:
+                    return this->fr_RH_upperleg_X_fr_RH_lowerleg(q);
+                default:
+                    std::cerr<<"getTransform ERROR: transform not available" << std::endl;
+                    return Eigen::Matrix<double, 4, 4>::Zero();
+                    break;
+            }
+            break;
         default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-
-    case DestFrame::LH_FOOT:
-        switch(orig){
-        case OriginFrame::LH_LOWERLEG:
-            return this->LH_foot_X_fr_LH_lowerleg(q);
-        case OriginFrame::TRUNK:
-            return this->LH_foot_X_fr_trunk(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-
-    case DestFrame::RH_FOOT:
-        switch(orig){
-        case OriginFrame::RH_LOWERLEG:
-            return this->RH_foot_X_fr_RH_lowerleg(q);
-        case OriginFrame::TRUNK:
-            return this->RH_foot_X_fr_trunk(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-
-    case DestFrame::LF_LOWERLEG:
-        switch(orig){
-        case OriginFrame::LF_FOOT:
-            return this->fr_LF_lowerleg_X_LF_foot(q);
-        case OriginFrame::TRUNK:
-            return this->fr_LF_lowerleg_X_fr_trunk(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-
-    case DestFrame::RF_LOWERLEG:
-        switch(orig){
-        case OriginFrame::RF_FOOT:
-            return this->fr_RF_lowerleg_X_RF_foot(q);
-        case OriginFrame::TRUNK:
-            return this->fr_RF_lowerleg_X_fr_trunk(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-
-    case DestFrame::LH_LOWERLEG:
-        switch(orig){
-        case OriginFrame::LH_FOOT:
-            return this->fr_LH_lowerleg_X_LH_foot(q);
-        case OriginFrame::TRUNK:
-            return this->fr_LH_lowerleg_X_fr_trunk(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-
-    case DestFrame::RH_LOWERLEG:
-        switch(orig){
-        case OriginFrame::RH_FOOT:
-            return this->fr_RH_lowerleg_X_RH_foot(q);
-        case OriginFrame::TRUNK:
-            return this->fr_RH_lowerleg_X_fr_trunk(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-    case DestFrame::LF_HIPASSEMBLY:
-        switch(orig){
-        case OriginFrame::LF_UPPERLEG:
-            return this->fr_LF_hipassembly_X_fr_LF_upperleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-    case DestFrame::RF_HIPASSEMBLY:
-        switch(orig){
-        case OriginFrame::RF_UPPERLEG:
-            return this->fr_RF_hipassembly_X_fr_RF_upperleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-
-    case DestFrame::LH_HIPASSEMBLY:
-        switch(orig){
-        case OriginFrame::LH_UPPERLEG:
-            return this->fr_LH_hipassembly_X_fr_LH_upperleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-
-    case DestFrame::RH_HIPASSEMBLY:
-        switch(orig){
-        case OriginFrame::RH_UPPERLEG:
-            return this->fr_RH_hipassembly_X_fr_RH_upperleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-    case DestFrame::LF_UPPERLEG:
-        switch(orig){
-        case OriginFrame::LF_LOWERLEG:
-            return this->fr_LF_upperleg_X_fr_LF_lowerleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-    case DestFrame::RF_UPPERLEG:
-        switch(orig){
-        case OriginFrame::RF_LOWERLEG:
-            return this->fr_RF_upperleg_X_fr_RF_lowerleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-    case DestFrame::LH_UPPERLEG:
-        switch(orig){
-        case OriginFrame::LH_LOWERLEG:
-            return this->fr_LH_upperleg_X_fr_LH_lowerleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-    case DestFrame::RH_UPPERLEG:
-        switch(orig){
-        case OriginFrame::RH_LOWERLEG:
-            return this->fr_RH_upperleg_X_fr_RH_lowerleg(q);
-        default:
-            std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-           break;
-        }
-        break;
-    default:
-        std::cerr<<"getTransform ERROR: transform not available" << std::endl;
-        break;
+            std::cerr<< "getTransform ERROR: transform not available" << std::endl;
+            return Eigen::Matrix<double, 4, 4>::Zero();
+            break;
     }
 }
 
@@ -1096,7 +1181,7 @@ iit::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_LF_foot::Type_fr_LF_lowerl
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_LF_foot& iit::Aliengo::MotionTransforms::Type_fr_LF_lowerleg_X_LF_foot::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning
     
     (*this)(4,1) = - lengths_values -> foot_x;
     (*this)(5,0) = - lengths_values -> foot_x;
@@ -1141,7 +1226,7 @@ iit::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_RF_foot::Type_fr_RF_lowerl
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_RF_foot& iit::Aliengo::MotionTransforms::Type_fr_RF_lowerleg_X_RF_foot::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning 
     
     (*this)(4,1) = - lengths_values -> foot_x;
     (*this)(5,0) = - lengths_values -> foot_x;
@@ -1186,7 +1271,7 @@ iit::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_LH_foot::Type_fr_LH_lowerl
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_LH_foot& iit::Aliengo::MotionTransforms::Type_fr_LH_lowerleg_X_LH_foot::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning
     
     (*this)(4,1) = - lengths_values -> foot_x;
     (*this)(5,0) = - lengths_values -> foot_x;
@@ -1231,7 +1316,7 @@ iit::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_RH_foot::Type_fr_RH_lowerl
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_RH_foot& iit::Aliengo::MotionTransforms::Type_fr_RH_lowerleg_X_RH_foot::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(4,1) = - lengths_values -> foot_x;
     (*this)(5,0) = - lengths_values -> foot_x;
@@ -1912,7 +1997,7 @@ iit::Aliengo::MotionTransforms::Type_LF_foot_X_fr_LF_lowerleg::Type_LF_foot_X_fr
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::MotionTransforms::Type_LF_foot_X_fr_LF_lowerleg& iit::Aliengo::MotionTransforms::Type_LF_foot_X_fr_LF_lowerleg::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning
     
     (*this)(3,2) = - lengths_values -> foot_x;
     (*this)(4,1) = - lengths_values -> foot_x;
@@ -1957,7 +2042,7 @@ iit::Aliengo::MotionTransforms::Type_RF_foot_X_fr_RF_lowerleg::Type_RF_foot_X_fr
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::MotionTransforms::Type_RF_foot_X_fr_RF_lowerleg& iit::Aliengo::MotionTransforms::Type_RF_foot_X_fr_RF_lowerleg::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning
     
     (*this)(3,2) = - lengths_values -> foot_x;
     (*this)(4,1) = - lengths_values -> foot_x;
@@ -2002,7 +2087,7 @@ iit::Aliengo::MotionTransforms::Type_LH_foot_X_fr_LH_lowerleg::Type_LH_foot_X_fr
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::MotionTransforms::Type_LH_foot_X_fr_LH_lowerleg& iit::Aliengo::MotionTransforms::Type_LH_foot_X_fr_LH_lowerleg::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(3,2) = - lengths_values -> foot_x;
     (*this)(4,1) = - lengths_values -> foot_x;
@@ -2047,7 +2132,7 @@ iit::Aliengo::MotionTransforms::Type_RH_foot_X_fr_RH_lowerleg::Type_RH_foot_X_fr
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::MotionTransforms::Type_RH_foot_X_fr_RH_lowerleg& iit::Aliengo::MotionTransforms::Type_RH_foot_X_fr_RH_lowerleg::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(3,2) = - lengths_values -> foot_x;
     (*this)(4,1) = - lengths_values -> foot_x;
@@ -2774,7 +2859,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_HAA::Type_fr_trunk_X_fr_LF
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_HAA& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LF_HAA::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(3,0) = - lengths_values -> haa_y;
     (*this)(4,0) =  lengths_values -> haa_x;
@@ -2921,7 +3006,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_HAA::Type_fr_trunk_X_fr_RF
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_HAA& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RF_HAA::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(3,0) =  lengths_values -> haa_y;
     (*this)(4,0) =  lengths_values -> haa_x;
@@ -3068,7 +3153,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_HAA::Type_fr_trunk_X_fr_LH
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_HAA& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_LH_HAA::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(3,0) = - lengths_values -> haa_y;
     (*this)(4,0) = - lengths_values -> haa_x;
@@ -3215,7 +3300,7 @@ iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_HAA::Type_fr_trunk_X_fr_RH
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_HAA& iit::Aliengo::MotionTransforms::Type_fr_trunk_X_fr_RH_HAA::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(3,0) =  lengths_values -> haa_y;
     (*this)(4,0) = - lengths_values -> haa_x;
@@ -4541,7 +4626,7 @@ iit::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_LF_foot::Type_fr_LF_lowerle
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_LF_foot& iit::Aliengo::ForceTransforms::Type_fr_LF_lowerleg_X_LF_foot::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(1,4) = - lengths_values -> foot_x;
     (*this)(2,3) = - lengths_values -> foot_x;
@@ -4586,7 +4671,7 @@ iit::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_RF_foot::Type_fr_RF_lowerle
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_RF_foot& iit::Aliengo::ForceTransforms::Type_fr_RF_lowerleg_X_RF_foot::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(1,4) = - lengths_values -> foot_x;
     (*this)(2,3) = - lengths_values -> foot_x;
@@ -4631,7 +4716,7 @@ iit::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_LH_foot::Type_fr_LH_lowerle
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_LH_foot& iit::Aliengo::ForceTransforms::Type_fr_LH_lowerleg_X_LH_foot::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(1,4) = - lengths_values -> foot_x;
     (*this)(2,3) = - lengths_values -> foot_x;
@@ -4676,7 +4761,7 @@ iit::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_RH_foot::Type_fr_RH_lowerle
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_RH_foot& iit::Aliengo::ForceTransforms::Type_fr_RH_lowerleg_X_RH_foot::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(1,4) = - lengths_values -> foot_x;
     (*this)(2,3) = - lengths_values -> foot_x;
@@ -5357,7 +5442,7 @@ iit::Aliengo::ForceTransforms::Type_LF_foot_X_fr_LF_lowerleg::Type_LF_foot_X_fr_
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::ForceTransforms::Type_LF_foot_X_fr_LF_lowerleg& iit::Aliengo::ForceTransforms::Type_LF_foot_X_fr_LF_lowerleg::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(0,5) = - lengths_values -> foot_x;
     (*this)(1,4) = - lengths_values -> foot_x;
@@ -5402,7 +5487,7 @@ iit::Aliengo::ForceTransforms::Type_RF_foot_X_fr_RF_lowerleg::Type_RF_foot_X_fr_
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::ForceTransforms::Type_RF_foot_X_fr_RF_lowerleg& iit::Aliengo::ForceTransforms::Type_RF_foot_X_fr_RF_lowerleg::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(0,5) = - lengths_values -> foot_x;
     (*this)(1,4) = - lengths_values -> foot_x;
@@ -5447,7 +5532,7 @@ iit::Aliengo::ForceTransforms::Type_LH_foot_X_fr_LH_lowerleg::Type_LH_foot_X_fr_
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::ForceTransforms::Type_LH_foot_X_fr_LH_lowerleg& iit::Aliengo::ForceTransforms::Type_LH_foot_X_fr_LH_lowerleg::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(0,5) = - lengths_values -> foot_x;
     (*this)(1,4) = - lengths_values -> foot_x;
@@ -5492,7 +5577,7 @@ iit::Aliengo::ForceTransforms::Type_RH_foot_X_fr_RH_lowerleg::Type_RH_foot_X_fr_
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::ForceTransforms::Type_RH_foot_X_fr_RH_lowerleg& iit::Aliengo::ForceTransforms::Type_RH_foot_X_fr_RH_lowerleg::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(0,5) = - lengths_values -> foot_x;
     (*this)(1,4) = - lengths_values -> foot_x;
@@ -6219,7 +6304,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_HAA::Type_fr_trunk_X_fr_LF_
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_HAA& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LF_HAA::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(0,3) = - lengths_values -> haa_y;
     (*this)(1,3) =  lengths_values -> haa_x;
@@ -6366,7 +6451,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_HAA::Type_fr_trunk_X_fr_RF_
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_HAA& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RF_HAA::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(0,3) =  lengths_values -> haa_y;
     (*this)(1,3) =  lengths_values -> haa_x;
@@ -6513,7 +6598,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_HAA::Type_fr_trunk_X_fr_LH_
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_HAA& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_LH_HAA::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(0,3) = - lengths_values -> haa_y;
     (*this)(1,3) = - lengths_values -> haa_x;
@@ -6660,7 +6745,7 @@ iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_HAA::Type_fr_trunk_X_fr_RH_
     (*this)(5,5) = 0;
 }
 const iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_HAA& iit::Aliengo::ForceTransforms::Type_fr_trunk_X_fr_RH_HAA::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(0,3) =  lengths_values -> haa_y;
     (*this)(1,3) = - lengths_values -> haa_x;
@@ -7967,7 +8052,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_LF_foot::Type_fr_LF_l
     (*this)(3,3) = 1;
 }
 const iit::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_LF_foot& iit::Aliengo::HomogeneousTransforms::Type_fr_LF_lowerleg_X_LF_foot::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(0,3) =  lengths_values -> foot_x;
     return *this;
@@ -7992,7 +8077,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_RF_foot::Type_fr_RF_l
     (*this)(3,3) = 1;
 }
 const iit::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_RF_foot& iit::Aliengo::HomogeneousTransforms::Type_fr_RF_lowerleg_X_RF_foot::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(0,3) =  lengths_values -> foot_x;
     return *this;
@@ -8017,7 +8102,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_LH_foot::Type_fr_LH_l
     (*this)(3,3) = 1;
 }
 const iit::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_LH_foot& iit::Aliengo::HomogeneousTransforms::Type_fr_LH_lowerleg_X_LH_foot::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(0,3) =  lengths_values -> foot_x;
     return *this;
@@ -8042,7 +8127,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_RH_foot::Type_fr_RH_l
     (*this)(3,3) = 1;
 }
 const iit::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_RH_foot& iit::Aliengo::HomogeneousTransforms::Type_fr_RH_lowerleg_X_RH_foot::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(0,3) =  lengths_values -> foot_x;
     return *this;
@@ -8463,7 +8548,7 @@ iit::Aliengo::HomogeneousTransforms::Type_LF_foot_X_fr_LF_lowerleg::Type_LF_foot
     (*this)(3,3) = 1;
 }
 const iit::Aliengo::HomogeneousTransforms::Type_LF_foot_X_fr_LF_lowerleg& iit::Aliengo::HomogeneousTransforms::Type_LF_foot_X_fr_LF_lowerleg::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(2,3) =  lengths_values -> foot_x;
     return *this;
@@ -8488,7 +8573,7 @@ iit::Aliengo::HomogeneousTransforms::Type_RF_foot_X_fr_RF_lowerleg::Type_RF_foot
     (*this)(3,3) = 1;
 }
 const iit::Aliengo::HomogeneousTransforms::Type_RF_foot_X_fr_RF_lowerleg& iit::Aliengo::HomogeneousTransforms::Type_RF_foot_X_fr_RF_lowerleg::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(2,3) =  lengths_values -> foot_x;
     return *this;
@@ -8513,7 +8598,7 @@ iit::Aliengo::HomogeneousTransforms::Type_LH_foot_X_fr_LH_lowerleg::Type_LH_foot
     (*this)(3,3) = 1;
 }
 const iit::Aliengo::HomogeneousTransforms::Type_LH_foot_X_fr_LH_lowerleg& iit::Aliengo::HomogeneousTransforms::Type_LH_foot_X_fr_LH_lowerleg::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(2,3) =  lengths_values -> foot_x;
     return *this;
@@ -8538,7 +8623,7 @@ iit::Aliengo::HomogeneousTransforms::Type_RH_foot_X_fr_RH_lowerleg::Type_RH_foot
     (*this)(3,3) = 1;
 }
 const iit::Aliengo::HomogeneousTransforms::Type_RH_foot_X_fr_RH_lowerleg& iit::Aliengo::HomogeneousTransforms::Type_RH_foot_X_fr_RH_lowerleg::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(2,3) =  lengths_values -> foot_x;
     return *this;
@@ -9006,7 +9091,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_HAA::Type_fr_trunk_X_
     (*this)(3,3) = 1;
 }
 const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_HAA& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LF_HAA::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(0,3) =  lengths_values -> haa_x;
     (*this)(1,3) =  lengths_values -> haa_y;
@@ -9093,7 +9178,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_HAA::Type_fr_trunk_X_
     (*this)(3,3) = 1;
 }
 const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_HAA& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RF_HAA::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(0,3) =  lengths_values -> haa_x;
     (*this)(1,3) = - lengths_values -> haa_y;
@@ -9180,7 +9265,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_HAA::Type_fr_trunk_X_
     (*this)(3,3) = 1;
 }
 const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_HAA& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_LH_HAA::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(0,3) = - lengths_values -> haa_x;
     (*this)(1,3) =  lengths_values -> haa_y;
@@ -9267,7 +9352,7 @@ iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_HAA::Type_fr_trunk_X_
     (*this)(3,3) = 1;
 }
 const iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_HAA& iit::Aliengo::HomogeneousTransforms::Type_fr_trunk_X_fr_RH_HAA::update(const state_t& q) {
-    
+    q.size();   // TODO: Not used. Created to remove warning    
     
     (*this)(0,3) = - lengths_values -> haa_x;
     (*this)(1,3) = - lengths_values -> haa_y;

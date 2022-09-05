@@ -367,7 +367,7 @@ private:
 
     Eigen::Vector3d curr_rpy = Eigen::Vector3d::Zero();
     Eigen::Vector3d cur_pos = Eigen::Vector3d::Zero();
-    Eigen::Vector3d curr_com = Eigen::Vector3d::Zero();
+    //Eigen::Vector3d curr_com = Eigen::Vector3d::Zero();   // TODO: Not used. Commented to remove warning
 
     model_.getJoint(join_name)->parent_to_joint_origin_transform.rotation.getRPY(curr_rpy(0),curr_rpy(1),curr_rpy(2));
     cur_pos(0) = model_.getJoint(join_name)->parent_to_joint_origin_transform.position.x;

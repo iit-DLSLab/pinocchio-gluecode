@@ -190,21 +190,25 @@ class DefaultParamsGetter : public dog::KinDynParams
             // TODO
             // the shin frame is not implemented in Aliengo, returning
             // the foot one
+            std::cout << value << std::endl;   // TODO: Not used. Created to remove warning
         }
         void setValue_RF_shin(double value){
             // TODO
             // the shin frame is not implemented in Aliengo, returning
             // the foot one
+            std::cout << value << std::endl;   // TODO: Not used. Created to remove warning
         }
         void setValue_LH_shin(double value){
             // TODO
             // the shin frame is not implemented in Aliengo, returning
             // the foot one
+            std::cout << value << std::endl;   // TODO: Not used. Created to remove warning
         }
         void setValue_RH_shin(double value){
             // TODO
             // the shin frame is not implemented in Aliengo, returning
             // the foot one
+            std::cout << value << std::endl;   // TODO: Not used. Created to remove warning
         }
 
         /**

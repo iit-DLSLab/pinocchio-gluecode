@@ -33,9 +33,13 @@ namespace aliengolib
         virtual ~Aliengo();
 
         Eigen::Vector3d getFramePosition(const robotlib::RobotBase::JointState &q,
-                                            const std::shared_ptr<robotlib::Frame> origin,
-                                            const std::shared_ptr<robotlib::Frame> destination) override
+                                         const std::shared_ptr<robotlib::Frame> origin,
+                                         const std::shared_ptr<robotlib::Frame> destination) override
         {
+        	q.size();
+			origin->getName();
+			destination->getName();
+
             return Eigen::Vector3d().setZero();
         };
 
@@ -43,12 +47,16 @@ namespace aliengolib
                                             const std::shared_ptr<robotlib::Frame> origin,
                                             const std::shared_ptr<robotlib::Frame> destination) override
         {
+        	q.size();
+			origin->getName();
+			destination->getName();
+
             return Eigen::Matrix3d().setZero();
         };
 
         Eigen::Matrix4d getFramePose(const robotlib::RobotBase::JointState &q,
-                                        const std::shared_ptr<robotlib::Frame> origin,
-                                        const std::shared_ptr<robotlib::Frame> destination) override
+                                     const std::shared_ptr<robotlib::Frame> origin,
+                                     const std::shared_ptr<robotlib::Frame> destination) override
         {
             Eigen::Matrix4d frame_pose{};
             frame_pose.setZero();
@@ -67,7 +75,7 @@ namespace aliengolib
         };
 
         Eigen::Matrix3d getFootOrientation(const robotlib::RobotBase::JointState &q,
-                                            const std::shared_ptr<robotlib::Frame> foot) override
+                                           const std::shared_ptr<robotlib::Frame> foot) override
         {
             return this->getFrameOrientation(q, this->getLink("TRUNK"), foot);
         };
@@ -86,14 +94,14 @@ namespace aliengolib
         };
 
         void getFootPosition(const robotlib::RobotBase::JointState &q,
-                                const std::shared_ptr<robotlib::LimbBase> leg,
-                                Eigen::Vector3d &footPos) override
+                             const std::shared_ptr<robotlib::LimbBase> leg,
+                             Eigen::Vector3d &footPos) override
         {
             footPos = this->getFramePosition(q, this->getLink("TRUNK"), leg->getEndEffector());
         };
 
         Eigen::Matrix3d getFootOrientation(const robotlib::RobotBase::JointState &q,
-                                            const std::shared_ptr<robotlib::LimbBase> leg) override
+                                           const std::shared_ptr<robotlib::LimbBase> leg) override
         {
             return this->getFrameOrientation(q, this->getLink("TRUNK"), leg->getEndEffector());
         };
@@ -112,9 +120,12 @@ namespace aliengolib
         };
 
         virtual void getFootJacobian(const robotlib::RobotBase::JointState &q,
-                                        const std::shared_ptr<robotlib::LimbBase> leg,
-                                        Jacobian &footJac) override
+                                     const std::shared_ptr<robotlib::LimbBase> leg,
+                                     Jacobian &footJac) override
         {
+			q.size();
+			leg->getName();
+
             footJac.setOnes();
         };
 
@@ -200,12 +211,12 @@ namespace aliengolib
                                                                  const Eigen::Matrix3d &rotationMx,
                                                                  const JointState &q,
                                                                  const JointState &qd) override;
-
+        virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
+                                                                const Eigen::Matrix3d &rotationMx,
+                                                                const JointState &q) override;
         virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
                                                             const Eigen::Matrix3d &rotationMx,
-                                                            const JointState &q,
-                                                            const JointState &qd,
-                                                            const Eigen::Vector3d offset_com);
+                                                            const Eigen::Vector3d offset_com) override;
 
         virtual Eigen::Vector3d getLegContribution(const JointState &q) override;
 

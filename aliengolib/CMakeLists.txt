@@ -5,7 +5,6 @@ set(MAJOR 0)
 set(MINOR 0)
 set(PATCH 0)
 
-# TODO: Understand the command below
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
 find_package(robotlib REQUIRED)
@@ -17,7 +16,7 @@ add_compile_options(
 	-std=c++17
 	-fPIC
 	$<$<CONFIG:Debug>:-g>
-#	-Wall -Wextra -pedantic # Enable warnings
+	-Wall -Wextra -pedantic # Enable warnings
 #	-fsanitize=undefined -g -O3	# UBSAN - Undefined Behaviour Sanitizer
 )
 #add_link_options(-fsanitize=undefined) # UBSAN - Undefined Behaviour Sanitizer
