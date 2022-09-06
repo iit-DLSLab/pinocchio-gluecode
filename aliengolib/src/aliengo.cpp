@@ -584,7 +584,7 @@ namespace aliengolib
         for(auto joint : auxiliar_joints_variable_)
         {
             const int joint_id{glue_joint_names_to_ids[joint->getName()]};
-            joint_state_matrix[joint_id] = joint_state[joint];
+            joint_state_matrix[joint_id] = q[joint];
         }
 
         // First updates the coordinate transforms that will be used by the routine

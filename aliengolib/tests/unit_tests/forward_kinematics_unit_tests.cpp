@@ -60,7 +60,7 @@ TEST(ForwardKinematics, forward_kinematics)
     }
   }
 
-  robot->forwardKinematics(q_gt, qd_gt, qdd_gt, foot_position, foot_velocity, foot_acceleration);
+  robot->forwardKinematics(q_gt, foot_position);
   
   double error_th = pow(10,-5);
   for(auto leg : *robot->getLegs())
