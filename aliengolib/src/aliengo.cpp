@@ -735,6 +735,6 @@ namespace aliengolib
     }
     extern "C" void destroyRobotWithUrdf_t(std::shared_ptr<robotlib::RobotBase> robot)
     {
-        robot->getName();
+        robot->getName(); // TODO: remove this hack that avoids compilation warnings!
     }
 } // namespace hyqlib
