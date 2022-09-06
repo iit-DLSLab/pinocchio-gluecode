@@ -237,25 +237,6 @@ namespace aliengolib
         }
     }
 
-    void Aliengo::forwardKinematics(const robotlib::RobotBase::JointState &joint_position,
-                                    const robotlib::RobotBase::JointState &joint_velocity,
-                                    const robotlib::RobotBase::JointState &joint_acceleration,
-                                    robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
-                                    robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity,
-                                    robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_acceleration)
-    {
-        joint_position.size();   // TODO: Not used. Created to remove warning
-        joint_velocity.size();   // TODO: Not used. Created to remove warning
-        joint_acceleration.size();   // TODO: Not used. Created to remove warning
-        end_effector_position = Eigen::Matrix<double, 3, 1>::Zero();   // TODO: Not used. Created to remove warning
-        end_effector_velocity = Eigen::Matrix<double, 3, 1>::Zero();   // TODO: Not used. Created to remove warning
-        end_effector_acceleration = Eigen::Matrix<double, 3, 1>::Zero();   // TODO: Not used. Created to remove warning
-
-        forwardKinematics(joint_position, joint_velocity, end_effector_position, end_effector_velocity);
-
-        std::cout << "TODO: forwardKinematics using also joint acceleration\n";
-    }
-
     void Aliengo::inverseDynamics(const Eigen::Matrix<double, 6, 1> &robot_velocity,    // robot base
                                 const Eigen::Matrix<double, 6, 1> &robot_acceleration,  // robot base
                                 const Eigen::Matrix<double, 6, 1> &gravity_vector,
