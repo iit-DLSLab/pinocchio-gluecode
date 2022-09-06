@@ -145,6 +145,14 @@ namespace aliengolib
         };
 
         virtual void forwardKinematics(const robotlib::RobotBase::JointState &joint_position,
+                                                robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position) override;
+
+        virtual void forwardKinematics(const robotlib::RobotBase::JointState &joint_position,
+                                                const robotlib::RobotBase::JointState &joint_velocity,
+                                                robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
+                                                robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity) override;
+
+        virtual void forwardKinematics(const robotlib::RobotBase::JointState &joint_position,
                                        const robotlib::RobotBase::JointState &joint_velocity,
                                        const robotlib::RobotBase::JointState &joint_acceleration,
                                        LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,

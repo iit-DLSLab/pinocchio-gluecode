@@ -194,27 +194,13 @@ namespace aliengolib
     }
 
     void Aliengo::forwardKinematics(const robotlib::RobotBase::JointState &joint_position,
-                                    const robotlib::RobotBase::JointState &joint_velocity,
-                                    const robotlib::RobotBase::JointState &joint_acceleration,
-                                    robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
-                                    robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity,
-                                    robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_acceleration)
+                                            robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position)
     {
-        joint_acceleration.size();   // TODO: Not used. Created to remove warning
-
         homogeneous_transforms_->updateParameters();
         // Mapping from robotlib structure to robcogen ones, TODO: maybe a function mapping robotlib to eigen structure is needed
         // NB: this mapping assumes that the robcogen order is the same as the one defining the legs and joints of Crex!
         Eigen::Matrix<double, NJOINTS_TOT, 1> q_robcogen;
         
-        // for(auto leg : legs_)
-        // {
-        //     for(auto joint : *leg->getJoints())
-        //     {
-        //         const int joint_id{glue_joint_names_to_ids[joint->getName()]};
-        //         q_robcogen[joint_id] = joint_position[joint];
-        //     }
-        // }
         for(auto joint : auxiliar_joints_variable_)
         {
             const int joint_id{glue_joint_names_to_ids[joint->getName()]};
@@ -224,6 +210,14 @@ namespace aliengolib
         end_effector_position["RF"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_RF_foot(q_robcogen));
         end_effector_position["LH"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_LH_foot(q_robcogen));
         end_effector_position["RH"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_RH_foot(q_robcogen));
+    }
+
+    void Aliengo::forwardKinematics(const robotlib::RobotBase::JointState &joint_position,
+                                    const robotlib::RobotBase::JointState &joint_velocity,
+                                    robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
+                                    robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity)
+    {
+        forwardKinematics(joint_position, end_effector_position);
 
         for (auto leg : *legs_)
         {
@@ -240,11 +234,26 @@ namespace aliengolib
             }
 
             end_effector_velocity[leg] =  full_feet_jacobian_tmp[leg].block<3,3>(0,0)*joint_velocity_leg;
-
-            end_effector_acceleration[leg].setZero();
         }
+    }
 
-        
+    void Aliengo::forwardKinematics(const robotlib::RobotBase::JointState &joint_position,
+                                    const robotlib::RobotBase::JointState &joint_velocity,
+                                    const robotlib::RobotBase::JointState &joint_acceleration,
+                                    robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
+                                    robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity,
+                                    robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_acceleration)
+    {
+        joint_position.size();   // TODO: Not used. Created to remove warning
+        joint_velocity.size();   // TODO: Not used. Created to remove warning
+        joint_acceleration.size();   // TODO: Not used. Created to remove warning
+        end_effector_position = Eigen::Matrix<double, 3, 1>::Zero();   // TODO: Not used. Created to remove warning
+        end_effector_velocity = Eigen::Matrix<double, 3, 1>::Zero();   // TODO: Not used. Created to remove warning
+        end_effector_acceleration = Eigen::Matrix<double, 3, 1>::Zero();   // TODO: Not used. Created to remove warning
+
+        forwardKinematics(joint_position, joint_velocity, end_effector_position, end_effector_velocity);
+
+        std::cout << "TODO: forwardKinematics using also joint acceleration\n";
     }
 
     void Aliengo::inverseDynamics(const Eigen::Matrix<double, 6, 1> &robot_velocity,    // robot base
