@@ -159,6 +159,9 @@ namespace aliengolib
                                 robotlib::RobotBase::JointState &joint_velocity,
                                 robotlib::RobotBase::JointState &joint_acceleration) override;
 
+        virtual void inverseKinematics(const LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
+                                       JointState &joint_position) override;
+
         virtual void inverseDynamics(const Eigen::Matrix<double, 6, 1> &robot_velocity,
                                 const Eigen::Matrix<double, 6, 1> &robot_acceleration,
                                 const Eigen::Matrix<double, 6, 1> &gravity_vector,

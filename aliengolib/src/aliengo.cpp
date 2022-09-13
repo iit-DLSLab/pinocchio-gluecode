@@ -335,6 +335,30 @@ namespace aliengolib
             tau_joints[joint] = robcogen_tau_joints[joint_id];
         }
     }
+
+    void Aliengo::inverseKinematics(const LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
+                                    JointState &joint_position)
+    {
+        iit::dog::LegDataMap<Eigen::Vector3d> robcogen_end_effector_position{};
+        Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_position{};
+        robcogen_joint_position.setZero();
+
+        for (auto leg : *legs_)
+        {
+            const int leg_id{glue_leg_names_to_ids[leg->getName()]};
+
+            robcogen_end_effector_position[leg_id] = end_effector_position[leg];
+        }
+
+        inverse_kinematics_->getJointPosition(robcogen_end_effector_position, robcogen_joint_position);
+
+        for(auto joint : auxiliar_joints_variable_)
+        {
+            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            joint_position[joint] = robcogen_joint_position[joint_id];
+        }
+    }
+
     void Aliengo::inverseKinematics(const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
                                     const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity,
                                     const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_acceleration,
