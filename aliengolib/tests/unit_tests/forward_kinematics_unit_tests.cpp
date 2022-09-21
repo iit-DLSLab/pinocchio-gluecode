@@ -24,20 +24,20 @@ TEST(ForwardKinematics, forward_kinematics)
   q_gt_eigen.setZero(12);
   qd_gt_eigen.setZero(12);
   
-  robotlib::RobotBase::JointState q_gt{robot->makeJointState(0)};	
-  robotlib::RobotBase::JointState qd_gt{robot->makeJointState(0)};
-  robotlib::RobotBase::JointState qdd_gt{robot->makeJointState(0)};
+  robotlib::JointState q_gt{robot->makeJointState(0)};	
+  robotlib::JointState qd_gt{robot->makeJointState(0)};
+  robotlib::JointState qdd_gt{robot->makeJointState(0)};
 
   Eigen::Matrix<double, 3, 1> default_value{};
   default_value.setZero();
 
-  robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> foot_position_gt{robot->makeLegDataMap<Eigen::Matrix<double, 3, 1>>(default_value)};
-  robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> foot_velocity_gt{robot->makeLegDataMap<Eigen::Matrix<double, 3, 1>>(default_value)};
-  robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> foot_acceleration_gt{robot->makeLegDataMap<Eigen::Matrix<double, 3, 1>>(default_value)};
+  robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> foot_position_gt{robot->makeLegDataMap<Eigen::Matrix<double, 3, 1>>(default_value)};
+  robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> foot_velocity_gt{robot->makeLegDataMap<Eigen::Matrix<double, 3, 1>>(default_value)};
+  robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> foot_acceleration_gt{robot->makeLegDataMap<Eigen::Matrix<double, 3, 1>>(default_value)};
 
-  robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> foot_position{robot->makeLegDataMap<Eigen::Matrix<double, 3, 1>>(default_value)};
-  robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> foot_velocity{robot->makeLegDataMap<Eigen::Matrix<double, 3, 1>>(default_value)};
-  robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> foot_acceleration{robot->makeLegDataMap<Eigen::Matrix<double, 3, 1>>(default_value)};
+  robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> foot_position{robot->makeLegDataMap<Eigen::Matrix<double, 3, 1>>(default_value)};
+  robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> foot_velocity{robot->makeLegDataMap<Eigen::Matrix<double, 3, 1>>(default_value)};
+  robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> foot_acceleration{robot->makeLegDataMap<Eigen::Matrix<double, 3, 1>>(default_value)};
 
   // Ground truth values, HP: the order of the values is the same as the one of the joints defined in the glue!
   q_gt_eigen << -0.0549458, 0.693107, -1.3977, -0.0533997, 0.691101, -1.39954, -0.0406505, 0.694812, -1.40255, -0.0348423, 0.688963, -1.40672;

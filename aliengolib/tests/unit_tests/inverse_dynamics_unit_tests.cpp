@@ -57,19 +57,19 @@ TEST(InverseDynamics, inverse_dynamics)
   std::shared_ptr<robotlib::RobotBase> robot = createRobotWithUrdf_t(robot_urdf);
   
   // ** Inputs **
-  robotlib::RobotBase::JointState q_input = robot->makeJointState();	
-  robotlib::RobotBase::JointState qd_input = robot->makeJointState();	
-  robotlib::RobotBase::JointState qdd_input = robot->makeJointState();
+  robotlib::JointState q_input = robot->makeJointState();	
+  robotlib::JointState qd_input = robot->makeJointState();	
+  robotlib::JointState qdd_input = robot->makeJointState();
   Eigen::Matrix<double, 6, 1> robot_velocity_input;
   Eigen::Matrix<double, 6, 1> robot_acceleration_input;
   Eigen::Matrix<double, 6, 1> gravity_base_input;
 
   // ** Outputs ** 
-  robotlib::RobotBase::JointState inv_dyn_tau_output = robot->makeJointState();
+  robotlib::JointState inv_dyn_tau_output = robot->makeJointState();
   Eigen::Matrix<double, 6, 1> wrench_base_output;
 
   // ** Ground truth** 
-  robotlib::RobotBase::JointState inv_dyn_tau_gt = robot->makeJointState();
+  robotlib::JointState inv_dyn_tau_gt = robot->makeJointState();
   Eigen::Matrix<double, 6, 1> wrench_base_gt;
     
   // ** Variable initialization **

@@ -28,20 +28,20 @@ TEST(InverseKinematics, inverse_kinematics)
   qd_gt_eigen.setZero(12);
   qdd_gt_eigen.setZero(12);
   
-  robotlib::RobotBase::JointState q_gt{robot->makeJointState(0)};	
-  robotlib::RobotBase::JointState qd_gt{robot->makeJointState(0)};
-  robotlib::RobotBase::JointState qdd_gt{robot->makeJointState(0)};
+  robotlib::JointState q_gt{robot->makeJointState(0)};	
+  robotlib::JointState qd_gt{robot->makeJointState(0)};
+  robotlib::JointState qdd_gt{robot->makeJointState(0)};
   
-  robotlib::RobotBase::JointState q{robot->makeJointState(0)};	
-  robotlib::RobotBase::JointState qd{robot->makeJointState(0)};
-  robotlib::RobotBase::JointState qdd{robot->makeJointState(0)};
+  robotlib::JointState q{robot->makeJointState(0)};	
+  robotlib::JointState qd{robot->makeJointState(0)};
+  robotlib::JointState qdd{robot->makeJointState(0)};
 
   Eigen::Matrix<double, 3, 1> default_value{};
   default_value.setZero();
 
-  robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> foot_position_gt{robot->makeLegDataMap<Eigen::Matrix<double, 3, 1>>(default_value)};
-  robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> foot_velocity_gt{robot->makeLegDataMap<Eigen::Matrix<double, 3, 1>>(default_value)};
-  robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> foot_acceleration_gt{robot->makeLegDataMap<Eigen::Matrix<double, 3, 1>>(default_value)};
+  robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> foot_position_gt{robot->makeLegDataMap<Eigen::Matrix<double, 3, 1>>(default_value)};
+  robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> foot_velocity_gt{robot->makeLegDataMap<Eigen::Matrix<double, 3, 1>>(default_value)};
+  robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> foot_acceleration_gt{robot->makeLegDataMap<Eigen::Matrix<double, 3, 1>>(default_value)};
 
   // ** The inverse kinematics tests is based on calling two times the inverse kinematics.**
   // This is because the computation of qdd uses old_feet_jacobians_ variable which depends on

@@ -32,7 +32,7 @@ namespace aliengolib
                 const std::array<std::shared_ptr<robotlib::LimbBase>, NARMS> arms, const std::string& robot_urdf);
         virtual ~Aliengo();
 
-        Eigen::Vector3d getFramePosition(const robotlib::RobotBase::JointState &q,
+        Eigen::Vector3d getFramePosition(const robotlib::JointState &q,
                                          const std::shared_ptr<robotlib::Frame> origin,
                                          const std::shared_ptr<robotlib::Frame> destination) override
         {
@@ -43,7 +43,7 @@ namespace aliengolib
             return Eigen::Vector3d().setZero();
         };
 
-        Eigen::Matrix3d getFrameOrientation(const robotlib::RobotBase::JointState &q,
+        Eigen::Matrix3d getFrameOrientation(const robotlib::JointState &q,
                                             const std::shared_ptr<robotlib::Frame> origin,
                                             const std::shared_ptr<robotlib::Frame> destination) override
         {
@@ -54,7 +54,7 @@ namespace aliengolib
             return Eigen::Matrix3d().setZero();
         };
 
-        Eigen::Matrix4d getFramePose(const robotlib::RobotBase::JointState &q,
+        Eigen::Matrix4d getFramePose(const robotlib::JointState &q,
                                      const std::shared_ptr<robotlib::Frame> origin,
                                      const std::shared_ptr<robotlib::Frame> destination) override
         {
@@ -68,19 +68,19 @@ namespace aliengolib
             return frame_pose;
         };
 
-        Eigen::Vector3d getFootPosition(const robotlib::RobotBase::JointState &q,
+        Eigen::Vector3d getFootPosition(const robotlib::JointState &q,
                                         const std::shared_ptr<robotlib::Frame> foot) override
         {
             return this->getFramePosition(q, this->getLink("TRUNK"), foot);
         };
 
-        Eigen::Matrix3d getFootOrientation(const robotlib::RobotBase::JointState &q,
+        Eigen::Matrix3d getFootOrientation(const robotlib::JointState &q,
                                            const std::shared_ptr<robotlib::Frame> foot) override
         {
             return this->getFrameOrientation(q, this->getLink("TRUNK"), foot);
         };
 
-        Eigen::Matrix4d getFootPose(const robotlib::RobotBase::JointState &q,
+        Eigen::Matrix4d getFootPose(const robotlib::JointState &q,
                                     const std::shared_ptr<robotlib::Frame> foot) override
         {
             Eigen::Matrix4d foot_pose{};
@@ -93,20 +93,20 @@ namespace aliengolib
             return foot_pose;
         };
 
-        void getFootPosition(const robotlib::RobotBase::JointState &q,
+        void getFootPosition(const robotlib::JointState &q,
                              const std::shared_ptr<robotlib::LimbBase> leg,
                              Eigen::Vector3d &footPos) override
         {
             footPos = this->getFramePosition(q, this->getLink("TRUNK"), leg->getEndEffector());
         };
 
-        Eigen::Matrix3d getFootOrientation(const robotlib::RobotBase::JointState &q,
+        Eigen::Matrix3d getFootOrientation(const robotlib::JointState &q,
                                            const std::shared_ptr<robotlib::LimbBase> leg) override
         {
             return this->getFrameOrientation(q, this->getLink("TRUNK"), leg->getEndEffector());
         };
 
-        Eigen::Matrix4d getFootPose(const robotlib::RobotBase::JointState &q,
+        Eigen::Matrix4d getFootPose(const robotlib::JointState &q,
                                     const std::shared_ptr<robotlib::LimbBase> leg) override
         {
             Eigen::Matrix4d foot_pose{};
@@ -119,9 +119,9 @@ namespace aliengolib
             return foot_pose;
         };
 
-        virtual void getFootJacobian(const robotlib::RobotBase::JointState &q,
+        virtual void getFootJacobian(const robotlib::JointState &q,
                                      const std::shared_ptr<robotlib::LimbBase> leg,
-                                     Jacobian &footJac) override
+                                     robotlib::Jacobian &footJac) override
         {
 			q.size();
 			leg->getName();
@@ -129,10 +129,10 @@ namespace aliengolib
             footJac.setOnes();
         };
 
-		virtual void updateLinearJacobian(const JointState &joints_positions,
-                                          LegDataMap<Jacobian> &robot_jacobian) override;
+		virtual void updateLinearJacobian(const robotlib::JointState &joints_positions,
+                                          robotlib::LegDataMap<robotlib::Jacobian> &robot_jacobian) const override;
 
-        LegDataMap<std::shared_ptr<robotlib::Frame>> getFeet() override
+        robotlib::LegDataMap<std::shared_ptr<robotlib::Frame>> getFeet() override
         {
             auto feet = this->makeLegDataMap<std::shared_ptr<robotlib::Frame>>();
 
@@ -144,38 +144,51 @@ namespace aliengolib
             return feet;
         };
 
-        virtual void forwardKinematics(const robotlib::RobotBase::JointState &joint_position,
-                                                robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position) override;
+        virtual void forwardKinematics(const robotlib::JointState &joint_position,
+                                       robotlib::LegDataMap<Eigen::Vector3d> &end_effector_position) const override;
 
-        virtual void forwardKinematics(const robotlib::RobotBase::JointState &joint_position,
-                                                const robotlib::RobotBase::JointState &joint_velocity,
-                                                robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
-                                                robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity) override;
+        virtual void forwardKinematics(const robotlib::JointState &joint_position,
+                                       const robotlib::JointState &joint_velocity,
+                                       robotlib::LegDataMap<Eigen::Vector3d> &end_effector_position,
+                                       robotlib::LegDataMap<Eigen::Vector3d> &end_effector_velocity) const override;
 
-        virtual void inverseKinematics(const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
-                                const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity,
-                                const robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_acceleration,
-                                robotlib::RobotBase::JointState &joint_position,
-                                robotlib::RobotBase::JointState &joint_velocity,
-                                robotlib::RobotBase::JointState &joint_acceleration) override;
+        virtual void forwardKinematics(const robotlib::JointState &joint_position,
+                                       const robotlib::JointState &joint_velocity,
+                                       const robotlib::JointState &joint_acceleration,
+                                       robotlib::LegDataMap<Eigen::Vector3d> &end_effector_position,
+                                       robotlib::LegDataMap<Eigen::Vector3d> &end_effector_velocity,
+                                       robotlib::LegDataMap<Eigen::Vector3d> &end_effector_acceleration) const override;
 
-        virtual void inverseKinematics(const LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
-                                       JointState &joint_position) override;
+        virtual robotlib::LegDataMap<Eigen::Vector3d> forwardKinematics(const robotlib::JointState &) const ;
+
+
+        virtual void inverseKinematics(const robotlib::LegDataMap<Eigen::Vector3d> &end_effector_position,
+                                       robotlib::JointState &joint_position) const override;
+
+        virtual void inverseKinematics(const robotlib::LegDataMap<Eigen::Vector3d> &end_effector_position,
+                                       const robotlib::LegDataMap<Eigen::Vector3d> &end_effector_velocity,
+                                       const robotlib::LegDataMap<Eigen::Vector3d> &end_effector_acceleration,
+                                       robotlib::JointState &joint_position,
+                                       robotlib::JointState &joint_velocity,
+                                       robotlib::JointState &joint_acceleration) const override;
+
+        
+        virtual robotlib::JointState inverseKinematics(const robotlib::LegDataMap<Eigen::Vector3d>&) const override;
 
         virtual void inverseDynamics(const Eigen::Matrix<double, 6, 1> &robot_velocity,
-                                const Eigen::Matrix<double, 6, 1> &robot_acceleration,
-                                const Eigen::Matrix<double, 6, 1> &gravity_vector,
-                                const JointState &joint_position,
-                                const JointState &joint_velocity,
-                                const JointState &joint_acceleration,
-                                Eigen::Matrix<double, 6, 1> &wrench_base, ///output
-                                JointState &tau_joints);                   ///output
+                                     const Eigen::Matrix<double, 6, 1> &robot_acceleration,
+                                     const Eigen::Matrix<double, 6, 1> &gravity_vector,
+                                     const robotlib::JointState &joint_position,
+                                     const robotlib::JointState &joint_velocity,
+                                     const robotlib::JointState &joint_acceleration,
+                                     Eigen::Matrix<double, 6, 1> &wrench_base,
+                                     robotlib::JointState &tau_joints) const override;
         
         // Hypothesis of fully actuated base
         virtual void computeGravityCompensation(const Eigen::Matrix<double, 6, 1> &gravity_vector,
-                                                const JointState &joint_position,
-                                                Eigen::Matrix<double, 6, 1> &wrench_base, ///output
-                                                JointState &tau_joints);              ///output
+                                                const robotlib::JointState &joint_position,
+                                                Eigen::Matrix<double, 6, 1> &wrench_base,
+                                                robotlib::JointState &tau_joints);
         
         // double getRobotMass() const override { return 21.525; }
 
@@ -185,27 +198,27 @@ namespace aliengolib
         }
 
         // TODO: remove this override once the dynamic_parameter of trunk_ is correctly set
-        const Eigen::Matrix<double, 3, 1>& getTrunkCOM() const
+        const Eigen::Vector3d& getTrunkCOM() const
         {
             return inertias_->getCOM_trunk();
         }
 
         Eigen::Vector3d getRobotCoM() { return Eigen::Vector3d().setZero(); }
 
-        virtual Eigen::Matrix<double, 3, 1> getWholeBodyCOM() override;
+        virtual Eigen::Vector3d getWholeBodyCOM() override;
 
-        virtual Eigen::Matrix<double, 3, 1> getWholeBodyCOM(const JointState &joint_state) override;
+        virtual Eigen::Vector3d getWholeBodyCOM(const robotlib::JointState &joint_state) const override;
 
-        virtual Eigen::Vector3d getCoMFromBase(const JointState &q,
+        virtual Eigen::Vector3d getCoMFromBase(const robotlib::JointState &q,
                                                const Eigen::Vector3d &base_orient,
                                                const Eigen::Vector3d &base_pos) override;
 
-        virtual Eigen::Vector3d getBaseFromCoM(const JointState &q,
+        virtual Eigen::Vector3d getBaseFromCoM(const robotlib::JointState &q,
                                                const Eigen::Vector3d &base_orient,
                                                const Eigen::Vector3d &CoM) override;
 
-        virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVel(const JointState &q,
-                                                               const JointState &qd) override;
+        virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVel(const robotlib::JointState &q,
+                                                               const robotlib::JointState &qd) override;
 
 
         //compute spatial velocity of the CoM (base and joint influence)
@@ -213,30 +226,32 @@ namespace aliengolib
         //compute spatial velocity of the CoM (base and joint influence) with update
         virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
                                                                  const Eigen::Matrix3d &rotationMx,
-                                                                 const JointState &q,
-                                                                 const JointState &qd) override;
-        virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
-                                                                const Eigen::Matrix3d &rotationMx,
-                                                                const JointState &q) override;
-        virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
-                                                            const Eigen::Matrix3d &rotationMx,
-                                                            const Eigen::Vector3d offset_com) override;
+                                                                 const robotlib::JointState &q,
+                                                                 const robotlib::JointState &qd) override;
 
-        virtual Eigen::Vector3d getLegContribution(const JointState &q) override;
+        virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
+                                                                 const Eigen::Matrix3d &rotationMx,
+                                                                 const robotlib::JointState &q) override;
+
+        virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
+                                                                 const Eigen::Matrix3d &rotationMx,
+                                                                 const Eigen::Vector3d offset_com) override;
+
+        virtual Eigen::Vector3d getLegContribution(const robotlib::JointState &q) const override;
 
         virtual double getTrunkMass() const override;
 
         virtual double getLegsMass() const override;
 
-        // void updateLinearJacobian(const robotlib::RobotBase::JointState &joints_positions,
+        // void updateLinearJacobian(const robotlib::JointState &joints_positions,
         //                           const rcg::Jacobians &jacobians,
-		// 					      robotlib::RobotBase::LegDataMap<robotlib::RobotBase::Jacobian> &robot_jacobian);
+		// 					      robotlib::LegDataMap<robotlib::Jacobian> &robot_jacobian);
         
-        virtual void setInvKinTimePeriod(const double& period) override;
+        virtual void setInvKinTimePeriod(const double& period) const override;
 
-        virtual void setTrunkCom(const Eigen::Vector3d &trunk_com) override;
+        virtual void setTrunkCom(const Eigen::Vector3d &trunk_com) const override;
         
-        virtual void setTrunkMass(const double& trunk_mass) override;
+        virtual void setTrunkMass(const double& trunk_mass) const override;
 
     private: 
         urdf::Model robot_model_;
@@ -273,8 +288,8 @@ namespace aliengolib
 } //namespace aliengolib
 
 // TODO
-// extern "C" std::shared_ptr<robotlib::RobotBase> createRobot_t();
-// extern "C" void destroyRobot_t(std::shared_ptr<robotlib::RobotBase>);
+extern "C" std::shared_ptr<robotlib::RobotBase> createRobot_t();
+extern "C" void destroyRobot_t(std::shared_ptr<robotlib::RobotBase>);
 extern "C" std::shared_ptr<robotlib::RobotBase> createRobotWithUrdf_t(const std::string& robot_urdf);
 extern "C" void destroyRobotWithUrdf_t(std::shared_ptr<robotlib::RobotBase>);
 

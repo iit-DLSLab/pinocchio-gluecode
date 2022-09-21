@@ -1,66 +1,72 @@
 # Project configuration
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.15)
 project(aliengo_commons)
 
-SET(CMAKE_CXX_FLAGS "-std=c++17")
+add_compile_options("-std=c++2a")
 
-#set(HEADER_INSTALL_ROOT /usr/local/include/ CACHE PATH "Where to install the headers")
-#set(LIB_INSTALL_ROOT /usr/local/lib/ CACHE PATH "Where to install the shared library")
-find_package(PkgConfig)
-pkg_check_modules(EIGEN3 eigen3 REQUIRED)
-
-find_package(catkin REQUIRED iit_commons)
-
-# Include directories
-include_directories(include ${EIGEN3_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
-
-set(LIB_NAME iitaliengocommons)
-
-catkin_package(
-  INCLUDE_DIRS include
-  CATKIN_DEPENDS iit_commons
-  LIBRARIES ${LIB_NAME}
-  DEPENDS
+# ==============================================================================
+# Setup the repository
+# ==============================================================================
+# This will perfom task such as setting up the git hooks for anyone who uses
+# this project
+execute_process(
+	COMMAND           ./setup.sh
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-# Source code folder
-set(SOURCES
-  # Common code
-  src/internals.cpp
-  src/joints_pid_control.cpp
-  src/hydraulic_dynamics.cpp
-  src/hydraulics_parameters.cpp
-  src/feet_contact_forces.cpp
-  src/robot_limits.cpp
-  # Generated code
-  src/transforms.cpp
-  src/jacobians.cpp
-  src/jsim.cpp
-  src/inverse_dynamics.cpp
-  src/inverse_kinematics.cpp
-  src/forward_dynamics.cpp
-  src/inertia_properties.cpp
+# ==============================================================================
+# Calculate correct project version number
+# ==============================================================================
+# Read in the current version
+file(READ version.txt PROJECT_VERSION)
+
+# create array of version strings
+string(REPLACE "." ";" VERSION_ARRAY ${PROJECT_VERSION})
+# ------------------------------------------------------------------------------
+# Major, Minor, Patch numbers
+# ------------------------------------------------------------------------------
+# set corresponding cmake version variables
+list(POP_FRONT VERSION_ARRAY
+	PROJECT_VERSION_MAJOR
+	PROJECT_VERSION_MINOR
+	PROJECT_VERSION_PATCH
 )
+# Remove the trailing newline from the patch number
+string(REPLACE "\n" "" PROJECT_VERSION_PATCH ${PROJECT_VERSION_PATCH})
 
-# Add the shared library
-add_library(${LIB_NAME} SHARED ${SOURCES})
-target_link_libraries(${LIB_NAME} ${catkin_LIBRARIES})
-
-#if (CATKIN_ENABLE_TESTING)
-#    find_package(catkin REQUIRED COMPONENTS rostest)
-#    include_directories(include ${catkin_INCLUDE_DIRS})
-
-    #catkin_add_gtest(fbl-test test/fbl.cpp)
-    #target_link_libraries(fbl-test ${LIB_NAME} ${catkin_LIBRARIES} pthread)
-#endif()
-
-install(DIRECTORY include/
-  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
-  PATTERN ".svn" EXCLUDE
+# ------------------------------------------------------------------------------
+# Full version number
+# ------------------------------------------------------------------------------
+# Rebuild the project version including the current commit hash
+string(JOIN "." PROJECT_VERSION
+	${PROJECT_VERSION_MAJOR}
+	${PROJECT_VERSION_MINOR}
+	${PROJECT_VERSION_PATCH}
 )
+unset(VERSION_ARRAY) # delete aray of version strings
+message(STATUS "ALIENGO COMMONS PROJECT VERSION ${PROJECT_VERSION}")
 
-install(TARGETS ${LIB_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
+add_subdirectory(commons)
+add_subdirectory(aliengolib)
+
+set(CPACK_PACKAGE_VERSION_MAJOR              ${PROJECT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR              ${PROJECT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH              ${PROJECT_VERSION_PATCH})
+set(CPACK_DEBIAN_PACKAGE_VERSION             ${PROJECT_VERSION})
+set(CPACK_PACKAGE_VENDOR                     "dlslab")
+set(CPACK_PACKAGE_CONTACT                    "dlslab")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER          "dlslab")
+set(CPACK_VERBATIM_VARIABLES                 ON)
+set(CPACK_GENERATOR                          "DEB")
+set(CPACK_DEB_COMPONENT_INSTALL              ON)
+
+set(CPACK_DEBIAN_ALIENGO_COMMONS_PACKAGE_NAME            "dls-aliengo-commons" CACHE INTERNAL "")
+set(CPACK_DEBIAN_ALIENGO_COMMONS_FILE_NAME               "dls-aliengo-commons-${PROJECT_VERSION}.deb" CACHE INTERNAL "")  
+set(CPACK_DEBIAN_ALIENGO_COMMONS_PACKAGE_DEPENDS         "dls-iitcommons, robotlib" CACHE INTERNAL "")
+
+set(CPACK_DEBIAN_ALIENGO_COMMONS_DEV_PACKAGE_NAME        "dls-aliengo-commons-dev" CACHE INTERNAL "")
+set(CPACK_DEBIAN_ALIENGO_COMMONS_DEV_FILE_NAME           "dls-aliengo-commons-dev-${PROJECT_VERSION}.deb" CACHE INTERNAL "")  
+set(CPACK_DEBIAN_ALIENGO_COMMONS_DEV_PACKAGE_DEPENDS     "dls-aliengo-commons, dls-iitcommons-dev, robotlib-dev" CACHE INTERNAL "")
+
+get_cmake_property(CPACK_COMPONENTS_ALL COMPONENTS)
+list(REMOVE_ITEM CPACK_COMPONENTS_ALL "Unspecified")
