@@ -1,10 +1,3 @@
-# Include directories
-include_directories(
-    include 
-    /usr/include/eigen3
-)
-
-# Add the shared library
 add_library(aliengo_commons
     SHARED 
         # Common code
@@ -22,6 +15,14 @@ add_library(aliengo_commons
         src/inverse_kinematics.cpp
         src/forward_dynamics.cpp
         src/inertia_properties.cpp
+)
+
+# Include directories
+target_include_directories(aliengo_commons
+    PUBLIC
+        include 
+    PRIVATE
+        /usr/include/eigen3
 )
 
 target_link_directories(aliengo_commons
