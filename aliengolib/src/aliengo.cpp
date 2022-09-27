@@ -157,12 +157,12 @@ namespace aliengolib
 
                         setJointLimits(joint, q_min, q_max, qd_max, tau_max);
                         
-                        std::cout << "Set limits for joint " << urdf_joint_name << ":" << std::endl;
-                        std::cout << "q_min = " << q_min << std::endl;
-                        std::cout << "q_max = " << q_max << std::endl;
-                        std::cout << "qd_max = " << qd_max << std::endl; 
-                        std::cout << "tau_max = " << tau_max << std::endl;
-                        std::cout << "\n";
+                        // std::cout << "Set limits for joint " << urdf_joint_name << ":" << std::endl;
+                        // std::cout << "q_min = " << q_min << std::endl;
+                        // std::cout << "q_max = " << q_max << std::endl;
+                        // std::cout << "qd_max = " << qd_max << std::endl; 
+                        // std::cout << "tau_max = " << tau_max << std::endl;
+                        // std::cout << "\n";
                     }
                 }
 
