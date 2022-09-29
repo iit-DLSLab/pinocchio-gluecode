@@ -6,6 +6,7 @@ set(MINOR 0)
 set(PATCH 0)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+SET(CMAKE_BUILD_TYPE "Release")
 
 find_package(robotlib REQUIRED)
 find_package(Eigen3 REQUIRED NO_MODULE)
