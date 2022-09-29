@@ -50,45 +50,43 @@ TEST(InverseKinematics, inverse_kinematics)
 
   // ** FIRST CALL **
   // Ground truth values, HP: the order of the values is the same as the one of the joints defined in the glue!
-  // q_gt_eigen   << -0.0125531, 0.996375, -2.00237, 0.00509447, 0.862054, -1.83091, -0.00161759, 0.432273, -0.936659, -0.0223736, 0.707733, -1.39797;
-  // qd_gt_eigen  << 0.0454697, 2.18132, -5.03128, -0.201104, 0.330191, -0.00315145, 0.133991, 0.216089, -0.0197947, -0.102764, 3.16978, -6.83554;
-  // qdd_gt_eigen << -2.50026, -32.9323, 41.3153, 2.75067, -1.06054, -0.61156, -2.31743, -1.28083, 0.534671, 6.90676, -37.6316, 52.1575;
-
-  foot_position_gt["LF"] = Eigen::Vector3d{0.241196, 0.137378, -0.268587};
-  foot_position_gt["RF"] = Eigen::Vector3d{0.256164, -0.132449, -0.3047};
-  foot_position_gt["LH"] = Eigen::Vector3d{-0.223816, 0.134721, -0.445737};
-  foot_position_gt["RH"] = Eigen::Vector3d{-0.243248, -0.142542, -0.38078};
-
-  foot_velocity_gt["LF"] = Eigen::Vector3d{ 0.0850577, -0.0255141, 1.05563};
-  foot_velocity_gt["RF"] = Eigen::Vector3d{-0.100025, -0.0612524, 0.011659};
-  foot_velocity_gt["LH"] = Eigen::Vector3d{-0.0920158, -0.0597229, -0.0123018};
-  foot_velocity_gt["RH"] = Eigen::Vector3d{ 0.104533, -0.0145508, 1.10783};
-
-  foot_acceleration_gt["LF"] = Eigen::Vector3d{3.96104, 0.865219, -8.86985};
-  foot_acceleration_gt["RF"] = Eigen::Vector3d{0.40879, 0.838311, -0.0801642};
-  foot_acceleration_gt["LH"] = Eigen::Vector3d{0.454411, 1.03452, 0.138344};
-  foot_acceleration_gt["RH"] = Eigen::Vector3d{4.98252, 2.28562, -9.85851};
+  foot_position_gt["LF"] = Eigen::Vector3d{0.203, 0.139, -0.348};
+  foot_position_gt["RF"] = Eigen::Vector3d{0.24, -0.123, -0.37};
+  foot_position_gt["LH"] = Eigen::Vector3d{-0.24, 0.145, -0.353};
+  foot_position_gt["RH"] = Eigen::Vector3d{-0.279, -0.134, -0.343};
+  foot_velocity_gt["LF"] = Eigen::Vector3d{0.0243, -0.0759, 1.86};
+  foot_velocity_gt["RF"] = Eigen::Vector3d{-0.225, -0.12, 0.0325};
+  foot_velocity_gt["LH"] = Eigen::Vector3d{-0.227, -0.118, -0.0353};
+  foot_velocity_gt["RH"] = Eigen::Vector3d{0.0243, -0.0736, 1.92};
+  foot_acceleration_gt["LF"] = Eigen::Vector3d{0.382, -3.43, 100};
+  foot_acceleration_gt["RF"] = Eigen::Vector3d{-2.29, -5.15, 0.702};
+  foot_acceleration_gt["LH"] = Eigen::Vector3d{-1.78, -4.16, -0.964};
+  foot_acceleration_gt["RH"] = Eigen::Vector3d{0.418, -3.23, 106};
+  // q_gt_eigen << -0.015, 0.897, -1.58, 0.0308, 0.744, -1.49, -0.0299, 0.78, -1.56, 0.000383, 0.923, -1.62;
+  // qd_gt_eigen << 0.138, 5.74, -10.5, -0.323, 0.64, -0.0542, 0.335, 0.627, 0.0231, -0.213, 5.79, -10.5;
+  // qdd_gt_eigen << 6.86, 291, -513, -14, 4.85, 2.8, 11.7, 4.86, 0.264, -11.4, 302, -527;
 
   robot->inverseKinematics(foot_position_gt, foot_velocity_gt, foot_acceleration_gt, q, qd, qdd);
 
   // ** SECOND CALL **
   // Ground truth values, HP: the order of the values is the same as the one of the joints defined in the glue!
-  q_gt_eigen   <<  -0.0123685, 1.00473, -2.022, 0.00432246, 0.863359, -1.83092, -0.00110779, 0.43312, -0.936729, -0.0227353, 0.719903, -1.42451;
-  qd_gt_eigen  << 0.0371645, 1.97562, -4.77012, -0.189597, 0.324761, -0.00529355, 0.124344, 0.20893, -0.0151846, -0.0766078, 2.90027, -6.4257;
-  qdd_gt_eigen << -2.07607, -41.6222, 55.5532, 2.87858, -1.25218, -0.756396, -2.40483, -1.62629, 0.820005, 7.49685, -48.5074, 70.9453;
+  foot_position_gt["LF"] = Eigen::Vector3d{0.203, 0.139, -0.34};
+  foot_position_gt["RF"] = Eigen::Vector3d{0.239, -0.123, -0.37};
+  foot_position_gt["LH"] = Eigen::Vector3d{-0.241, 0.144, -0.353};
+  foot_position_gt["RH"] = Eigen::Vector3d{-0.279, -0.134, -0.334};
+  foot_velocity_gt["LF"] = Eigen::Vector3d{0.0281, -0.081, 2.21};
+  foot_velocity_gt["RF"] = Eigen::Vector3d{-0.234, -0.133, 0.0332};
+  foot_velocity_gt["LH"] = Eigen::Vector3d{-0.234, -0.129, -0.0364};
+  foot_velocity_gt["RH"] = Eigen::Vector3d{0.0284, -0.0778, 2.29};
+  foot_acceleration_gt["LF"] = Eigen::Vector3d{0.959, -1.27, 87.8};
+  foot_acceleration_gt["RF"] = Eigen::Vector3d{-2.12, -3.34, 0.174};
+  foot_acceleration_gt["LH"] = Eigen::Vector3d{-1.69, -2.57, -0.289};
+  foot_acceleration_gt["RH"] = Eigen::Vector3d{1.02, -1.05, 92.1};
+  q_gt_eigen << -0.0146785, 0.921859, -1.6283, 0.0298207, 0.747017, -1.48914, -0.0282274, 0.783012, -1.55983, -2.92916e-17, 0.949667, -1.66626;
+  qd_gt_eigen << 0.142277, 6.70135, -12.1732, -0.358866, 0.656499, -0.040092, 0.365631, 0.649353, 0.0177547, -0.232934, 6.80512, -12.2078;
+  qdd_gt_eigen << 0.242238, 240.216, -416.172, -9.06562, 3.8756, 3.79685, 7.25086, 5.22556, -0.709715, -4.71288, 249.975, -423.288;
 
-  foot_position_gt["LF"] = Eigen::Vector3d{0.241564, 0.137277, -0.264455};
-  foot_position_gt["RF"] = Eigen::Vector3d{0.255769, -0.132684, -0.304655};
-  foot_position_gt["LH"] = Eigen::Vector3d{-0.224179, 0.134494, -0.445785};
-  foot_position_gt["RH"] = Eigen::Vector3d{-0.242795, -0.142582, -0.37645};
-  foot_velocity_gt["LF"] = Eigen::Vector3d{0.102373, -0.0223346, 1.00788};
-  foot_velocity_gt["RF"] = Eigen::Vector3d{-0.0980735, -0.0577441, 0.0114232};
-  foot_velocity_gt["LH"] = Eigen::Vector3d{-0.0898321, -0.0554289, -0.0118346};
-  foot_velocity_gt["RH"] = Eigen::Vector3d{ 0.126323, -0.00499331, 1.05567};
-  foot_acceleration_gt["LF"] = Eigen::Vector3d{4.32882, 0.794856, -11.9374};
-  foot_acceleration_gt["RF"] = Eigen::Vector3d{0.487808, 0.87708, -0.0589506};
-  foot_acceleration_gt["LH"] = Eigen::Vector3d{0.545924, 1.07349, 0.116799};
-  foot_acceleration_gt["RH"] = Eigen::Vector3d{5.44738, 2.38938, -13.0389};
+
 
   for (auto leg : *robot->getLegs())
   {
@@ -112,7 +110,6 @@ TEST(InverseKinematics, inverse_kinematics)
     {
       EXPECT_LE(abs(q_gt[joint]-q[joint]), error_th);
       EXPECT_LE(abs(qd_gt[joint]-qd[joint]), error_th);
-
       EXPECT_LE(abs(qdd_gt[joint]-qdd[joint]), error_th);
     }
   }
