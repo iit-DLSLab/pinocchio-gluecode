@@ -73,41 +73,33 @@ TEST(InverseDynamics, inverse_dynamics)
   Eigen::Matrix<double, 6, 1> wrench_base_gt;
     
   // ** Variable initialization **
-  robot_velocity_input.setZero();
-  robot_acceleration_input.setZero();
-  gravity_base_input.setZero();
+  // robot_velocity_input.setZero();
+  // robot_acceleration_input.setZero();
+  // gravity_base_input.setZero();
 
   wrench_base_output.setZero();
   
-  inv_dyn_tau_gt.setZero();
-  wrench_base_gt.setZero();
+  // inv_dyn_tau_gt.setZero();
+  // wrench_base_gt.setZero();
   
-  gravity_base_input.setZero();
+  // gravity_base_input.setZero();
 
   // ** Set inputs **
   // q, qd ,qdd
   Eigen::VectorXd q_input_eigen(12);
   Eigen::VectorXd qd_input_eigen(12);        
   Eigen::VectorXd qdd_input_eigen(12);
-  q_input_eigen << -0.00580286, 0.85555, -1.73281, 0.0348046, 0.874672, -1.86602, -0.0352031, 0.451663, -0.955626, -0.0113642, 0.56335, -1.13148;
-  qd_input_eigen << 0.264297, 0.148724, -0.0441949, -0.272708, 0.132575, -0.018484, 0.2509, 0.0665734, 0.038451, -0.255366, 0.0317115, 0.0929659;
-  qdd_input_eigen << -3.13674, -0.257217, -2.38265, 2.839, -0.620207, -1.31238, -3.47384, -2.48224, 1.45238, 3.41307, -3.59615, 4.21272;
-
-  // robot velocity
-  robot_velocity_input << 0, 0, 0, 0, 0, 0;
-
-  // robot acceleration
-  robot_acceleration_input << -3.03244, 1.13813, 0.248626, 0.0366928, -0.0432443, 0.0427975;
-
-  // gravity_base_input
-  gravity_base_input[3] = -0.0746593;
-  gravity_base_input[4] = 0.0539461;
-  gravity_base_input[5] = -9.80957;
-
   // ** Set ground truth **
   Eigen::VectorXd inv_dyn_tau_gt_eigen(12);
-  inv_dyn_tau_gt_eigen << -0.980625, 0.39525, -0.230276, -0.94224, 0.392556, -0.252692, -1.05742, 0.208105, -0.154878, -1.00744, 0.26486, -0.167876;
-  wrench_base_gt << 0.469748, -2.22008, 0.183519, 2.57093, -1.93818, 211.41;
+
+  q_input_eigen << -0.0935791, 0.804959, -1.58939, -0.0903319, 0.804818, -1.59102, -0.101786, 0.802827, -1.59957, -0.10254, 0.801992, -1.59863;
+  qd_input_eigen << -3.61437e-05, 0.00110956, -0.00223296, -0.000104387, 0.00109778, -0.00217754, -2.53862e-05, -7.96748e-05, -2.98041e-05, -3.17601e-05, -6.77181e-05, -1.64018e-05;
+  qdd_input_eigen << -2.50802e-06, 1.74728e-05, 3.38871e-06, 2.63621e-06, 1.82047e-05, -3.92071e-07, -2.30064e-07, 1.45463e-05, 9.37137e-06, 1.0833e-06, 1.39333e-05, 7.97995e-06;
+  gravity_base_input << 0, 0, 0, -0.0563401, 0.00249432, -9.80984;
+  robot_velocity_input << 0, 0, 0, 0, 0, 0;
+  robot_acceleration_input << 2.90385e-07, 2.93073e-06, -1.52975e-06, 8.1307e-06, -7.27653e-07, 8.36325e-07;
+  inv_dyn_tau_gt_eigen << -1.08885, 0.438185, -0.269171, -1.08629, 0.437753, -0.269693, -1.09519, 0.433331, -0.272091, -1.09592, 0.432766, -0.27203;
+  wrench_base_gt << 0.0474523, 1.77105, 0.000175675, 1.40008, -0.0619934, 243.745;
 
   // ** Set robotlib input and ground truth variables
   for (auto leg : *robot->getLegs())
@@ -126,11 +118,9 @@ TEST(InverseDynamics, inverse_dynamics)
  
   // ** Computing the inverse dynamics **
   robot->inverseDynamics(robot_velocity_input, robot_acceleration_input, gravity_base_input, q_input, qd_input, qdd_input, wrench_base_output, inv_dyn_tau_output);
-  
-  // ** Test outputs with ground truth ** //TODO
-  // setting threshold
-  double error_th = pow(10,-5);
 
+  // ** Test outputs with ground truth **
+  double error_th = pow(10,-3);
   // Testing joint torques
   for(auto leg : *robot->getLegs())
   {
@@ -141,7 +131,6 @@ TEST(InverseDynamics, inverse_dynamics)
   }
 
   // testing base wrench
-  // error_th = ?;
   for (int i=0; i<wrench_base_gt.size(); i++)
   {
        EXPECT_LE(abs(wrench_base_gt[i]-wrench_base_output[i]),error_th);
