@@ -15,8 +15,9 @@ find_library(URDFLIB urdf)
 add_compile_options(
 	-std=c++17
 	-fPIC
-	$<$<CONFIG:Debug>:-g>
+	$<$<CONFIG:Debug>:-g>  #-g produces debugging information, it is enabled if Debug configuration is set
 	-Wall -Wextra -pedantic # Enable warnings
+	-O3
 #	-fsanitize=undefined -g -O3	# UBSAN - Undefined Behaviour Sanitizer
 )
 #add_link_options(-fsanitize=undefined) # UBSAN - Undefined Behaviour Sanitizer
