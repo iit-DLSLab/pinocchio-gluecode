@@ -70,3 +70,5 @@ set(CPACK_DEBIAN_ALIENGO_COMMONS_DEV_PACKAGE_DEPENDS     "dls-aliengo-commons, d
 
 get_cmake_property(CPACK_COMPONENTS_ALL COMPONENTS)
 list(REMOVE_ITEM CPACK_COMPONENTS_ALL "Unspecified")
+
+include(CPack)
