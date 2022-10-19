@@ -199,6 +199,7 @@ double iit::Aliengo::dyn::InertiaProperties::getHipAssemblyMass(const dog::LegID
     case dog::RH:
         return getMass_RH_hipassembly();
     }
+    throw std::range_error("Leg ID not known");
 }
 double iit::Aliengo::dyn::InertiaProperties::getUpperLegMass(const dog::LegID& leg) const{
     switch(leg){
@@ -211,6 +212,7 @@ double iit::Aliengo::dyn::InertiaProperties::getUpperLegMass(const dog::LegID& l
     case dog::RH:
         return getMass_RH_upperleg();
     }
+    throw std::range_error("Leg ID not known");
 }
 double iit::Aliengo::dyn::InertiaProperties::getLowerLegMass(const dog::LegID& leg) const{
     switch(leg){
@@ -223,6 +225,7 @@ double iit::Aliengo::dyn::InertiaProperties::getLowerLegMass(const dog::LegID& l
     case dog::RH:
         return getMass_RH_lowerleg();
     }
+    throw std::range_error("Leg ID not known");
 }
 iit::rbd::Vector3d iit::Aliengo::dyn::InertiaProperties::getHipAssemblyCOM(const dog::LegID& leg) const{
     switch(leg){
@@ -235,6 +238,7 @@ iit::rbd::Vector3d iit::Aliengo::dyn::InertiaProperties::getHipAssemblyCOM(const
     case dog::RH:
         return getCOM_RH_hipassembly();
     }
+    throw std::range_error("Leg ID not known");
 }
 iit::rbd::Vector3d iit::Aliengo::dyn::InertiaProperties::getUpperLegCOM(const dog::LegID& leg) const{
     switch(leg){
@@ -247,6 +251,7 @@ iit::rbd::Vector3d iit::Aliengo::dyn::InertiaProperties::getUpperLegCOM(const do
     case dog::RH:
         return getCOM_RH_upperleg();
     }
+    throw std::range_error("Leg ID not known");
 }
 iit::rbd::Vector3d iit::Aliengo::dyn::InertiaProperties::getLowerLegCOM(const dog::LegID& leg) const{
     switch(leg){
@@ -259,6 +264,7 @@ iit::rbd::Vector3d iit::Aliengo::dyn::InertiaProperties::getLowerLegCOM(const do
     case dog::RH:
         return getCOM_RH_lowerleg();
     }
+    throw std::range_error("Leg ID not known");
 }
 iit::rbd::Vector3d iit::Aliengo::dyn::InertiaProperties::getWholeBodyCOM(const dog::JointState &q){
     homogeneus_transforms.fr_trunk_X_fr_LF_hipassembly(q);

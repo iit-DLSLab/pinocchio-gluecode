@@ -269,6 +269,7 @@ SpatialTransformPlain MotionTransforms::getTransform(const dog::JointState &q,
         std::cerr<<"getTransform ERROR: transform not available" << std::endl;
         break;
     }
+    throw std::range_error("getTransform ERROR: transform not available");
 }
 
 iit::Aliengo::MotionTransforms::MotionTransforms
@@ -619,6 +620,7 @@ SpatialTransformPlain ForceTransforms::getTransform(const dog::JointState &q,
         std::cerr<<"getTransform ERROR: transform not available" << std::endl;
         break;
     }
+    throw std::range_error("getTransform ERROR: transform not available");
 }
 
 iit::Aliengo::ForceTransforms::ForceTransforms
@@ -971,6 +973,7 @@ HomogeneousTransformPlain HomogeneousTransforms::getTransform(const dog::JointSt
         std::cerr<<"getTransform ERROR: transform not available" << std::endl;
         break;
     }
+    throw std::range_error("getTransform ERROR: transform not available");
 }
 
 

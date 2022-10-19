@@ -93,6 +93,8 @@ iit::Aliengo::dyn::InverseDynamics::Velocity iit::Aliengo::dyn::InverseDynamics:
         std::cerr<<"getLinkVelocity ERROR: spatial velocity not available for linkid : " << link_id << std::endl;
         break;        
     }
+
+    throw std::range_error("getLinkVelocity ERROR: spatial velocity not available for link");
 }
 
 iit::Aliengo::dyn::InverseDynamics::Acceleration iit::Aliengo::dyn::InverseDynamics::getLinkAcceleration(const JointState &q,
@@ -123,6 +125,8 @@ iit::Aliengo::dyn::InverseDynamics::Acceleration iit::Aliengo::dyn::InverseDynam
     case RH_UPPERLEG:
         return this->getAcceleration_RH_upperleg();
     }
+
+    throw std::range_error("getLinkAcceleration ERROR: spatial acceleration not available for link");
 }
 
 
