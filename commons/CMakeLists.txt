@@ -17,7 +17,6 @@ add_library(aliengo_commons
         src/inertia_properties.cpp
 )
 
-# Include directories
 target_include_directories(aliengo_commons
     PUBLIC
         include 
@@ -29,6 +28,11 @@ target_link_directories(aliengo_commons
     PRIVATE
         /usr/lib/dls2
         /usr/local/lib/dls2
+)
+
+target_link_libraries(aliengo_commons
+    PRIVATE
+        iitcommons
 )
 
 install(

@@ -1,10 +1,3 @@
-include_directories(
-    include
-    SYSTEM
-    /usr/include/eigen3
-    /opt/ros/noetic/include
-)
-
 add_library(aliengo 
     SHARED
         src/aliengo.cpp
@@ -17,11 +10,20 @@ add_library(aliengo
         src/robcogen/inertia_properties.cpp
 )
 
+target_include_directories(aliengo
+    PUBLIC
+        include
+    PRIVATE
+        SYSTEM
+        /usr/include/eigen3
+)
 
 target_link_libraries(aliengo
-    robotlib
-    roscpp
-    urdf
+    PUBLIC
+        iitcommons
+        robotlib
+        roscpp
+        urdf    
 )
 
 install(
