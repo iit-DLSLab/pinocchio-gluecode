@@ -18,6 +18,12 @@ target_include_directories(aliengo
         /usr/include/eigen3
 )
 
+target_link_directories(aliengo
+    PRIVATE
+        /usr/lib/dls2
+        /usr/local/lib/dls2
+)
+
 target_link_libraries(aliengo
     PUBLIC
         iitcommons
