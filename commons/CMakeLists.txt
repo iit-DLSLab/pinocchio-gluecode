@@ -31,11 +31,6 @@ target_link_directories(aliengo_commons
         /usr/local/lib/dls2
 )
 
-target_link_libraries(aliengo_commons
-    iitcommons
-)
-
-
 install(
     DIRECTORY   include
     DESTINATION /usr/include

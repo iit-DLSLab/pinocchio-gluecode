@@ -5,16 +5,6 @@ project(aliengo_commons)
 add_compile_options("-std=c++2a")
 
 # ==============================================================================
-# Setup the repository
-# ==============================================================================
-# This will perfom task such as setting up the git hooks for anyone who uses
-# this project
-execute_process(
-	COMMAND           ./setup.sh
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-)
-
-# ==============================================================================
 # Calculate correct project version number
 # ==============================================================================
 # Read in the current version
@@ -46,6 +36,16 @@ string(JOIN "." PROJECT_VERSION
 unset(VERSION_ARRAY) # delete aray of version strings
 message(STATUS "ALIENGO COMMONS PROJECT VERSION ${PROJECT_VERSION}")
 
+# ==============================================================================
+# Setup the repository
+# ==============================================================================
+# This will perfom task such as setting up the git hooks for anyone who uses
+# this project
+execute_process(
+	COMMAND           ./setup.sh
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
 add_subdirectory(commons)
 add_subdirectory(aliengolib)
 
@@ -62,11 +62,11 @@ set(CPACK_DEB_COMPONENT_INSTALL              ON)
 
 set(CPACK_DEBIAN_ALIENGO_COMMONS_PACKAGE_NAME            "dls-aliengo-commons" CACHE INTERNAL "")
 set(CPACK_DEBIAN_ALIENGO_COMMONS_FILE_NAME               "dls-aliengo-commons-${PROJECT_VERSION}.deb" CACHE INTERNAL "")  
-set(CPACK_DEBIAN_ALIENGO_COMMONS_PACKAGE_DEPENDS         "dls-iitcommons, robotlib" CACHE INTERNAL "")
+set(CPACK_DEBIAN_ALIENGO_COMMONS_PACKAGE_DEPENDS         "robotlib" CACHE INTERNAL "")
 
 set(CPACK_DEBIAN_ALIENGO_COMMONS_DEV_PACKAGE_NAME        "dls-aliengo-commons-dev" CACHE INTERNAL "")
 set(CPACK_DEBIAN_ALIENGO_COMMONS_DEV_FILE_NAME           "dls-aliengo-commons-dev-${PROJECT_VERSION}.deb" CACHE INTERNAL "")  
-set(CPACK_DEBIAN_ALIENGO_COMMONS_DEV_PACKAGE_DEPENDS     "dls-aliengo-commons, dls-iitcommons-dev, robotlib-dev" CACHE INTERNAL "")
+set(CPACK_DEBIAN_ALIENGO_COMMONS_DEV_PACKAGE_DEPENDS     "dls-aliengo-commons, robotlib-dev" CACHE INTERNAL "")
 
 get_cmake_property(CPACK_COMPONENTS_ALL COMPONENTS)
 list(REMOVE_ITEM CPACK_COMPONENTS_ALL "Unspecified")
