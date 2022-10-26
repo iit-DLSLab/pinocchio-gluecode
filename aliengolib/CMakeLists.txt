@@ -33,3 +33,10 @@ include_directories(
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests)
+
+install(
+    FILES
+        aliengo.urdf
+    DESTINATION
+        /usr/lib/robots/${PROJECT_NAME}/
+)
