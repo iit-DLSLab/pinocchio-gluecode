@@ -726,6 +726,26 @@ namespace aliengolib
                                             std::array<std::shared_ptr<robotlib::Link>, NLINKS>({assembly, upperleg, lowerleg}));
     }
 
+    extern "C" std::shared_ptr<robotlib::RobotBase> createRobot_t()
+    {
+        const std::shared_ptr<robotlib::Trunk> trunk = std::make_shared<robotlib::Trunk>("TRUNK");
+        const std::array<std::shared_ptr<robotlib::LimbBase>, NLEGS> legs(
+            {makeLeg("LF"),
+             makeLeg("RF"),
+             makeLeg("LH"),
+             makeLeg("RH")});
+        const std::array<std::shared_ptr<robotlib::LimbBase>, NARMS> arms({});
+
+        const std::string robot_urdf{aliengolib::readURDFifstream("/usr/lib/robots/aliengolib/aliengo.urdf")};
+
+        return std::make_shared<Aliengo>(trunk, legs, arms, robot_urdf);
+    }
+
+    extern "C" void destroyRobot_t(std::shared_ptr<robotlib::RobotBase> robot)
+    {
+        robot->getName(); // TODO: remove this hack that avoids compilation warnings!
+    }
+
     extern "C" std::shared_ptr<robotlib::RobotBase> createRobotWithUrdf_t(const std::string& robot_urdf)
     {
         const std::shared_ptr<robotlib::Trunk> trunk = std::make_shared<robotlib::Trunk>("TRUNK");
