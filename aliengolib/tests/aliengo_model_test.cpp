@@ -1,3 +1,11 @@
+/**
+ * @file aliengo_model_test.cpp
+ * @brief Tests for Aliengo model and robot main functions
+ *
+ * @author Gianluca Cerilli (IIT DLS Lab) - Contact: gianluca.cerilli@iit.it
+ * @author Marco Marchitto (IIT DLS Lab) - Contact: marco.marchitto@iit.it
+ */
+
 #include <robotlib/robot_base.hpp>
 #include "aliengo.hpp"
 
@@ -7,6 +15,9 @@
 //TODO: improvements --> fix the path!
 std::string robot_urdf{aliengolib::readURDFifstream("../aliengo.urdf")};
 
+/**
+ * @brief Test that prints the Aliengo model structure
+ */
 TEST(AliengoUnitTests, aliengoModel)
 {
     std::shared_ptr<robotlib::RobotBase> aliengo = createRobotWithUrdf_t(robot_urdf);
@@ -28,12 +39,18 @@ TEST(AliengoUnitTests, aliengoModel)
     }
 }
 
+/**
+ * @brief Test that prints the Aliengo mass
+ */
 TEST(RobotBaseUnitTests, getRobotMass)
 {
     std::shared_ptr<robotlib::RobotBase> aliengo = createRobotWithUrdf_t(robot_urdf);
     std::cout << aliengo->getRobotMass() << std::endl;
 }
 
+/**
+ * @brief Test that calls the inverse dynamics on Aliengo parameters
+ */
 TEST(RobotBaseUnitTests, inverseDynamics)
 {
     /// Dummy quadruped
@@ -52,6 +69,9 @@ TEST(RobotBaseUnitTests, inverseDynamics)
     aliengo->inverseDynamics(v, a, g, q, dq, ddq, wrench_base, tau);
 }
 
+/**
+ * @brief Test that prints the Aliengo model data maps and jacobian structures
+ */
 TEST(RobotBaseUnitTests, dataMap_constructor_with_initialization)
 {
     /// Dummy quadruped
@@ -98,6 +118,9 @@ TEST(RobotBaseUnitTests, dataMap_constructor_with_initialization)
     std::cout << "\n";
 }
 
+/**
+ * @brief Test that prints the Aliengo center of mass
+ */
 TEST(RobotBaseUnitTests, getRobotCoM)
 {
     /// Dummy quadruped

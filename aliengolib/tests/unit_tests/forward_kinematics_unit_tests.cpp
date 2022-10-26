@@ -1,3 +1,10 @@
+/**
+ * @file forward_kinematics_unit_tests.cpp
+ * @brief Tests for Aliengo forward kinematics functions
+ *
+ * @author Gianluca Cerilli (IIT DLS Lab) - Contact: gianluca.cerilli@iit.it
+ * @author Marco Marchitto (IIT DLS Lab) - Contact: marco.marchitto@iit.it
+ */
 
 #include <gtest/gtest.h>
 #include <robotlib/robot_base.hpp>
@@ -11,7 +18,7 @@
 std::string robot_urdf{aliengolib::readURDFifstream("../aliengo.urdf")};
 
 /**
- * @brief Set of unit tests for Aliengo::forwardKinematics
+ * @brief Test for Aliengo::forwardKinematics function
  * The ground truth values are taken executing the RCF controller of the aliengo_dev branch, after the initRFC command
  * commit: dls-distro --> 897b0427400f8708b99fe30775eaa88d00ccc63b
  */

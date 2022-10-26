@@ -1,3 +1,14 @@
+/**
+ * @file utils.cpp
+ *
+ * @brief Utils file with functions implementation
+ *
+ * @author Gianluca Cerilli (IIT DLS Lab) - Contact: gianluca.cerilli@iit.it
+ * @author Marco Marchitto (IIT DLS Lab) - Contact: marco.marchitto@iit.it
+ *
+ * @bug No known bugs.
+ */
+
 #include "utils.hpp"
 
 #include <iostream>
@@ -40,7 +51,6 @@ namespace aliengolib
         if (myfile.is_open())
         {
             ss << myfile.rdbuf();
-            std::string robot_description{ss.str()};
         }
         else
         {
@@ -57,7 +67,6 @@ namespace aliengolib
     }
 } // namespace aliengolib
 
-
 namespace iit{
  
     Eigen::Matrix3d buildCrossProductMatrix(const Eigen::Vector3d& in) {
@@ -68,17 +77,9 @@ namespace iit{
         return out;
     }
     
-    /**
-     * @brief motionVectorTransform Tranforms twists from A to B (b_X_a)   \in R^6 \times 6
-     * where A is the origin frame and B the destination frame.
-     * @param position coordinate vector expressing OaOb in A coordinates
-     * @param rotationMx rotation matrix that transforms 3D vectors from A to B coordinates
-     * @return
-     */
-    iit::rbd::Matrix66d motionVectorTransform(const iit::rbd::Vector3d & position,
-                                        const Eigen::Matrix3d & rotationMx)
+    iit::rbd::Matrix66d motionVectorTransform(const iit::rbd::Vector3d & position, const Eigen::Matrix3d & rotationMx)
     {
-        iit::rbd::Matrix66d X=iit::rbd::Matrix66d::Zero();
+        iit::rbd::Matrix66d X = iit::rbd::Matrix66d::Zero();
 
         X.block<3,3>(iit::rbd::AX, iit::rbd::AX) = rotationMx;
         X.block<3,3>(iit::rbd::LX, iit::rbd::AX) = -rotationMx*buildCrossProductMatrix(position);
@@ -87,17 +88,9 @@ namespace iit{
         return X;
     }
 
-    /**
-     * @brief forceVectorTransform Tranforms wrenches from A to B (b_X_a)   \in R^6 \times 6
-     * where A is the origin frame and B the destination frame.
-     * @param position coordinate vector expressing OaOb in A coordinates
-     * @param rotationMx rotation matrix that transforms 3D vectors from A to B coordinates
-     * @return
-     */
-    iit::rbd::Matrix66d forceVectorTransform(const iit::rbd::Vector3d & position,
-                                        const Eigen::Matrix3d & rotationMx)
+    iit::rbd::Matrix66d forceVectorTransform(const iit::rbd::Vector3d & position, const Eigen::Matrix3d & rotationMx)
     {
-        iit::rbd::Matrix66d X=iit::rbd::Matrix66d::Zero();
+        iit::rbd::Matrix66d X = iit::rbd::Matrix66d::Zero();
 
         X.block<3,3>(iit::rbd::AX, iit::rbd::AX) = rotationMx;
         X.block<3,3>(iit::rbd::AX, iit::rbd::LX) = -rotationMx*buildCrossProductMatrix(position);
@@ -115,39 +108,24 @@ namespace iit{
         }
         return cleg_count;
     }
-    /**
-     * @brief getCoMFromBase
-     * @param q
-     * @param base_orient
-     * @param base_pos  base is supposed to be expressed in the world frame
-     * @param in
-     * @return
-     */
+
     Eigen::Vector3d getCoMFromBase(const iit::dog::JointState & q,
-                                const Eigen::Vector3d & base_orient,
-                                const Eigen::Vector3d & base_pos,
-                                iit::dog::InertiaPropertiesBase& in)
+                                   const Eigen::Vector3d & base_orient,
+                                   const Eigen::Vector3d & base_pos,
+                                   iit::dog::InertiaPropertiesBase& in)
     {
         Eigen::Matrix3d R = iit::commons::rpyToRot(base_orient);
         Eigen::Vector3d offCoM = in.getWholeBodyCOM(q);
-        return base_pos + R.transpose()*offCoM; //CoM is in the world frame off CoM is in base frame
+        return base_pos + R.transpose()*offCoM; //base_pos is in the world frame. offCoM is in base frame
     }
 
-    /**
-     * @brief getBaseFromCoM
-     * @param q
-     * @param base_orient
-     * @param CoM CoM position in world coordinates
-     * @param in
-     * @return
-     */
     Eigen::Vector3d getBaseFromCoM(const iit::dog::JointState & q,
-                                const Eigen::Vector3d & base_orient,
-                                const Eigen::Vector3d & CoM,
-                                iit::dog::InertiaPropertiesBase &in)
+                                   const Eigen::Vector3d & base_orient,
+                                   const Eigen::Vector3d & CoM,
+                                   iit::dog::InertiaPropertiesBase &in)
     {
-            Eigen::Matrix3d b_R_w = iit::commons::rpyToRot(base_orient);
+        Eigen::Matrix3d b_R_w = iit::commons::rpyToRot(base_orient);
         Eigen::Vector3d offCoM = in.getWholeBodyCOM(q);
-            return CoM - b_R_w.transpose()*offCoM; //CoM is in the world frame off CoM is in base frame
+        return CoM - b_R_w.transpose()*offCoM; //CoM is in the world frame. offCoM is in base frame
     }
-}
+} // namespace iit
