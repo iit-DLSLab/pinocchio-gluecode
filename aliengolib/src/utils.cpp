@@ -49,7 +49,7 @@ namespace aliengolib
             ss << "";
         }
         
-        return ss.str();        
+        return ss.str();
     }
 } // namespace aliengolib
 
