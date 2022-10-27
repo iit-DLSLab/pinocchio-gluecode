@@ -4,3 +4,5 @@ build
 *.sw
 *.swo
 .vscode
+html
+latex
