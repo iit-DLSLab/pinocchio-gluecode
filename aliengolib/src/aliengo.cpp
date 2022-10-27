@@ -736,7 +736,7 @@ namespace aliengolib
              makeLeg("RH")});
         const std::array<std::shared_ptr<robotlib::LimbBase>, NARMS> arms({});
 
-        const std::string robot_urdf{aliengolib::readURDFifstream("/usr/lib/robots/aliengo.urdf")};
+        const std::string robot_urdf{aliengolib::readURDFifstream(aliengo_urdf_path)};
 
         return std::make_shared<Aliengo>(trunk, legs, arms, robot_urdf);
     }
