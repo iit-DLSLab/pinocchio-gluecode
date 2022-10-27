@@ -8,7 +8,7 @@
 
 
 //TODO: improvements --> fix the path!
-std::string robot_urdf{aliengolib::readURDFifstream("../aliengo.urdf")};
+std::string robot_urdf{aliengolib::readURDFifstream("/usr/lib/robots/aliengolib/aliengo.urdf")};
 
 /**
  * @brief Set of unit tests for Aliengo::inverse_kinematics

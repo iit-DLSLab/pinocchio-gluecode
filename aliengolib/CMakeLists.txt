@@ -1,17 +1,19 @@
 cmake_minimum_required(VERSION 3.8.0)
 project(aliengolib)
+message("\n***********Building Aliengolib library***********\n")
 
-set(MAJOR 0)
-set(MINOR 0)
-set(PATCH 0)
-
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-SET(CMAKE_BUILD_TYPE "Release")
+option(BUILD_TESTING "" OFF)
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+include(CTest)
 
 find_package(robotlib REQUIRED)
 find_package(Eigen3 REQUIRED NO_MODULE)
 find_package(urdf REQUIRED)
 find_library(URDFLIB urdf)
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CSS_STANDARD_REQUIRED True)
 
 add_compile_options(
 	-std=c++17
@@ -19,20 +21,22 @@ add_compile_options(
 	$<$<CONFIG:Debug>:-g>  #-g produces debugging information, it is enabled if Debug configuration is set
 	-Wall -Wextra -pedantic # Enable warnings
 	-O3
-#	-fsanitize=undefined -g -O3	# UBSAN - Undefined Behaviour Sanitizer
 )
-#add_link_options(-fsanitize=undefined) # UBSAN - Undefined Behaviour Sanitizer
 
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}/include
-	#${CMAKE_CURRENT_SOURCE_DIR}/include/robcogen	#TODO: robcogen
 	SYSTEM
 	/usr/include/eigen3
 	/opt/ros/noetic/include
 )
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests)
+
+if (BUILD_TESTING)
+	enable_testing()
+	include(AliengolibGoogleTest)
+	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests)
+endif()
 
 install(
     FILES

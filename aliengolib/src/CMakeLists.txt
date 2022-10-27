@@ -2,7 +2,7 @@ include_directories(SYSTEM
     ${roscpp_INCLUDE_DIRS}
 )
 
-add_library(aliengolib SHARED
+add_library(${PROJECT_NAME} SHARED
     aliengo.cpp
     aliengo_leg.cpp
     utils.cpp
@@ -14,7 +14,7 @@ add_library(aliengolib SHARED
 )
 
 
-target_link_libraries(aliengolib
+target_link_libraries(${PROJECT_NAME}
     robotlib
     ${URDFLIB}
 )

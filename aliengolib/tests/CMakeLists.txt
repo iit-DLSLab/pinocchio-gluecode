@@ -1,63 +1,7 @@
-enable_testing()
+add_aliengolib_test(TARGET aliengo_model_test SOURCES aliengo_model_test.cpp)
+add_aliengolib_test(TARGET forward_kinematics_unit_tests SOURCES unit_tests/forward_kinematics_unit_tests.cpp)
+add_aliengolib_test(TARGET inverse_kinematics_unit_tests SOURCES unit_tests/inverse_kinematics_unit_tests.cpp)
+add_aliengolib_test(TARGET inverse_dynamics_unit_tests SOURCES unit_tests/inverse_dynamics_unit_tests.cpp)
 
-add_executable(main_tests
-	main_tests.cpp
-    	aliengo_model_test.cpp
-)
-
-target_link_libraries(main_tests
-	aliengolib
-	robotlib
-	${CMAKE_DL_LIBS}
-	gtest
-)
-
-add_executable(forward_kinematics_unit_tests
-	unit_tests/forward_kinematics_unit_tests.cpp
-)
-
-target_link_libraries(forward_kinematics_unit_tests
-	PRIVATE
-	aliengolib
-	robotlib
-	${CMAKE_DL_LIBS}
-	gtest
-)
-
-add_executable(inverse_kinematics_unit_tests
-	unit_tests/inverse_kinematics_unit_tests.cpp
-)
-
-target_link_libraries(inverse_kinematics_unit_tests
-	PRIVATE
-	aliengolib
-	robotlib
-	${CMAKE_DL_LIBS}
-	gtest
-)
-
-add_executable(inverse_dynamics_unit_tests
-	unit_tests/inverse_dynamics_unit_tests.cpp
-)
-
-target_link_libraries(inverse_dynamics_unit_tests
-	PRIVATE
-	aliengolib
-	robotlib
-	${CMAKE_DL_LIBS}
-	gtest
-)
-
-include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}/../include/pugixml
-)
-
-add_executable(read_urdf_test
-	other_tests/read_urdf_test.cpp
-)
-
-target_link_libraries(read_urdf_test
-	PRIVATE
-	${CMAKE_DL_LIBS}
-	gtest
-)
+get_property(my_list_content GLOBAL PROPERTY ALL_TEST_TARGETS)
+add_custom_target(check COMMAND make test DEPENDS "${my_list_content}" COMMENT "Running tests...")
