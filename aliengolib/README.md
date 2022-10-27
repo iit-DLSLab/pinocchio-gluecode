@@ -27,6 +27,8 @@ You just need to substitue \<X> with the chosen CMake version.
 
     sudo apt install libgtest-dev
 
+<!--TODO - urdf installation-->
+
 ### Building
 To build Aliengolib, clone the latest version of this repository and compile the package using
 
