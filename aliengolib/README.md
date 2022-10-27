@@ -44,7 +44,7 @@ To build Aliengolib, clone the latest version of this repository and compile the
 
     make install
 
-If you get error when executing the `cmake` command, you might need to do
+If you get the error *CMAKE_MAKE_PROGRAM is not set.* when executing the `cmake` command, you might need to do
 
     sudo apt install build-essential
 
