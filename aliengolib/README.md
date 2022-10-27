@@ -49,7 +49,9 @@ If you get the error *CMAKE_MAKE_PROGRAM is not set.* when executing the `cmake`
     sudo apt install build-essential
 
 ## Usage
-<!--TODO-->
+Aliengolib was developed with the idea of having a robot dependent shared library to be lodaded at run time, to guarantee modularity to a control framework based on Robotlib. Its usage is tightly related to how Robotlib is used, because all the Aliengolib functions and variables are accessed through the generic interface Robotlib, exploiting polymorphisms. Therefore, to understand how to use Aliengolib you can read the section [Usage-TODO]() of Robotlib.
+
+For other type of usage, you can have a look at the tests in the *tests* folder.
 
 ## Documentation
 The Aliengolib documentation is written using Doxygen. To generate the documentation go in the folder *doc* and execute the following command
