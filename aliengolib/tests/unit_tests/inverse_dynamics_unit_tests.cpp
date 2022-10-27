@@ -11,7 +11,6 @@
 #include "aliengo.hpp"
 
 
-//TODO: improvements --> fix the path!
 std::string robot_urdf{aliengolib::readURDFifstream("/usr/lib/robots/aliengolib/aliengo.urdf")};
 
 // copy of the rpyToRot function inside rotations.h of iit::commons

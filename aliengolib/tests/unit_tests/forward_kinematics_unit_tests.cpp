@@ -6,7 +6,6 @@
 
 #include "robcogen/rbd.h"
 
-//TODO: improvements --> fix the path!
 std::string robot_urdf{aliengolib::readURDFifstream("/usr/lib/robots/aliengolib/aliengo.urdf")};
 
 /**

@@ -4,7 +4,6 @@
 #include <gtest/gtest.h>
 #include <memory>
 
-//TODO: improvements --> fix the path!
 std::string robot_urdf{aliengolib::readURDFifstream("/usr/lib/robots/aliengolib/aliengo.urdf")};
 
 TEST(AliengoUnitTests, aliengoModel)
