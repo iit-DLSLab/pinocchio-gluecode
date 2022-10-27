@@ -1,6 +1,6 @@
 #include "aliengo.hpp"
 #include "aliengo_leg.hpp"
-#include "urdf_params_getter.h"
+#include "dog/urdf_params_getter.h"
 
 #include "robcogen/utils.h"
 
