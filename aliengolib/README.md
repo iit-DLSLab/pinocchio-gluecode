@@ -82,6 +82,5 @@ To run tests
 ## Issues
 
 <!-- TODO -->
-<!-- You cannot have methods that return <X>DataMap or JointState etc... You need to pass these as reference -->
 <!-- Clean issue tracker and make some internal developments (like Agile tasks) private. Put there only known issues for public -->
-You can look for known issues, report bugs and ask for features implementation at the [issue tracker](https://gitlab.advr.iit.it/dls-lab/robotlib/-/issues).
+You can look for known issues, report bugs and ask for features implementation at the [issue tracker](https://gitlab.advr.iit.it/dls-lab/aliengo-commons/-/issues).
