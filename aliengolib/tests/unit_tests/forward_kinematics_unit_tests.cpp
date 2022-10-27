@@ -40,7 +40,7 @@ TEST(ForwardKinematics, forward_kinematics)
     for(auto joint : *leg->getJoints())
     {
       std::string joint_name{joint->getName()};
-      const int joint_id{aliengolib::glue_joint_names_to_ids[joint_name]};
+      const int joint_id{aliengolib::glue_joint_names_to_ids.at(joint_name)};
       q_input[joint] = q_input_eigen[joint_id];
     }
   }

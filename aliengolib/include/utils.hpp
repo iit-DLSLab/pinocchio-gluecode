@@ -16,7 +16,7 @@
 namespace aliengolib
 {
     // inline is used to avoid the multiple definition error at linking time
-    inline std::map<std::string, int> glue_joint_names_to_ids
+    inline const std::map<std::string, int> glue_joint_names_to_ids
     {
         {"LF_HAA", 0},
         {"LF_HFE", 1},
@@ -33,7 +33,7 @@ namespace aliengolib
     };
 
     // inline is used to avoid the multiple definition error at linking time
-    inline std::map<std::string, int> glue_leg_names_to_ids
+    inline const std::map<std::string, int> glue_leg_names_to_ids
     {
         {"LF", 0},
         {"RF", 1},

@@ -55,7 +55,7 @@ namespace aliengolib
         {
             for (auto joint : *(leg->getJoints()))
             {
-                const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+                const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
                 auxiliar_joints_variable_[joint_id] = joint;
             }
         }
@@ -78,7 +78,7 @@ namespace aliengolib
         // {
         //     for(auto joint : *leg->getJoints())
         //     {
-        //         const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+        //         const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
         //         RobotBase::getMinJointAngle(joint, robcogen_q_min[joint_id]);
         //         RobotBase::getMaxJointAngle(joint, robcogen_q_max[joint_id]);
         //     }
@@ -86,7 +86,7 @@ namespace aliengolib
         
         for(auto joint : auxiliar_joints_variable_)
         {
-            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
             RobotBase::getMinJointAngle(joint, robcogen_q_min[joint_id]);
             RobotBase::getMaxJointAngle(joint, robcogen_q_max[joint_id]);
         }
@@ -203,7 +203,7 @@ namespace aliengolib
         
         for(auto joint : auxiliar_joints_variable_)
         {
-            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
             q_robcogen[joint_id] = joint_position[joint];
         }
         end_effector_position["LF"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_LF_foot(q_robcogen));
@@ -260,7 +260,7 @@ namespace aliengolib
         // {
         //     for (auto joint : *leg->getJoints())
         //     {
-        //         const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+        //         const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
         //         robcogen_joint_position[joint_id] = joint_position[joint];
         //         robcogen_joint_velocity[joint_id] = joint_velocity[joint];
         //         robcogen_joint_acceleration[joint_id] = joint_acceleration[joint];
@@ -269,7 +269,7 @@ namespace aliengolib
 
         for(auto joint : auxiliar_joints_variable_)
         {
-            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
             robcogen_joint_position[joint_id] = joint_position[joint];
             robcogen_joint_velocity[joint_id] = joint_velocity[joint];
             robcogen_joint_acceleration[joint_id] = joint_acceleration[joint];
@@ -281,14 +281,14 @@ namespace aliengolib
         // {
         //     for (auto joint : *leg->getJoints())
         //     {
-        //         const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+        //         const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
         //         tau_joints[joint] = robcogen_tau_joints[joint_id];
         //     }
         // }
 
         for(auto joint : auxiliar_joints_variable_)
         {
-            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
             tau_joints[joint] = robcogen_tau_joints[joint_id];
         }
     }
@@ -308,14 +308,14 @@ namespace aliengolib
         // {
         //     for (auto joint : *leg->getJoints())
         //     {
-        //         const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+        //         const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
         //         robcogen_joint_position[joint_id] = joint_position[joint];
         //     }
         // }
 
         for(auto joint : auxiliar_joints_variable_)
         {
-            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
             robcogen_joint_position[joint_id] = joint_position[joint];
         }
 
@@ -325,13 +325,13 @@ namespace aliengolib
         // {
         //     for (auto joint : *leg->getJoints())
         //     {
-        //         const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+        //         const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
         //         tau_joints[joint] = robcogen_tau_joints[joint_id];
         //     }
         // }
         for(auto joint : auxiliar_joints_variable_)
         {
-            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
             tau_joints[joint] = robcogen_tau_joints[joint_id];
         }
     }
@@ -345,7 +345,7 @@ namespace aliengolib
 
         for (auto leg : *legs_)
         {
-            const int leg_id{glue_leg_names_to_ids[leg->getName()]};
+            const int leg_id{glue_leg_names_to_ids.at(leg->getName())};
 
             robcogen_end_effector_position[leg_id] = end_effector_position[leg];
         }
@@ -354,7 +354,7 @@ namespace aliengolib
 
         for(auto joint : auxiliar_joints_variable_)
         {
-            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
             joint_position[joint] = robcogen_joint_position[joint_id];
         }
     }
@@ -380,7 +380,7 @@ namespace aliengolib
 
         for (auto leg : *legs_)
         {
-            const int leg_id{glue_leg_names_to_ids[leg->getName()]};
+            const int leg_id{glue_leg_names_to_ids.at(leg->getName())};
 
             robcogen_end_effector_position[leg_id] = end_effector_position[leg];
             robcogen_end_effector_velocity[leg_id] = end_effector_velocity[leg];
@@ -399,7 +399,7 @@ namespace aliengolib
         // {
         //     for (auto joint : *leg->getJoints())
         //     {   
-        //         const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+        //         const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
 
         //         joint_position[joint] = robcogen_joint_position[joint_id];
         //         joint_velocity[joint] = robcogen_joint_velocity[joint_id];
@@ -409,7 +409,7 @@ namespace aliengolib
 
         for(auto joint : auxiliar_joints_variable_)
         {
-            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
             joint_position[joint] = robcogen_joint_position[joint_id];
             joint_velocity[joint] = robcogen_joint_velocity[joint_id];
             joint_acceleration[joint] = robcogen_joint_acceleration[joint_id];
@@ -496,13 +496,13 @@ namespace aliengolib
         // {
         //     for (auto joint : *leg->getJoints())
         //     {
-        //         const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+        //         const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
         //         joint_state_matrix[joint_id] = joint_state[joint];
         //     }
         // }
         for(auto joint : auxiliar_joints_variable_)
         {
-            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
             joint_state_matrix[joint_id] = joint_state[joint];
         }
         // First updates the coordinate transforms that will be used by the routine
@@ -607,7 +607,7 @@ namespace aliengolib
 
         for(auto joint : auxiliar_joints_variable_)
         {
-            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
             joint_state_matrix[joint_id] = q[joint];
         }
 
