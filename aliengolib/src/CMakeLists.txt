@@ -23,5 +23,6 @@ install(
     TARGETS 
         aliengolib
     DESTINATION
-        /usr/lib/robots/${PROJECT_NAME}/
+        /usr/lib/robots/
 )
+
