@@ -42,5 +42,5 @@ install(
     FILES
         aliengo.urdf
     DESTINATION
-        /usr/lib/robots/${PROJECT_NAME}/
+        /usr/lib/robots
 )

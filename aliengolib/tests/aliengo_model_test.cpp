@@ -4,7 +4,7 @@
 #include <gtest/gtest.h>
 #include <memory>
 
-std::string robot_urdf{aliengolib::readURDFifstream("/usr/lib/robots/aliengolib/aliengo.urdf")};
+std::string robot_urdf{aliengolib::readURDFifstream("/usr/lib/robots/aliengo.urdf")};
 
 TEST(AliengoUnitTests, aliengoModel)
 {

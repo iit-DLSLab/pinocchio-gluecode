@@ -6,7 +6,7 @@
 
 #include "robcogen/rbd.h"
 
-std::string robot_urdf{aliengolib::readURDFifstream("/usr/lib/robots/aliengolib/aliengo.urdf")};
+std::string robot_urdf{aliengolib::readURDFifstream("/usr/lib/robots/aliengo.urdf")};
 
 /**
  * @brief Set of unit tests for Aliengo::forwardKinematics

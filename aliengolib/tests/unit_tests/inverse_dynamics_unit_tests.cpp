@@ -11,7 +11,7 @@
 #include "aliengo.hpp"
 
 
-std::string robot_urdf{aliengolib::readURDFifstream("/usr/lib/robots/aliengolib/aliengo.urdf")};
+std::string robot_urdf{aliengolib::readURDFifstream("/usr/lib/robots/aliengo.urdf")};
 
 // copy of the rpyToRot function inside rotations.h of iit::commons
 Eigen::Matrix3d inline rpyToRot(const Eigen::Vector3d & rpy){
