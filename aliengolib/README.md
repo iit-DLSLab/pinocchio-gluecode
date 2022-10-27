@@ -73,7 +73,7 @@ To run tests
 
     cd build
 
-    cmake .. -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=On
+    cmake .. -DBUILD_TESTING=On
 
     make install
 
