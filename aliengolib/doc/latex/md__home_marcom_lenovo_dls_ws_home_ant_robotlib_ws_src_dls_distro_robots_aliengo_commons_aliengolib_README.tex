@@ -1,0 +1,86 @@
+\hypertarget{md__home_marcom_lenovo_dls_ws_home_ant_robotlib_ws_src_dls_distro_robots_aliengo_commons_aliengolib_README_autotoc_md1}{}\doxysection{Overview}\label{md__home_marcom_lenovo_dls_ws_home_ant_robotlib_ws_src_dls_distro_robots_aliengo_commons_aliengolib_README_autotoc_md1}
+Aliengolib is a library providing the implementation of Aliengo\textquotesingle{}s kinematics and dynamics. It is based on \href{git@gitlab.advr.iit.it:dls-lab/robotlib.git}{\texttt{ Robotlib}}, a modular and generic robot software interface, and on \href{https://robcogenteam.bitbucket.io/}{\texttt{ Rob\+Co\+Gen}}, an open source code generator that generates an efficient implementation of rigid body dynamics and kinematics algorithms for articulated robots. It was implemented within the project \href{https://www.dfki.de/en/web/research/projects-and-publications/project/ant/}{\texttt{ ANT}} as a glue code interfacing Robotlib with Aliengo kinematics and dynamics. For more detail about the project, read the paper \href{https://az659834.vo.msecnd.net/eventsairwesteuprod/production-atpi-public/7bfd9084af194454bbc98fa9c9d7b648}{\texttt{ Towards a generic navigation and locomotion control system for legged space exploration}}.
+
+Aliengolib extends the Robotlib interface to implement the particular morphology, kinematics, and dynamics of Aliengo. Thanks to polymorphisms, it is possible to use the interface to access the deepest robot specific implementation of functions declared or defined in Robotlib. In Aliengolib, the implementation of such functions is based on Rob\+Co\+Gen.
+
+This library can be considered as a glue code and, to understand the rationale behind it, you can read the Robotlib \mbox{[}Overview-\/\+TODO\mbox{]}() and \mbox{[}Usage-\/\+TODO\mbox{]}() sections.\hypertarget{md__home_marcom_lenovo_dls_ws_home_ant_robotlib_ws_src_dls_distro_robots_aliengo_commons_aliengolib_README_autotoc_md2}{}\doxysection{Installation}\label{md__home_marcom_lenovo_dls_ws_home_ant_robotlib_ws_src_dls_distro_robots_aliengo_commons_aliengolib_README_autotoc_md2}
+\hypertarget{md__home_marcom_lenovo_dls_ws_home_ant_robotlib_ws_src_dls_distro_robots_aliengo_commons_aliengolib_README_autotoc_md3}{}\doxysubsection{Dependencies}\label{md__home_marcom_lenovo_dls_ws_home_ant_robotlib_ws_src_dls_distro_robots_aliengo_commons_aliengolib_README_autotoc_md3}
+Aliengolib has been developed and tested on a x86\+\_\+64 version of Ubuntu 20.\+04 (Focal Fossa). The dependencies for building and installing the library are the following\+:
+
+{\bfseries{CMake}} (3.\+8.\+0 is the minimum version for C++17 standard) -\/ You can download the chosen version and install it through \begin{DoxyVerb}wget https://cmake.org/files/v3.<X>/cmake-3.<X>.<X>-Linux-x86_64.tar.gz
+tar xf cmake-3.<X>.<X>-Linux-x86_64.tar.gz
+export PATH="$PATH:/home/<path where you extracted cmake>/cmake-3.<X>.<X>-Linux-x86_64/bin"
+\end{DoxyVerb}
+ You just need to substitue \texorpdfstring{$<$}{<}X\texorpdfstring{$>$}{>} with the chosen CMake version.
+
+{\bfseries{Eigen3}} \begin{DoxyVerb}sudo apt install libeigen3-dev
+\end{DoxyVerb}
+ {\bfseries{GTest}} \begin{DoxyVerb}sudo apt install libgtest-dev
+\end{DoxyVerb}
+ \hypertarget{md__home_marcom_lenovo_dls_ws_home_ant_robotlib_ws_src_dls_distro_robots_aliengo_commons_aliengolib_README_autotoc_md4}{}\doxysubsection{Building}\label{md__home_marcom_lenovo_dls_ws_home_ant_robotlib_ws_src_dls_distro_robots_aliengo_commons_aliengolib_README_autotoc_md4}
+To build Aliengolib, clone the latest version of this repository and compile the package using \begin{DoxyVerb}git clone git@gitlab.advr.iit.it:dls-lab/aliengo-commons.git
+
+cd aliengo-commons/aliengolib
+
+mkdir build
+
+cd build
+
+cmake .. -DCMAKE_BUILD_TYPE=Release
+
+make install
+\end{DoxyVerb}
+ If you get error when executing the {\ttfamily cmake} command, you might need to do \begin{DoxyVerb}sudo apt install build-essential
+\end{DoxyVerb}
+ \hypertarget{md__home_marcom_lenovo_dls_ws_home_ant_robotlib_ws_src_dls_distro_robots_aliengo_commons_aliengolib_README_autotoc_md5}{}\doxysection{Usage}\label{md__home_marcom_lenovo_dls_ws_home_ant_robotlib_ws_src_dls_distro_robots_aliengo_commons_aliengolib_README_autotoc_md5}
+\hypertarget{md__home_marcom_lenovo_dls_ws_home_ant_robotlib_ws_src_dls_distro_robots_aliengo_commons_aliengolib_README_autotoc_md6}{}\doxysection{Documentation}\label{md__home_marcom_lenovo_dls_ws_home_ant_robotlib_ws_src_dls_distro_robots_aliengo_commons_aliengolib_README_autotoc_md6}
+The Aliengolib documentation is written using Doxygen. To generate the documentation go in the folder {\itshape doc} and execute the following command \begin{DoxyVerb}doxygen aliengolib_doxygen.conf
+\end{DoxyVerb}
+ Latex and html files will be generated according to the instructions provided in the configuration file robotlib\+\_\+doxygen.\+conf.
+
+To access to the html documentation, just double click on the file {\itshape index.\+html} stored in the folder {\itshape doc/html}\+: it will open the file in your browser.
+
+To view the inheritance graph, once the html file is opended in your browser, go in the Classes section and click on the Class Hierarchy tab.\hypertarget{md__home_marcom_lenovo_dls_ws_home_ant_robotlib_ws_src_dls_distro_robots_aliengo_commons_aliengolib_README_autotoc_md7}{}\doxysection{Tests}\label{md__home_marcom_lenovo_dls_ws_home_ant_robotlib_ws_src_dls_distro_robots_aliengo_commons_aliengolib_README_autotoc_md7}
+The tests are based on Google\+Tests\+: the Google\textquotesingle{}s C++ test framework.
+
+To run tests \begin{DoxyVerb}mkdir build
+
+cd build
+
+cmake .. -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=On
+
+make install
+
+make check
+\end{DoxyVerb}
+ \hypertarget{md__home_marcom_lenovo_dls_ws_home_ant_robotlib_ws_src_dls_distro_robots_aliengo_commons_aliengolib_README_autotoc_md8}{}\doxysection{Pipeline status}\label{md__home_marcom_lenovo_dls_ws_home_ant_robotlib_ws_src_dls_distro_robots_aliengo_commons_aliengolib_README_autotoc_md8}
+\hypertarget{md__home_marcom_lenovo_dls_ws_home_ant_robotlib_ws_src_dls_distro_robots_aliengo_commons_aliengolib_README_autotoc_md9}{}\doxysubsection{Develop}\label{md__home_marcom_lenovo_dls_ws_home_ant_robotlib_ws_src_dls_distro_robots_aliengo_commons_aliengolib_README_autotoc_md9}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{4}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{Ubuntu OS}}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{Build status}}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{Test coverage -\/ Lines}}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{Test coverage -\/ Functions}}    }\\\cline{1-4}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{Ubuntu OS}}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{Build status}}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{Test coverage -\/ Lines}}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{Test coverage -\/ Functions}}    }\\\cline{1-4}
+\endhead
+\PBS\centering Focal Fossa   &\PBS\centering \href{https://gitlab.advr.iit.it/dls-lab/robotlib/-/commits/focal-develop}{\texttt{ }}   &\PBS\centering \href{https://gitlab.advr.iit.it/dls-lab/robotlib/-/commits/focal-develop}{\texttt{ }}   &\PBS\centering \href{https://gitlab.advr.iit.it/dls-lab/robotlib/-/commits/focal-develop}{\texttt{ }}    \\\cline{1-4}
+\PBS\centering Bionic Beaver   &\PBS\centering \href{https://gitlab.advr.iit.it/dls-lab/robotlib/-/commits/bionic-develop}{\texttt{ }}   &\PBS\centering \href{https://gitlab.advr.iit.it/dls-lab/robotlib/-/commits/bionic-develop}{\texttt{ }}   &\PBS\centering \href{https://gitlab.advr.iit.it/dls-lab/robotlib/-/commits/bionic-develop}{\texttt{ }}    \\\cline{1-4}
+\PBS\centering Xenial Xerus   &\PBS\centering \href{https://gitlab.advr.iit.it/dls-lab/robotlib/-/commits/xenial-develop}{\texttt{ }}   &\PBS\centering \href{https://gitlab.advr.iit.it/dls-lab/robotlib/-/commits/xenial-develop}{\texttt{ }}   &\PBS\centering \href{https://gitlab.advr.iit.it/dls-lab/robotlib/-/commits/xenial-develop}{\texttt{ }}   \\\cline{1-4}
+\end{longtabu}
+\hypertarget{md__home_marcom_lenovo_dls_ws_home_ant_robotlib_ws_src_dls_distro_robots_aliengo_commons_aliengolib_README_autotoc_md10}{}\doxysubsection{Release}\label{md__home_marcom_lenovo_dls_ws_home_ant_robotlib_ws_src_dls_distro_robots_aliengo_commons_aliengolib_README_autotoc_md10}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{4}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{Stable branch}}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{Build status}}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{Test coverage -\/ Lines}}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{Test coverage -\/ Functions}}    }\\\cline{1-4}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{Stable branch}}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{Build status}}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{Test coverage -\/ Lines}}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{Test coverage -\/ Functions}}    }\\\cline{1-4}
+\endhead
+\PBS\centering master   &\PBS\centering \href{https://gitlab.advr.iit.it/dls-lab/robotlib/-/commits/master}{\texttt{ }}   &\PBS\centering \href{https://gitlab.advr.iit.it/dls-lab/robotlib/-/commits/master}{\texttt{ }}   &\PBS\centering \href{https://gitlab.advr.iit.it/dls-lab/robotlib/-/commits/master}{\texttt{ }}   \\\cline{1-4}
+\end{longtabu}
+\hypertarget{md__home_marcom_lenovo_dls_ws_home_ant_robotlib_ws_src_dls_distro_robots_aliengo_commons_aliengolib_README_autotoc_md11}{}\doxysection{Issues}\label{md__home_marcom_lenovo_dls_ws_home_ant_robotlib_ws_src_dls_distro_robots_aliengo_commons_aliengolib_README_autotoc_md11}
+You can look for known issues, report bugs and ask for features implementation at the \href{https://gitlab.advr.iit.it/dls-lab/robotlib/-/issues}{\texttt{ issue tracker}}. 
