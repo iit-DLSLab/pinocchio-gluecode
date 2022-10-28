@@ -62,8 +62,6 @@ Latex and html files will be generated according to the instructions provided in
 
 To access to the html documentation, just double click on the file *index.html* stored in the folder *doc/html*: it will open the file in your browser.
 
-To view the inheritance graph, once the html file is opended in your browser, go in the Classes section and click on the Class Hierarchy tab.
-
 ## Tests
 The tests are based on GoogleTests: the Google's C++ test framework.
 
