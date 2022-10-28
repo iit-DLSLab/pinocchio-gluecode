@@ -58,7 +58,7 @@ The Aliengolib documentation is written using Doxygen. To generate the documenta
 
     doxygen aliengolib_doxygen.conf
 
-Latex and html files will be generated according to the instructions provided in the configuration file robotlib_doxygen.conf. 
+Latex and html files will be generated according to the instructions provided in the configuration file aliengolib_doxygen.conf. 
 
 To access to the html documentation, just double click on the file *index.html* stored in the folder *doc/html*: it will open the file in your browser.
 

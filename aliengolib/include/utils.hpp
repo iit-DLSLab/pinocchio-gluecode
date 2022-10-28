@@ -41,7 +41,7 @@ namespace aliengolib
         {"RH", 3},
     };
 
-    inline const std::string  aliengo_urdf_path {"/usr/lib/robots/aliengo.urdf"};
+    inline const std::string aliengo_urdf_path {"/usr/lib/robots/aliengo.urdf"};
 
     void copy_mat_4x4(double src[16], double dest[16]);
     void mult_mat_mat_4x4(double src1[16], double src2[16], double dest[16]);
