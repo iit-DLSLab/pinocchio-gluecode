@@ -542,50 +542,13 @@ namespace aliengolib
         return CoM - b_R_w.transpose() * offCoM;          //CoM is in the world frame off CoM is in base frame
     }
 
-    //compute spatial velocity of the CoM (in base frame) (only joint influence)
-    Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVel(const JointState &q,
-                                                const JointState &qd)
-    {
-        q.size();   // TODO: Not used. Created to remove warning
-        qd.size();   // TODO: Not used. Created to remove warning
-
-        Eigen::Matrix<double, 6, 1> CoMvel = Eigen::Matrix<double, 6, 1>::Zero();
-        
-        std::cout << "TODO: getWholeBodyCOMVel\n";
-
-        // The actual calculus
-        //TODO1
-        //CoMvel = Crex::rcg::getWholeBodyCOMJacobian(q, inertiaProps, ht)*qd;
-        return CoMvel;
-    }
-
     Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
-                                                                const Eigen::Matrix3d &rotationMx,
-                                                                const JointState &q,
-                                                                const JointState &qd)
-    {
-        qd.size();   // TODO: Not used. Created to remove warning
-
-        Eigen::Matrix<double, 6, 1> CoMVel = Eigen::Matrix<double, 6, 1>::Zero();
-        //compute joint influence
-        //TODO1
-        //CoMVel = motionVectorTransform(Eigen::Vector3d::Zero(), rotationMx) * getWholeBodyCOMJacobian(q) * qd;
-        //add base motion shifted to the COM
-
-        std::cout << "TODO: getWholeBodyCOMVelFB - compute joint influence\n";
-
-        CoMVel += iit::motionVectorTransform(getWholeBodyCOM(q), rotationMx) * baseVel;
-
-        return CoMVel;
-    }
-
-    Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
-                                                                const Eigen::Matrix3d &rotationMx,
+                                                                const Eigen::Matrix3d &R,
                                                                 const JointState &q)
     {
         Eigen::Matrix<double, 6, 1> CoMVel = Eigen::Matrix<double, 6, 1>::Zero();
 
-        CoMVel = iit::motionVectorTransform(getWholeBodyCOM(q), rotationMx) * baseVel;
+        CoMVel = iit::motionVectorTransform(getWholeBodyCOM(q), R) * baseVel;
 
         return CoMVel;
     }
@@ -757,9 +720,5 @@ namespace aliengolib
         const std::array<std::shared_ptr<robotlib::LimbBase>, NARMS> arms({});
 
         return std::make_shared<Aliengo>(trunk, legs, arms, robot_urdf);
-    }
-    extern "C" void destroyRobotWithUrdf_t(std::shared_ptr<robotlib::RobotBase> robot)
-    {
-        robot->getName(); // TODO: remove this hack that avoids compilation warnings!
     }
 } // namespace hyqlib

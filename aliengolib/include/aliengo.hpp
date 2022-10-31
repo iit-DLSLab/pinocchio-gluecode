@@ -119,30 +119,9 @@ namespace aliengolib
             return foot_pose;
         };
 
-        virtual void getFootJacobian(const robotlib::RobotBase::JointState &q,
-                                     const std::shared_ptr<robotlib::LimbBase> leg,
-                                     Jacobian &footJac) override
-        {
-			q.size();
-			leg->getName();
-
-            footJac.setOnes();
-        };
 
 		virtual void updateLinearJacobian(const JointState &joints_positions,
                                           LegDataMap<Jacobian> &robot_jacobian) override;
-
-        LegDataMap<std::shared_ptr<robotlib::Frame>> getFeet() override
-        {
-            auto feet = this->makeLegDataMap<std::shared_ptr<robotlib::Frame>>();
-
-            for (auto leg : *(this->getLegs()))
-            {
-                feet[leg] = std::make_shared<robotlib::Link>("link");
-            }
-
-            return feet;
-        };
 
         virtual void forwardKinematics(const robotlib::RobotBase::JointState &joint_position,
                                                 robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position) override;
@@ -190,9 +169,7 @@ namespace aliengolib
             return inertias_->getCOM_trunk();
         }
 
-        Eigen::Vector3d getRobotCoM() { return Eigen::Vector3d().setZero(); }
-
-        virtual Eigen::Matrix<double, 3, 1> getWholeBodyCOM() override;
+        virtual Eigen::Matrix<double, 3, 1> getWholeBodyCOM();
 
         virtual Eigen::Matrix<double, 3, 1> getWholeBodyCOM(const JointState &joint_state) override;
 
@@ -204,17 +181,7 @@ namespace aliengolib
                                                const Eigen::Vector3d &base_orient,
                                                const Eigen::Vector3d &CoM) override;
 
-        virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVel(const JointState &q,
-                                                               const JointState &qd) override;
-
-
-        //compute spatial velocity of the CoM (base and joint influence)
-        //the twist should be expressed in base frame and the velocity is rotated according to matrix R
-        //compute spatial velocity of the CoM (base and joint influence) with update
         virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
-                                                                 const Eigen::Matrix3d &rotationMx,
-                                                                 const JointState &q,
-                                                                 const JointState &qd) override;
         virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
                                                                 const Eigen::Matrix3d &rotationMx,
                                                                 const JointState &q) override;
@@ -228,10 +195,6 @@ namespace aliengolib
 
         virtual double getLegsMass() const override;
 
-        // void updateLinearJacobian(const robotlib::RobotBase::JointState &joints_positions,
-        //                           const rcg::Jacobians &jacobians,
-		// 					      robotlib::RobotBase::LegDataMap<robotlib::RobotBase::Jacobian> &robot_jacobian);
-        
         virtual void setInvKinTimePeriod(const double& period) override;
 
         virtual void setTrunkCom(const Eigen::Vector3d &trunk_com) override;
@@ -276,6 +239,5 @@ namespace aliengolib
 extern "C" std::shared_ptr<robotlib::RobotBase> createRobot_t();
 extern "C" void destroyRobot_t(std::shared_ptr<robotlib::RobotBase>);
 extern "C" std::shared_ptr<robotlib::RobotBase> createRobotWithUrdf_t(const std::string& robot_urdf);
-extern "C" void destroyRobotWithUrdf_t(std::shared_ptr<robotlib::RobotBase>);
 
 #endif // _ALIENGOLIB_ALIENGO_HPP_

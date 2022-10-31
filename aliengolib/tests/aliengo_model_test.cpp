@@ -11,12 +11,6 @@ TEST(AliengoUnitTests, aliengoModel)
     std::shared_ptr<robotlib::RobotBase> aliengo = createRobotWithUrdf_t(robot_urdf);
 
     auto q = aliengo->makeJointState();
-    auto feet = aliengo->getFeet();
-    for (auto foot : feet)
-    {
-        std::cout << aliengo->getFootPosition(q, foot.data_).transpose() << std::endl;
-        std::cout << "***\n";
-    }
 
     for (auto leg : *aliengo->getLegs())
     {
@@ -95,14 +89,6 @@ TEST(RobotBaseUnitTests, dataMap_constructor_with_initialization)
         std::cout << "***\n";
     }
     std::cout << "\n";
-}
-
-TEST(RobotBaseUnitTests, getRobotCoM)
-{
-    /// Dummy quadruped
-    std::shared_ptr<robotlib::RobotBase> aliengo = createRobotWithUrdf_t(robot_urdf);
-
-    std::cout << aliengo->getRobotCoM() << std::endl;
 }
 
 TEST(RobotBaseUnitTests, forwardKinematics)
