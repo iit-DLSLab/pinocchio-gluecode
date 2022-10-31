@@ -26,7 +26,6 @@ target_link_directories(aliengo
 
 target_link_libraries(aliengo
     PUBLIC
-        iitcommons
         robotlib
         roscpp
         urdf    
@@ -40,13 +39,13 @@ install(
 
 install(
     TARGETS     aliengo
-    DESTINATION /usr/lib/robots/
+    DESTINATION /usr/lib/
     COMPONENT   aliengo_commons
 )
 
 install(
     FILES       aliengo.urdf
-    DESTINATION /usr/lib/robots/
+    DESTINATION /usr/include/robots/
 	COMPONENT   aliengo_commons
 )
 

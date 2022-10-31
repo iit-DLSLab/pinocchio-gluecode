@@ -1,4 +1,4 @@
-#include "aliengo_leg.hpp"
+#include "aliengolib/aliengo_leg.hpp"
 
 //TODO: READ FROM URDF
 // Maybe the link names can be changed

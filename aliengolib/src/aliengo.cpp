@@ -1,8 +1,7 @@
-#include "aliengo.hpp"
-#include "aliengo_leg.hpp"
-#include "urdf_params_getter.h"
-
-#include "robcogen/utils.h"
+#include "aliengolib/aliengo.hpp"
+#include "aliengolib/aliengo_leg.hpp"
+#include "aliengolib/urdf_params_getter.h"
+#include "aliengolib/robcogen/utils.h"
 
 #include <filesystem>
 #include <fstream> 
@@ -841,7 +840,7 @@ namespace aliengolib
     
     extern "C" std::shared_ptr<robotlib::RobotBase> createRobot_t()
     {
-        std::string urdf_path("/usr/lib/robots/aliengo.urdf");
+        std::string urdf_path("/usr/include/robots/aliengo.urdf");
 
         if (!std::filesystem::exists(urdf_path))
         {

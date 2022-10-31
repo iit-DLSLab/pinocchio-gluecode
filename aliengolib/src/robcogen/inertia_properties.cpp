@@ -1,4 +1,4 @@
-#include "robcogen/inertia_properties.h"
+#include "aliengolib/robcogen/inertia_properties.h"
 
 using namespace std;
 using namespace iit::rbd;

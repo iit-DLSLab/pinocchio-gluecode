@@ -1,7 +1,7 @@
-#include "robcogen/robcogen_commons.h"
+#include "aliengolib/robcogen/robcogen_commons.h"
 
-#include "robcogen/inverse_dynamics.h"
-#include "robcogen/inertia_properties.h"
+#include "aliengolib/robcogen/inverse_dynamics.h"
+#include "aliengolib/robcogen/inertia_properties.h"
 #ifndef EIGEN_NO_DEBUG
     #include <iostream>
 #endif

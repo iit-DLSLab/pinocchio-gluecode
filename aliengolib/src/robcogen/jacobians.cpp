@@ -1,6 +1,6 @@
-#include "robcogen/jacobians.h"
-#include "dog/leg_data_map.h"
-#include "dog/joint_id_tricks.h"
+#include "aliengolib/robcogen/jacobians.h"
+#include "aliengolib/dog/leg_data_map.h"
+#include "aliengolib/dog/joint_id_tricks.h"
 
 using namespace iit::dog;
 
