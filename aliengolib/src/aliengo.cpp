@@ -87,8 +87,8 @@ namespace aliengolib
         for(auto joint : auxiliar_joints_variable_)
         {
             const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-            RobotBase::getMinJointAngle(joint, robcogen_q_min[joint_id]);
-            RobotBase::getMaxJointAngle(joint, robcogen_q_max[joint_id]);
+            robcogen_q_min[joint_id] = RobotBase::getMinJointAngle(joint);
+            robcogen_q_max[joint_id] = RobotBase::getMaxJointAngle(joint);
         }
 
         inverse_kinematics_->setKinematicLimits(robcogen_q_min, robcogen_q_max);
@@ -554,12 +554,12 @@ namespace aliengolib
     }
 
     Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
-                                                            const Eigen::Matrix3d &rotationMx,
+                                                            const Eigen::Matrix3d &R,
                                                             const Eigen::Vector3d offset_com)
     {
         Eigen::Matrix<double, 6, 1> CoMVel = Eigen::Matrix<double, 6, 1>::Zero();
 
-        CoMVel = iit::motionVectorTransform(offset_com, rotationMx) * baseVel;
+        CoMVel = iit::motionVectorTransform(offset_com, R) * baseVel;
 
         return CoMVel;
     }
@@ -721,4 +721,5 @@ namespace aliengolib
 
         return std::make_shared<Aliengo>(trunk, legs, arms, robot_urdf);
     }
+
 } // namespace hyqlib
