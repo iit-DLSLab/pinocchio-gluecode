@@ -171,7 +171,7 @@ namespace aliengolib
 
         virtual Eigen::Matrix<double, 3, 1> getWholeBodyCOM();
 
-        virtual Eigen::Matrix<double, 3, 1> getWholeBodyCOM(const JointState &joint_state) override;
+        virtual Eigen::Matrix<double, 3, 1> getWholeBodyCOM(const JointState &joint_position) override;
 
         virtual Eigen::Vector3d getCoMFromBase(const JointState &q,
                                                const Eigen::Vector3d &base_orient,

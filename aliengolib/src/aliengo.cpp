@@ -487,38 +487,38 @@ namespace aliengolib
         return tmpSum / inertias_->getTotalMass();
     }
 
-    Eigen::Matrix<double, 3, 1> Aliengo::getWholeBodyCOM(const JointState &joint_state)
+    Eigen::Matrix<double, 3, 1> Aliengo::getWholeBodyCOM(const JointState &joint_position)
     {
 
-        Eigen::Matrix<double, NJOINTS_TOT, 1> joint_state_matrix = Eigen::Matrix<double, NJOINTS_TOT, 1>::Zero();
+        Eigen::Matrix<double, NJOINTS_TOT, 1> joint_position_matrix = Eigen::Matrix<double, NJOINTS_TOT, 1>::Zero();
 
         // for (auto leg : legs_)
         // {
         //     for (auto joint : *leg->getJoints())
         //     {
         //         const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-        //         joint_state_matrix[joint_id] = joint_state[joint];
+        //         joint_position_matrix[joint_id] = joint_position[joint];
         //     }
         // }
         for(auto joint : auxiliar_joints_variable_)
         {
             const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-            joint_state_matrix[joint_id] = joint_state[joint];
+            joint_position_matrix[joint_id] = joint_position[joint];
         }
         // First updates the coordinate transforms that will be used by the routine
         
-        homogeneous_transforms_->fr_trunk_X_fr_LF_hipassembly(joint_state_matrix);
-        homogeneous_transforms_->fr_trunk_X_fr_RF_hipassembly(joint_state_matrix);
-        homogeneous_transforms_->fr_trunk_X_fr_LH_hipassembly(joint_state_matrix);
-        homogeneous_transforms_->fr_trunk_X_fr_RH_hipassembly(joint_state_matrix);
-        homogeneous_transforms_->fr_LF_hipassembly_X_fr_LF_upperleg(joint_state_matrix);
-        homogeneous_transforms_->fr_LF_upperleg_X_fr_LF_lowerleg(joint_state_matrix);
-        homogeneous_transforms_->fr_RF_hipassembly_X_fr_RF_upperleg(joint_state_matrix);
-        homogeneous_transforms_->fr_RF_upperleg_X_fr_RF_lowerleg(joint_state_matrix);
-        homogeneous_transforms_->fr_LH_hipassembly_X_fr_LH_upperleg(joint_state_matrix);
-        homogeneous_transforms_->fr_LH_upperleg_X_fr_LH_lowerleg(joint_state_matrix);
-        homogeneous_transforms_->fr_RH_hipassembly_X_fr_RH_upperleg(joint_state_matrix);
-        homogeneous_transforms_->fr_RH_upperleg_X_fr_RH_lowerleg(joint_state_matrix);
+        homogeneous_transforms_->fr_trunk_X_fr_LF_hipassembly(joint_position_matrix);
+        homogeneous_transforms_->fr_trunk_X_fr_RF_hipassembly(joint_position_matrix);
+        homogeneous_transforms_->fr_trunk_X_fr_LH_hipassembly(joint_positionion_matrix);
+        homogeneous_transforms_->fr_trunk_X_fr_RH_hipassembly(joint_position_matrix);
+        homogeneous_transforms_->fr_LF_hipassembly_X_fr_LF_upperleg(joint_position_matrix);
+        homogeneous_transforms_->fr_LF_upperleg_X_fr_LF_lowerleg(joint_position_matrix);
+        homogeneous_transforms_->fr_RF_hipassembly_X_fr_RF_upperleg(joint_position_matrix);
+        homogeneous_transforms_->fr_RF_upperleg_X_fr_RF_lowerleg(joint_position_matrix);
+        homogeneous_transforms_->fr_LH_hipassembly_X_fr_LH_upperleg(joint_position_matrix);
+        homogeneous_transforms_->fr_LH_upperleg_X_fr_LH_lowerleg(joint_position_matrix);
+        homogeneous_transforms_->fr_RH_hipassembly_X_fr_RH_upperleg(joint_position_matrix);
+        homogeneous_transforms_->fr_RH_upperleg_X_fr_RH_lowerleg(joint_position_matrix);
 
         // The actual calculus
         return getWholeBodyCOM();
@@ -566,27 +566,27 @@ namespace aliengolib
 
     Eigen::Vector3d Aliengo::getLegContribution(const JointState &q)
     {
-        Eigen::Matrix<double, NJOINTS_TOT, 1> joint_state_matrix = Eigen::Matrix<double, NJOINTS_TOT, 1>::Zero();
+        Eigen::Matrix<double, NJOINTS_TOT, 1> joint_position_matrix = Eigen::Matrix<double, NJOINTS_TOT, 1>::Zero();
 
         for(auto joint : auxiliar_joints_variable_)
         {
             const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-            joint_state_matrix[joint_id] = q[joint];
+            joint_position_matrix[joint_id] = q[joint];
         }
 
         // First updates the coordinate transforms that will be used by the routine
-        homogeneous_transforms_->fr_trunk_X_fr_LF_hipassembly(joint_state_matrix);
-        homogeneous_transforms_->fr_trunk_X_fr_RF_hipassembly(joint_state_matrix);
-        homogeneous_transforms_->fr_trunk_X_fr_LH_hipassembly(joint_state_matrix);
-        homogeneous_transforms_->fr_trunk_X_fr_RH_hipassembly(joint_state_matrix);
-        homogeneous_transforms_->fr_LF_hipassembly_X_fr_LF_upperleg(joint_state_matrix);
-        homogeneous_transforms_->fr_LF_upperleg_X_fr_LF_lowerleg(joint_state_matrix);
-        homogeneous_transforms_->fr_RF_hipassembly_X_fr_RF_upperleg(joint_state_matrix);
-        homogeneous_transforms_->fr_RF_upperleg_X_fr_RF_lowerleg(joint_state_matrix);
-        homogeneous_transforms_->fr_LH_hipassembly_X_fr_LH_upperleg(joint_state_matrix);
-        homogeneous_transforms_->fr_LH_upperleg_X_fr_LH_lowerleg(joint_state_matrix);
-        homogeneous_transforms_->fr_RH_hipassembly_X_fr_RH_upperleg(joint_state_matrix);
-        homogeneous_transforms_->fr_RH_upperleg_X_fr_RH_lowerleg(joint_state_matrix);
+        homogeneous_transforms_->fr_trunk_X_fr_LF_hipassembly(joint_position_matrix);
+        homogeneous_transforms_->fr_trunk_X_fr_RF_hipassembly(joint_position_matrix);
+        homogeneous_transforms_->fr_trunk_X_fr_LH_hipassembly(joint_position_matrix);
+        homogeneous_transforms_->fr_trunk_X_fr_RH_hipassembly(joint_position_matrix);
+        homogeneous_transforms_->fr_LF_hipassembly_X_fr_LF_upperleg(joint_position_matrix);
+        homogeneous_transforms_->fr_LF_upperleg_X_fr_LF_lowerleg(joint_position_matrix);
+        homogeneous_transforms_->fr_RF_hipassembly_X_fr_RF_upperleg(joint_position_matrix);
+        homogeneous_transforms_->fr_RF_upperleg_X_fr_RF_lowerleg(joint_position_matrix);
+        homogeneous_transforms_->fr_LH_hipassembly_X_fr_LH_upperleg(joint_position_matrix);
+        homogeneous_transforms_->fr_LH_upperleg_X_fr_LH_lowerleg(joint_position_matrix);
+        homogeneous_transforms_->fr_RH_hipassembly_X_fr_RH_upperleg(joint_position_matrix);
+        homogeneous_transforms_->fr_RH_upperleg_X_fr_RH_lowerleg(joint_position_matrix);
 
          Eigen::Vector3d tmpSum = Eigen::Vector3d::Zero();
 
