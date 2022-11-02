@@ -509,7 +509,7 @@ namespace aliengolib
         
         homogeneous_transforms_->fr_trunk_X_fr_LF_hipassembly(joint_position_matrix);
         homogeneous_transforms_->fr_trunk_X_fr_RF_hipassembly(joint_position_matrix);
-        homogeneous_transforms_->fr_trunk_X_fr_LH_hipassembly(joint_positionion_matrix);
+        homogeneous_transforms_->fr_trunk_X_fr_LH_hipassembly(joint_position_matrix);
         homogeneous_transforms_->fr_trunk_X_fr_RH_hipassembly(joint_position_matrix);
         homogeneous_transforms_->fr_LF_hipassembly_X_fr_LF_upperleg(joint_position_matrix);
         homogeneous_transforms_->fr_LF_upperleg_X_fr_LF_lowerleg(joint_position_matrix);
