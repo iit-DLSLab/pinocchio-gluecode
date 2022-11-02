@@ -18,10 +18,10 @@ namespace aliengolib
 
         ~AliengoLeg();
 
-        virtual const std::string jointToChildName(const std::shared_ptr<robotlib::Joint> joint) const override;
-        virtual const std::string jointToParentName(const std::shared_ptr<robotlib::Joint> joint) const override;
-        virtual const std::string linkToChildName(const std::shared_ptr<robotlib::Link> link) const override;
-        virtual const std::string linkToParentName(const std::shared_ptr<robotlib::Link> link) const override;
+        virtual std::string jointToChildName(const std::shared_ptr<robotlib::Joint> joint) const override;
+        virtual std::string jointToParentName(const std::shared_ptr<robotlib::Joint> joint) const override;
+        virtual std::string linkToChildName(const std::shared_ptr<robotlib::Link> link) const override;
+        virtual std::string linkToParentName(const std::shared_ptr<robotlib::Link> link) const override;
 
     private:
         const std::map<std::string, std::pair<std::string, std::string>> jointMap;

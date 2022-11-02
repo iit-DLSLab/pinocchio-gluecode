@@ -164,7 +164,7 @@ namespace aliengolib
         }
 
         // TODO: remove this override once the dynamic_parameter of trunk_ is correctly set
-        const Eigen::Matrix<double, 3, 1> getTrunkCOM() const
+        Eigen::Matrix<double, 3, 1> getTrunkCOM() const
         {
             return inertias_->getCOM_trunk();
         }

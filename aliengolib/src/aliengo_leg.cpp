@@ -37,7 +37,7 @@ namespace aliengolib
                     {"RH_LOWERLEG", std::make_pair("RH_KFE", "")}}){}
     AliengoLeg::~AliengoLeg(){}
 
-    const std::string AliengoLeg::jointToChildName(const std::shared_ptr<robotlib::Joint> joint) const
+    std::string AliengoLeg::jointToChildName(const std::shared_ptr<robotlib::Joint> joint) const
     {
        const std::string joint_name = joint->getName();
        std::map<std::string, std::pair<std::string, std::string>>::const_iterator it{jointMap.find(joint_name)};
@@ -51,7 +51,7 @@ namespace aliengolib
         
     }
 
-    const std::string AliengoLeg::jointToParentName(const std::shared_ptr<robotlib::Joint> joint) const
+    std::string AliengoLeg::jointToParentName(const std::shared_ptr<robotlib::Joint> joint) const
     {
         const std::string joint_name = joint->getName(); 
         std::map<std::string, std::pair<std::string, std::string>>::const_iterator it{jointMap.find(joint_name)};
@@ -64,7 +64,7 @@ namespace aliengolib
         }
     }
 
-    const std::string AliengoLeg::linkToChildName(const std::shared_ptr<robotlib::Link> link) const
+    std::string AliengoLeg::linkToChildName(const std::shared_ptr<robotlib::Link> link) const
     {
         const std::string link_name = link->getName();
         std::map<std::string, std::pair<std::string, std::string>>::const_iterator it{linkMap.find(link_name)};
@@ -77,7 +77,7 @@ namespace aliengolib
         }
     }
 
-    const std::string AliengoLeg::linkToParentName(const std::shared_ptr<robotlib::Link> link) const
+    std::string AliengoLeg::linkToParentName(const std::shared_ptr<robotlib::Link> link) const
     {
         const std::string link_name = link->getName();
         std::map<std::string, std::pair<std::string, std::string>>::const_iterator it{linkMap.find(link_name)};
