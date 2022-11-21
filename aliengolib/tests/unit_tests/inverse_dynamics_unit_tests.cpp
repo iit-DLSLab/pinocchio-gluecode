@@ -1,6 +1,6 @@
 /**
- * @file arm_unit_tests.cpp
- * @brief Unit tests for Arm class
+ * @file inverse_dynamics_unit_tests.cpp
+ * @brief Tests for Aliengo inverse dynamics functions
  *
  * @author Gianluca Cerilli (IIT DLS Lab) - Contact: gianluca.cerilli@iit.it
  * @author Marco Marchitto (IIT DLS Lab) - Contact: marco.marchitto@iit.it
@@ -44,14 +44,10 @@ Eigen::Matrix3d inline rpyToRot(const Eigen::Vector3d & rpy){
 //Robcogen
 #include "robcogen/rbd.h"
 /**
- * @brief Set of unit tests for Aliengo::inverse_dynamics function
+ * @brief Test for Aliengo::inverse_dynamics function
  */
 TEST(InverseDynamics, inverse_dynamics)
 {
-  /**
-   * @test
-   */
-
   // ** Create robot **
   std::shared_ptr<robotlib::RobotBase> robot = createRobotWithUrdf_t(robot_urdf);
   

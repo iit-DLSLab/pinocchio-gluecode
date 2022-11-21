@@ -1,3 +1,10 @@
+/**
+ * @file inverse_kinematics_unit_tests.cpp
+ * @brief Tests for Aliengo inverse kinematics functions
+ *
+ * @author Gianluca Cerilli (IIT DLS Lab) - Contact: gianluca.cerilli@iit.it
+ * @author Marco Marchitto (IIT DLS Lab) - Contact: marco.marchitto@iit.it
+ */
 
 #include <gtest/gtest.h>
 #include <robotlib/robot_base.hpp>
@@ -10,7 +17,7 @@
 std::string robot_urdf{aliengolib::readURDFifstream(aliengolib::aliengo_urdf_path)};
 
 /**
- * @brief Set of unit tests for Aliengo::inverse_kinematics
+ * @brief Test for Aliengo::inverse_kinematics
  * The ground truth values are taken executing the RCF controller of the aliengo_dev branch, after the initRFC,stw,ictp (three times f) commands and letting aliengo walking on a ramp
  * commit: dls-distro --> 897b0427400f8708b99fe30775eaa88d00ccc63b
  */
@@ -84,8 +91,6 @@ TEST(InverseKinematics, inverse_kinematics)
   q_gt_eigen << -0.0146785, 0.921859, -1.6283, 0.0298207, 0.747017, -1.48914, -0.0282274, 0.783012, -1.55983, -2.92916e-17, 0.949667, -1.66626;
   qd_gt_eigen << 0.142277, 6.70135, -12.1732, -0.358866, 0.656499, -0.040092, 0.365631, 0.649353, 0.0177547, -0.232934, 6.80512, -12.2078;
   qdd_gt_eigen << 0.242238, 240.216, -416.172, -9.06562, 3.8756, 3.79685, 7.25086, 5.22556, -0.709715, -4.71288, 249.975, -423.288;
-
-
 
   for (auto leg : *robot->getLegs())
   {
