@@ -63,8 +63,7 @@ namespace aliengolib
             std::cout << "Failed to parse urdf file" << std::endl;
 
         // Getting joint limits from urdf
-        
-        
+
         robot_params_.reset(new iit::dog::UrdfParamsGetter(robot_model_));
         homogeneous_transforms_.reset(new iit::Aliengo::HomogeneousTransforms(*robot_params_));
         inverse_kinematics_.reset(new iit::Aliengo::InverseKinematics(*robot_params_));
@@ -74,16 +73,6 @@ namespace aliengolib
         iit::dog::JointState robcogen_q_min{};
         iit::dog::JointState robcogen_q_max{};
 
-        // for (auto leg : *legs_)
-        // {
-        //     for(auto joint : *leg->getJoints())
-        //     {
-        //         const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-        //         RobotBase::getMinJointAngle(joint, robcogen_q_min[joint_id]);
-        //         RobotBase::getMaxJointAngle(joint, robcogen_q_max[joint_id]);
-        //     }
-        // }
-        
         for(auto joint : auxiliar_joints_variable_)
         {
             const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
@@ -166,22 +155,101 @@ namespace aliengolib
             }
         }
     }
-    
+
+    Eigen::Vector3d Aliengo::getFramePosition(const robotlib::RobotBase::JointState &q,
+                                        const std::shared_ptr<robotlib::Frame> origin,
+                                        const std::shared_ptr<robotlib::Frame> destination)
+    {
+        q.size();
+        origin->getName();
+        destination->getName();
+        std::cout << "TODO getFramePosition\n";
+        return Eigen::Vector3d().setZero();
+    }
+
+    Eigen::Matrix3d Aliengo::getFrameOrientation(const robotlib::RobotBase::JointState &q,
+                                        const std::shared_ptr<robotlib::Frame> origin,
+                                        const std::shared_ptr<robotlib::Frame> destination)
+    {
+        q.size();
+        origin->getName();
+        destination->getName();
+
+        std::cout << "TODO getFrameOrientation\n";
+
+        return Eigen::Matrix3d().setZero();
+    }
+
+    Eigen::Matrix4d Aliengo::getFramePose(const robotlib::RobotBase::JointState &q,
+                                    const std::shared_ptr<robotlib::Frame> origin,
+                                    const std::shared_ptr<robotlib::Frame> destination)
+    {
+        Eigen::Matrix4d frame_pose{};
+        frame_pose.setZero();
+
+        frame_pose.block(0, 3, 3, 1) << getFramePosition(q, origin, destination);
+        frame_pose.block(0, 0, 3, 3) << getFrameOrientation(q, origin, destination);
+        frame_pose.row(3) << 0, 0, 0, 1;
+
+        return frame_pose;
+    }
+
+    Eigen::Vector3d Aliengo::getFootPosition(const robotlib::RobotBase::JointState &q,
+                                    const std::shared_ptr<robotlib::Frame> foot)
+    {
+        return this->getFramePosition(q, this->getLink("TRUNK"), foot);
+    }
+
+    Eigen::Matrix3d Aliengo::getFootOrientation(const robotlib::RobotBase::JointState &q,
+                                        const std::shared_ptr<robotlib::Frame> foot)
+    {
+        return this->getFrameOrientation(q, this->getLink("TRUNK"), foot);
+    }
+
+    Eigen::Matrix4d Aliengo::getFootPose(const robotlib::RobotBase::JointState &q,
+                                const std::shared_ptr<robotlib::Frame> foot)
+    {
+        Eigen::Matrix4d foot_pose{};
+        foot_pose.setZero();
+
+        foot_pose.block(0, 3, 3, 1) << getFootPosition(q, foot);
+        foot_pose.block(0, 0, 3, 3) << getFootOrientation(q, foot);
+        foot_pose.row(3) << 0, 0, 0, 1;
+
+        return foot_pose;
+    }
+
+    Eigen::Vector3d Aliengo::getFootPosition(const robotlib::RobotBase::JointState &q,
+                            const std::shared_ptr<robotlib::LimbBase> leg)
+    {
+        return this->getFramePosition(q, this->getLink("TRUNK"), leg->getEndEffector());
+    }
+
+    Eigen::Matrix3d Aliengo::getFootOrientation(const robotlib::RobotBase::JointState &q,
+                                        const std::shared_ptr<robotlib::LimbBase> leg)
+    {
+        return this->getFrameOrientation(q, this->getLink("TRUNK"), leg->getEndEffector());
+    }
+
+    Eigen::Matrix4d Aliengo::getFootPose(const robotlib::RobotBase::JointState &q,
+                                const std::shared_ptr<robotlib::LimbBase> leg)
+    {
+        Eigen::Matrix4d foot_pose{};
+        foot_pose.setZero();
+
+        foot_pose.block(0, 3, 3, 1) << getFootPosition(q, leg->getEndEffector());
+        foot_pose.block(0, 0, 3, 3) << getFootOrientation(q, leg->getEndEffector());
+        foot_pose.row(3) << 0, 0, 0, 1;
+
+        return foot_pose;
+    }
+
     void Aliengo::updateLinearJacobian(const robotlib::RobotBase::JointState &joints_positions,
                                     robotlib::RobotBase::LegDataMap<robotlib::RobotBase::Jacobian> &robot_jacobian)
     {
-        // TODO: test
         Eigen::Matrix<double, NJOINTS_TOT, 1> joints_positions_matrix;
         int count{0};
 
-        // for (auto leg : legs_)
-        // {
-        //     for(auto joint : *leg->getJoints())
-		// 	{
-        //         joints_positions_matrix[count] = joints_positions[joint];
-        //         count++;
-        //     }
-        // }
         for(auto joint : auxiliar_joints_variable_)
         {                
             joints_positions_matrix[count] = joints_positions[joint];
@@ -194,11 +262,11 @@ namespace aliengolib
     }
 
     void Aliengo::forwardKinematics(const robotlib::RobotBase::JointState &joint_position,
-                                            robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position)
+                                    robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position)
     {
         homogeneous_transforms_->updateParameters();
         // Mapping from robotlib structure to robcogen ones, TODO: maybe a function mapping robotlib to eigen structure is needed
-        // NB: this mapping assumes that the robcogen order is the same as the one defining the legs and joints of Crex!
+        // NB: this mapping assumes that the robcogen order is the same as the one defining the legs and joints of Aliengo!
         Eigen::Matrix<double, NJOINTS_TOT, 1> q_robcogen;
         
         for(auto joint : auxiliar_joints_variable_)
@@ -221,7 +289,6 @@ namespace aliengolib
 
         for (auto leg : *legs_)
         {
-            //TODO improve getting the jacobian from one leg only NRT!
             robotlib::RobotBase::LegDataMap<robotlib::RobotBase::Jacobian> full_feet_jacobian_tmp = this->makeFeetJacobian();
             updateLinearJacobian(joint_position, full_feet_jacobian_tmp);
 
@@ -255,17 +322,6 @@ namespace aliengolib
         robcogen_joint_velocity.setZero();
         robcogen_joint_acceleration.setZero();
         robcogen_tau_joints.setZero();
-        
-        // for (auto leg : *legs_)
-        // {
-        //     for (auto joint : *leg->getJoints())
-        //     {
-        //         const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-        //         robcogen_joint_position[joint_id] = joint_position[joint];
-        //         robcogen_joint_velocity[joint_id] = joint_velocity[joint];
-        //         robcogen_joint_acceleration[joint_id] = joint_acceleration[joint];
-        //     }
-        // }0
 
         for(auto joint : auxiliar_joints_variable_)
         {
@@ -276,15 +332,6 @@ namespace aliengolib
         }
 
         inverse_dynamics_->id_fully_actuated(wrench_base, robcogen_tau_joints, gravity_vector, robot_velocity, robot_acceleration, robcogen_joint_position, robcogen_joint_velocity, robcogen_joint_acceleration);
-        
-        // for (auto leg : *legs_)
-        // {
-        //     for (auto joint : *leg->getJoints())
-        //     {
-        //         const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-        //         tau_joints[joint] = robcogen_tau_joints[joint_id];
-        //     }
-        // }
 
         for(auto joint : auxiliar_joints_variable_)
         {
@@ -303,15 +350,6 @@ namespace aliengolib
 
         robcogen_joint_position.setZero();
         robcogen_tau_joints.setZero();
-        
-        // for (auto leg : *legs_)
-        // {
-        //     for (auto joint : *leg->getJoints())
-        //     {
-        //         const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-        //         robcogen_joint_position[joint_id] = joint_position[joint];
-        //     }
-        // }
 
         for(auto joint : auxiliar_joints_variable_)
         {
@@ -320,15 +358,7 @@ namespace aliengolib
         }
 
         inverse_dynamics_->G_terms_fully_actuated(wrench_base, robcogen_tau_joints, gravity_vector, robcogen_joint_position);
-        
-        // for (auto leg : *legs_)
-        // {
-        //     for (auto joint : *leg->getJoints())
-        //     {
-        //         const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-        //         tau_joints[joint] = robcogen_tau_joints[joint_id];
-        //     }
-        // }
+
         for(auto joint : auxiliar_joints_variable_)
         {
             const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
@@ -394,18 +424,6 @@ namespace aliengolib
                                            robcogen_joint_position,
                                            robcogen_joint_velocity,
                                            robcogen_joint_acceleration);
-        
-        // for (auto leg : *legs_)
-        // {
-        //     for (auto joint : *leg->getJoints())
-        //     {   
-        //         const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-
-        //         joint_position[joint] = robcogen_joint_position[joint_id];
-        //         joint_velocity[joint] = robcogen_joint_velocity[joint_id];
-        //         joint_acceleration[joint] = robcogen_joint_acceleration[joint_id];
-        //     }   
-        // }
 
         for(auto joint : auxiliar_joints_variable_)
         {
@@ -414,16 +432,33 @@ namespace aliengolib
             joint_velocity[joint] = robcogen_joint_velocity[joint_id];
             joint_acceleration[joint] = robcogen_joint_acceleration[joint_id];
         }
-        // if(!iK_Check){
-        //     des_q_ = q_;
-        //     des_qd_ = qd_;
-        //     des_qdd_ = JointState::Zero();
-        //     referencesBackTracingPrintOuts(dog::LF);
-        // }
     }
 
-    Eigen::Matrix<double, 3, 1> Aliengo::getWholeBodyCOM()
-    {        
+    Eigen::Matrix<double, 3, 1> Aliengo::getWholeBodyCOM(const JointState &joint_position)
+    {
+        Eigen::Matrix<double, NJOINTS_TOT, 1> joint_position_matrix = Eigen::Matrix<double, NJOINTS_TOT, 1>::Zero();
+
+        for(auto joint : auxiliar_joints_variable_)
+        {
+            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
+            joint_position_matrix[joint_id] = joint_position[joint];
+        }
+        // First updates the coordinate transforms that will be used by the routine
+        
+        homogeneous_transforms_->fr_trunk_X_fr_LF_hipassembly(joint_position_matrix);
+        homogeneous_transforms_->fr_trunk_X_fr_RF_hipassembly(joint_position_matrix);
+        homogeneous_transforms_->fr_trunk_X_fr_LH_hipassembly(joint_position_matrix);
+        homogeneous_transforms_->fr_trunk_X_fr_RH_hipassembly(joint_position_matrix);
+        homogeneous_transforms_->fr_LF_hipassembly_X_fr_LF_upperleg(joint_position_matrix);
+        homogeneous_transforms_->fr_LF_upperleg_X_fr_LF_lowerleg(joint_position_matrix);
+        homogeneous_transforms_->fr_RF_hipassembly_X_fr_RF_upperleg(joint_position_matrix);
+        homogeneous_transforms_->fr_RF_upperleg_X_fr_RF_lowerleg(joint_position_matrix);
+        homogeneous_transforms_->fr_LH_hipassembly_X_fr_LH_upperleg(joint_position_matrix);
+        homogeneous_transforms_->fr_LH_upperleg_X_fr_LH_lowerleg(joint_position_matrix);
+        homogeneous_transforms_->fr_RH_hipassembly_X_fr_RH_upperleg(joint_position_matrix);
+        homogeneous_transforms_->fr_RH_upperleg_X_fr_RH_lowerleg(joint_position_matrix);
+
+        // The actual calculus
         Eigen::Matrix<double, 3, 1> tmpSum = Eigen::Matrix<double, 3, 1>::Zero();
 
         tmpSum += inertias_->getCOM_trunk() * inertias_->getMass_trunk();
@@ -485,43 +520,6 @@ namespace aliengolib
                   (iit::rbd::Utils::transform(base_X_rh_haa_chain, inertias_->getCOM_RH_lowerleg()));
 
         return tmpSum / inertias_->getTotalMass();
-    }
-
-    Eigen::Matrix<double, 3, 1> Aliengo::getWholeBodyCOM(const JointState &joint_position)
-    {
-
-        Eigen::Matrix<double, NJOINTS_TOT, 1> joint_position_matrix = Eigen::Matrix<double, NJOINTS_TOT, 1>::Zero();
-
-        // for (auto leg : legs_)
-        // {
-        //     for (auto joint : *leg->getJoints())
-        //     {
-        //         const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-        //         joint_position_matrix[joint_id] = joint_position[joint];
-        //     }
-        // }
-        for(auto joint : auxiliar_joints_variable_)
-        {
-            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-            joint_position_matrix[joint_id] = joint_position[joint];
-        }
-        // First updates the coordinate transforms that will be used by the routine
-        
-        homogeneous_transforms_->fr_trunk_X_fr_LF_hipassembly(joint_position_matrix);
-        homogeneous_transforms_->fr_trunk_X_fr_RF_hipassembly(joint_position_matrix);
-        homogeneous_transforms_->fr_trunk_X_fr_LH_hipassembly(joint_position_matrix);
-        homogeneous_transforms_->fr_trunk_X_fr_RH_hipassembly(joint_position_matrix);
-        homogeneous_transforms_->fr_LF_hipassembly_X_fr_LF_upperleg(joint_position_matrix);
-        homogeneous_transforms_->fr_LF_upperleg_X_fr_LF_lowerleg(joint_position_matrix);
-        homogeneous_transforms_->fr_RF_hipassembly_X_fr_RF_upperleg(joint_position_matrix);
-        homogeneous_transforms_->fr_RF_upperleg_X_fr_RF_lowerleg(joint_position_matrix);
-        homogeneous_transforms_->fr_LH_hipassembly_X_fr_LH_upperleg(joint_position_matrix);
-        homogeneous_transforms_->fr_LH_upperleg_X_fr_LH_lowerleg(joint_position_matrix);
-        homogeneous_transforms_->fr_RH_hipassembly_X_fr_RH_upperleg(joint_position_matrix);
-        homogeneous_transforms_->fr_RH_upperleg_X_fr_RH_lowerleg(joint_position_matrix);
-
-        // The actual calculus
-        return getWholeBodyCOM();
     }
 
     Eigen::Vector3d Aliengo::getCoMFromBase(const JointState &q,
@@ -672,6 +670,16 @@ namespace aliengolib
     void Aliengo::setTrunkMass(const double& trunk_mass)
     {
         robot_params_->setValue_trunk_mass(trunk_mass);   
+    }
+
+    double Aliengo::getRobotMass() const
+    {
+        return inertias_->getTotalMass();
+    }
+
+    Eigen::Matrix<double, 3, 1> Aliengo::getTrunkCOM() const
+    {
+        return inertias_->getCOM_trunk();
     }
 
     std::shared_ptr<AliengoLeg> makeLeg(const std::string &legName) // function used to generate a leg inside the create_function

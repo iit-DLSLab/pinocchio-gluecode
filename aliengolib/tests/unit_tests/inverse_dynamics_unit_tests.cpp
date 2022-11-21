@@ -1,4 +1,4 @@
-/**
+/*!
  * @file inverse_dynamics_unit_tests.cpp
  * @brief Tests for Aliengo inverse dynamics functions
  *
@@ -10,10 +10,17 @@
 #include <robotlib/robot_base.hpp>
 #include "aliengo.hpp"
 
+//Robcogen
+#include "robcogen/rbd.h"
 
+//! Robot urdf in string format.
 std::string robot_urdf{aliengolib::readURDFifstream(aliengolib::aliengo_urdf_path)};
 
-// copy of the rpyToRot function inside rotations.h of iit::commons
+/*!
+ * @brief Function to get a rotation matrix from the rpy angles.
+ * @param[in] rpy roll, pitch and yaw angles.
+ * @return rotation matrix associated to the rpy angles.
+ */
 Eigen::Matrix3d inline rpyToRot(const Eigen::Vector3d & rpy){
 
     Eigen::Matrix3d Rx, Ry, Rz;
@@ -27,7 +34,6 @@ Eigen::Matrix3d inline rpyToRot(const Eigen::Vector3d & rpy){
             0   ,    cos(roll) ,  sin(roll),
             0   ,    -sin(roll),  cos(roll);
 
-
     Ry << cos(pitch) 	,	 0  ,   -sin(pitch),
             0       ,    1  ,   0,
             sin(pitch) 	,	0   ,  cos(pitch);
@@ -36,14 +42,10 @@ Eigen::Matrix3d inline rpyToRot(const Eigen::Vector3d & rpy){
             -sin(yaw) ,  cos(yaw) ,  		0,
             0      ,     0     ,       1;
 
-
     return Rx*Ry*Rz;
-
 }
 
-//Robcogen
-#include "robcogen/rbd.h"
-/**
+/*!
  * @brief Test for Aliengo::inverse_dynamics function
  */
 TEST(InverseDynamics, inverse_dynamics)
@@ -130,11 +132,4 @@ TEST(InverseDynamics, inverse_dynamics)
   {
        EXPECT_LE(abs(wrench_base_gt[i]-wrench_base_output[i]),error_th);
   }
-
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

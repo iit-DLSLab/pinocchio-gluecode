@@ -1,4 +1,4 @@
-/**
+/*!
  * @file utils.hpp
  *
  * @brief Utils file with functions prototypes
@@ -26,13 +26,13 @@
 
 namespace aliengolib
 {
-	/**
-     * @brief Utils functions
+	/*!
+     * @brief Utils functions.
      * @details
-     * This file contains a list of useful functions that are user all over the library
+     * This file contains a list of useful functions that are user all over the library.
      */
 
-    // inline is used to avoid the multiple definition error at linking time
+    //! Mapping the names of the joints to ids.
     inline const std::map<std::string, int> glue_joint_names_to_ids
     {
         {"LF_HAA", 0},
@@ -49,7 +49,7 @@ namespace aliengolib
         {"RH_KFE", 11}
     };
 
-    // inline is used to avoid the multiple definition error at linking time
+    //! Mapping the names of the legs to ids.
     inline const std::map<std::string, int> glue_leg_names_to_ids
     {
         {"LF", 0},
@@ -58,37 +58,38 @@ namespace aliengolib
         {"RH", 3},
     };
 
+    //! Path to the aliengo urdf.
     inline const std::string aliengo_urdf_path {"/usr/lib/robots/aliengo.urdf"};
 
-    /**
-    * @brief Copy the source 4x4 matrix into the destination one
+    /*!
+    * @brief Copy the source 4x4 matrix into the destination one.
     *
-    * @param[in] src 4x4 matrix (decomposed row-by-row to array) from which values are copied
-    * @param[out] dest 4x4 matrix (decomposed row-by-row to array) to which values are copied
+    * @param[in] src 4x4 matrix (decomposed row-by-row to array) from which values are copied.
+    * @param[out] dest 4x4 matrix (decomposed row-by-row to array) to which values are copied.
     */
     void copy_mat_4x4(double src[16], double dest[16]);
-    /**
-    * @brief Multiply (row * column) the two 4x4 matrices and save the result in the destination matrix
+    /*!
+    * @brief Multiply (row * column) the two 4x4 matrices and save the result in the destination matrix.
     *
-    * @param[in] src1 4x4 matrix (decomposed row-by-row to array) multiplied by column
-    * @param[in] src2 4x4 matrix (decomposed row-by-row to array) multiplied by row
-    * @param[out] dest 4x4 matrix (decomposed row-by-row to array) to which values are copied
+    * @param[in] src1 4x4 matrix (decomposed row-by-row to array) multiplied by column.
+    * @param[in] src2 4x4 matrix (decomposed row-by-row to array) multiplied by row.
+    * @param[out] dest 4x4 matrix (decomposed row-by-row to array) to which values are copied.
     */
     void mult_mat_mat_4x4(double src1[16], double src2[16], double dest[16]);
-    /**
-    * @brief Return the value between the minimum/maximum values. If the value is lower/higher than the minimum/maximum one, return the minimium/maximum value
+    /*!
+    * @brief Return the value between the minimum/maximum values. If the value is lower/higher than the minimum/maximum one, return the minimium/maximum value.
     *
-    * @param[in] val value to be checked
-    * @param[in] min lower bound for the value to be checked
-    * @param[in] max higher bound for the value to be checked
-    * @return double
+    * @param[in] val value to be checked.
+    * @param[in] min lower bound for the value to be checked.
+    * @param[in] max higher bound for the value to be checked.
+    * @return value between the minimum/maximum values.
     */
     double bound(double val, double min, double max);
-    /**
-    * @brief Return the robot URDF in the form of a string
+    /*!
+    * @brief Return the robot URDF in the form of a string.
     *
-    * @param[in] urdf_path the path of the robot URDF
-    * @return const string
+    * @param[in] urdf_path the path of the robot URDF.
+    * @return urdf in string format.
     */
     const std::string readURDFifstream(const std::string& urdf_path);
 } //namespace aliengolib
@@ -96,7 +97,7 @@ namespace aliengolib
 namespace iit
 {
     // ******************** FROM iit/commons/rbd/utils.h ********************
-    /**
+    /*!
      * @brief Return the skew-symmetric matrix from the vector in input.
      * The output can be multiplied with a second vector (row*column multiplication) to obtain the cross product 
      * between the first vector in input and the second vector  
@@ -108,7 +109,7 @@ namespace iit
     // ******************** ___FROM iit/commons/rbd/utils.h___ ********************
     
     // ******************** FROM dls_commons/liblocomotionutils/computeJacobians.cpp ********************
-    /**
+    /*!
      * @brief Tranform twists from A to B (b_X_a) (R^6*6), where A is the origin frame and B the destination frame
      * 
      * @param[in] position coordinate vector expressing OaOb in A coordinates
@@ -116,7 +117,7 @@ namespace iit
      * @return Eigen::Matrix<double, 6, 6>
      */
     iit::rbd::Matrix66d motionVectorTransform(const iit::rbd::Vector3d & position, const Eigen::Matrix3d & rotationMx);
-    /**
+    /*!
      * @brief Tranform wrenches from A to B (b_X_a) (R^6*6), where A is the origin frame and B the destination frame
      * 
      * @param[in] position coordinate vector expressing OaOb in A coordinates
@@ -124,14 +125,14 @@ namespace iit
      * @return Eigen::Matrix<double, 6, 6>
      */
     iit::rbd::Matrix66d forceVectorTransform(const iit::rbd::Vector3d & position, const Eigen::Matrix3d & rotationMx);
-    /**
+    /*!
      * @brief Return the number of legs that are in stance phase
      * 
      * @param[in] stance_legs Boolean values associated to each leg, that indicate if these are in stance or not
      * @return int
      */
     int compute_stance_legs(const iit::dog::LegDataMap<bool> & stance_legs);
-    /**
+    /*!
      * @brief Get the robot center of mass (CoM) with respect to the base
      * 
      * @param[in] q robot joints state
@@ -144,7 +145,7 @@ namespace iit
                                    const Eigen::Vector3d & base_orient,
                                    const Eigen::Vector3d & base_pos,
                                    iit::dog::InertiaPropertiesBase& in);
-    /**
+    /*!
      * @brief Get the robot base with respect to the center of mass (CoM)
      * 
      * @param[in] q robot joints state

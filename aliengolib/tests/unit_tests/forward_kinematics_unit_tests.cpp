@@ -1,4 +1,4 @@
-/**
+/*!
  * @file forward_kinematics_unit_tests.cpp
  * @brief Tests for Aliengo forward kinematics functions
  *
@@ -13,9 +13,10 @@
 
 #include "robcogen/rbd.h"
 
+//! Robot urdf in string format.
 std::string robot_urdf{aliengolib::readURDFifstream(aliengolib::aliengo_urdf_path)};
 
-/**
+/*!
  * @brief Test for Aliengo::forwardKinematics function
  * The ground truth values are taken executing the RCF controller of the aliengo_dev branch, after the initRFC command
  * commit: dls-distro --> 897b0427400f8708b99fe30775eaa88d00ccc63b
@@ -53,7 +54,7 @@ TEST(ForwardKinematics, forward_kinematics)
   }
 
   robot->forwardKinematics(q_input, foot_position);
-  
+
   double error_th = pow(10,-5);
   for(auto leg : *robot->getLegs())
   {
@@ -65,11 +66,4 @@ TEST(ForwardKinematics, forward_kinematics)
         EXPECT_LE(abs(position_gt[i]-position_actual[i]),error_th);
       }
   }
-
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

@@ -1,4 +1,4 @@
-/**
+/*!
  * @file inverse_kinematics_unit_tests.cpp
  * @brief Tests for Aliengo inverse kinematics functions
  *
@@ -13,10 +13,10 @@
 
 #include "robcogen/rbd.h"
 
-
+//! Robot urdf in string format.
 std::string robot_urdf{aliengolib::readURDFifstream(aliengolib::aliengo_urdf_path)};
 
-/**
+/*!
  * @brief Test for Aliengo::inverse_kinematics
  * The ground truth values are taken executing the RCF controller of the aliengo_dev branch, after the initRFC,stw,ictp (three times f) commands and letting aliengo walking on a ramp
  * commit: dls-distro --> 897b0427400f8708b99fe30775eaa88d00ccc63b
@@ -104,7 +104,7 @@ TEST(InverseKinematics, inverse_kinematics)
       qdd_gt[joint] = qdd_gt_eigen[joint_id];
     }
   }
-  
+
   robot->inverseKinematics(foot_position_gt, foot_velocity_gt, foot_acceleration_gt, q, qd, qdd);
 
   double error_th = pow(10,-3);
@@ -117,10 +117,4 @@ TEST(InverseKinematics, inverse_kinematics)
       EXPECT_LE(abs(qdd_gt[joint]-qdd[joint]), error_th);
     }
   }
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

@@ -1,4 +1,4 @@
-/**
+/*!
  * @file aliengo_model_test.cpp
  * @brief Tests for Aliengo model and robot main functions
  *
@@ -12,9 +12,10 @@
 #include <gtest/gtest.h>
 #include <memory>
 
+//! Robot urdf in string format.
 std::string robot_urdf{aliengolib::readURDFifstream(aliengolib::aliengo_urdf_path)};
 
-/**
+/*!
  * @brief Test that prints the Aliengo model structure
  */
 TEST(AliengoUnitTests, aliengoModel)
@@ -32,7 +33,7 @@ TEST(AliengoUnitTests, aliengoModel)
     }
 }
 
-/**
+/*!
  * @brief Test that prints the Aliengo mass
  */
 TEST(RobotBaseUnitTests, getRobotMass)
@@ -41,7 +42,7 @@ TEST(RobotBaseUnitTests, getRobotMass)
     std::cout << aliengo->getRobotMass() << std::endl;
 }
 
-/**
+/*!
  * @brief Test that calls the inverse dynamics on Aliengo parameters
  */
 TEST(RobotBaseUnitTests, inverseDynamics)
@@ -62,7 +63,7 @@ TEST(RobotBaseUnitTests, inverseDynamics)
     aliengo->inverseDynamics(v, a, g, q, dq, ddq, wrench_base, tau);
 }
 
-/**
+/*!
  * @brief Test that prints the Aliengo model data maps and jacobian structures
  */
 TEST(RobotBaseUnitTests, dataMap_constructor_with_initialization)
@@ -109,20 +110,4 @@ TEST(RobotBaseUnitTests, dataMap_constructor_with_initialization)
         std::cout << "***\n";
     }
     std::cout << "\n";
-}
-
-/**
- * @brief Test that prints the Aliengo center of mass
- */
-TEST(RobotBaseUnitTests, getRobotCoM)
-{
-    /// Dummy quadruped
-    std::shared_ptr<robotlib::RobotBase> aliengo = createRobotWithUrdf_t(robot_urdf);
-
-    std::cout << aliengo->getRobotCoM() << std::endl;
-}
-
-TEST(RobotBaseUnitTests, forwardKinematics)
-{
-    std::cout <<  "TODO\n";
 }
