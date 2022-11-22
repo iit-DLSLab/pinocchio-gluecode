@@ -79,11 +79,11 @@ namespace aliengolib
         virtual std::string linkToChildName(const std::shared_ptr<robotlib::Link> link) const override;
 
     private:
-            //! Variable mapping each joint name to its parent and child names.
-            std::map<std::string, std::pair<std::string, std::string>> joints_map_{};
+        //! Variable mapping each joint name to its parent and child names.
+        std::map<std::string, std::pair<std::string, std::string>> joints_map_{};
 
-            //! Variable mapping each link name to its parent and child names.
-            std::map<std::string, std::pair<std::string, std::string>> links_map_{};
+        //! Variable mapping each link name to its parent and child names.
+        std::map<std::string, std::pair<std::string, std::string>> links_map_{};
     };
 } // namespace aliengolib
 
