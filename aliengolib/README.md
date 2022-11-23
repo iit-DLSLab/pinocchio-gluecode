@@ -7,7 +7,9 @@ Aliengolib extends the Robotlib interface to implement the particular morphology
 
 This library can be considered as a glue code and, to understand the rationale behind it, you can read the Robotlib [Overview-TODO]() and [Usage-TODO]() sections.
 
-**Authors in alphabetic order**: Gianluca Cerilli, Geoff Fink and Marco Marchitto
+<br />
+
+**Authors in alphabetical order**: Gianluca Cerilli, Geoff Fink and Marco Marchitto
 
 ## Installation
 ### Dependencies
