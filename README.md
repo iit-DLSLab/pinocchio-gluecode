@@ -35,8 +35,12 @@ You just need to substitue \<X> with the chosen CMake version.
 
     sudo apt install liburdf-parser-plugin-dev
 
+**Robotlib**
+
+Follow the instructions [here](https://github.com/iit-DLSLab/Robotlib#installation) to install Robotlib
+
 ### Building
-To build Aliengolib, [install](https://gitlab.advr.iit.it/dls-lab/robotlib/-/tree/master#installation) Robotlib, clone the latest version of this repository and compile the package using
+To build Aliengolib, clone the latest version of this repository and compile the package using
 
     git clone git@gitlab.advr.iit.it:dls-lab/aliengo-commons.git
 
