@@ -2,7 +2,7 @@
  * @file read_urdf_test.cpp
  * @brief Test to verify the reading of the Aliengo URDF
  *
- * @authors Authors in alphabetic order:
+ * @authors Authors in alphabetical order:
  *
  *     Gianluca Cerilli (IIT DLS Lab) - Contact: gianluca.cerilli@iit.it
  *

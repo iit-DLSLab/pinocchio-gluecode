@@ -2,7 +2,7 @@
  * @file inverse_kinematics_unit_tests.cpp
  * @brief Tests for Aliengo inverse kinematics functions
  *
- * @authors Authors in alphabetic order:
+ * @authors Authors in alphabetical order:
  *
  *     Gianluca Cerilli (IIT DLS Lab) - Contact: gianluca.cerilli@iit.it
  *
