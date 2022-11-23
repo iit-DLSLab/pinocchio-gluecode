@@ -1,8 +1,0 @@
-.tags
-compile_commands.json
-build
-*.sw
-*.swo
-.vscode
-html
-latex
