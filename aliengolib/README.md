@@ -5,7 +5,7 @@ Aliengolib is a library providing the implementation of Aliengo's kinematics and
 
 Aliengolib extends the Robotlib interface to implement the particular morphology, kinematics, and dynamics of Aliengo. Thanks to polymorphisms, it is possible to use the interface to access the deepest robot specific implementation of functions declared or defined in Robotlib. In Aliengolib, the implementation of such functions is based on RobCoGen.
 
-This library can be considered as a glue code and, to understand the rationale behind it, you can read the Robotlib [Overview-TODO]() and [Usage-TODO]() sections.
+This library can be considered as a glue code and, to understand the rationale behind it, you can read the Robotlib [Overview](https://gitlab.advr.iit.it/dls-lab/robotlib/-/tree/master#overview) and [Usage](https://gitlab.advr.iit.it/dls-lab/robotlib/-/tree/master#usage) sections.
 
 <br />
 
@@ -15,7 +15,7 @@ This library can be considered as a glue code and, to understand the rationale b
 ### Dependencies
 Aliengolib has been developed and tested on a x86_64 version of Ubuntu 20.04 (Focal Fossa). The dependencies for building and installing the library are the following:
 
-**CMake** (3.8.0 is the minimum version for C++17 standard) - You can download the chosen version and install it through
+**CMake** (3.14.0 is the minimum version for using GoogleTest) - You can download the chosen version and install it through
 
     wget https://cmake.org/files/v3.<X>/cmake-3.<X>.<X>-Linux-x86_64.tar.gz
     tar xf cmake-3.<X>.<X>-Linux-x86_64.tar.gz
@@ -31,10 +31,12 @@ You just need to substitue \<X> with the chosen CMake version.
 
     sudo apt install libgtest-dev
 
-<!--TODO - urdf installation-->
+**Urdf parser**
+
+    sudo apt install liburdf-parser-plugin-dev
 
 ### Building
-To build Aliengolib, clone the latest version of this repository and compile the package using
+To build Aliengolib, [install](https://gitlab.advr.iit.it/dls-lab/robotlib/-/tree/master#installation) Robotlib, clone the latest version of this repository and compile the package using
 
     git clone git@gitlab.advr.iit.it:dls-lab/aliengo-commons.git
 
@@ -53,7 +55,7 @@ If you get the error *CMAKE_MAKE_PROGRAM is not set.* when executing the `cmake`
     sudo apt install build-essential
 
 ## Usage
-Aliengolib was developed with the idea of having a robot dependent shared library to be lodaded at run time, to guarantee modularity to a control framework based on Robotlib. Its usage is tightly related to how Robotlib is used, because all the Aliengolib functions and variables are accessed through the generic interface Robotlib, exploiting polymorphisms. Therefore, to understand how to use Aliengolib you can read the section [Usage-TODO]() of Robotlib.
+Aliengolib was developed with the idea of having a robot dependent shared library to be lodaded at run time, to guarantee modularity to a control framework based on Robotlib. Its usage is tightly related to how Robotlib is used, because all the Aliengolib functions and variables are accessed through the generic interface Robotlib, exploiting polymorphisms. Therefore, to understand how to use Aliengolib you can read the section [Usage](https://gitlab.advr.iit.it/dls-lab/robotlib/-/tree/master#usage) of Robotlib.
 
 For other type of usage, you can have a look at the tests in the *tests* folder.
 
@@ -82,7 +84,4 @@ To run tests
     make check
 
 ## Issues
-
-<!-- TODO -->
-<!-- Clean issue tracker and make some internal developments (like Agile tasks) private. Put there only known issues for public -->
 You can look for known issues, report bugs and ask for features implementation at the [issue tracker](https://gitlab.advr.iit.it/dls-lab/aliengo-commons/-/issues).
