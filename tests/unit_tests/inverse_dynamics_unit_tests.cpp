@@ -1,5 +1,6 @@
 /*!
  * @file inverse_dynamics_unit_tests.cpp
+ *
  * @brief Tests for Aliengo inverse dynamics functions
  *
  * @authors Authors in alphabetical order:

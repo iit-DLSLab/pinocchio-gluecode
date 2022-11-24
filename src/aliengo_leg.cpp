@@ -1,7 +1,20 @@
-#include "aliengo_leg.hpp"
+/*!
+ * @file aliengo_leg.cpp
+ *
+ * @brief AliengoLeg class and functions implementation
+ *
+ * @authors Authors in alphabetical order:
+ *
+ *     Gianluca Cerilli (IIT DLS Lab) - Contact: gianluca.cerilli@iit.it
+ *
+ *     Geoff Fink (IIT DLS Lab) - Contact: geoff.fink@iit.it
+ *
+ *     Marco Marchitto (IIT DLS Lab) - Contact: marco.marchitto@iit.it
+ *
+ * @bug No known bugs.
+ */
 
-//TODO: READ FROM URDF
-// Maybe the link names can be changed
+#include "aliengo_leg.hpp"
 
 namespace aliengolib
 {

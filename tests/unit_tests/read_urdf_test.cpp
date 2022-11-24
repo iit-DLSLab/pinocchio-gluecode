@@ -1,5 +1,6 @@
 /*!
  * @file read_urdf_test.cpp
+ *
  * @brief Test to verify the reading of the Aliengo URDF
  *
  * @authors Authors in alphabetical order:

@@ -1,3 +1,19 @@
+/*!
+ * @file aliengo.cpp
+ *
+ * @brief Aliengo class and functions implementation
+ *
+ * @authors Authors in alphabetical order:
+ *
+ *     Gianluca Cerilli (IIT DLS Lab) - Contact: gianluca.cerilli@iit.it
+ *
+ *     Geoff Fink (IIT DLS Lab) - Contact: geoff.fink@iit.it
+ *
+ *     Marco Marchitto (IIT DLS Lab) - Contact: marco.marchitto@iit.it
+ *
+ * @bug No known bugs.
+ */
+
 #include "aliengo.hpp"
 #include "aliengo_leg.hpp"
 #include "dog/urdf_params_getter.h"

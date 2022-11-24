@@ -1,5 +1,6 @@
 /*!
  * @file aliengo_model_test.cpp
+ *
  * @brief Tests for Aliengo model and robot main functions
  *
  * @authors Authors in alphabetical order:
