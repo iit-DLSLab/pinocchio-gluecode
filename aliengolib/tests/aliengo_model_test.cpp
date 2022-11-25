@@ -11,14 +11,6 @@ TEST(AliengoUnitTests, aliengoModel)
 {
     std::shared_ptr<robotlib::RobotBase> aliengo = createRobotWithUrdf_t(robot_urdf);
 
-    auto q = aliengo->makeJointState();
-    auto feet = aliengo->getFeet();
-    for (auto foot : feet)
-    {
-        // std::cout << aliengo->getFootPosition(q, foot.data_).transpose() << std::endl;
-        std::cout << "***\n";
-    }
-
     for (auto leg : *aliengo->getLegs())
     {
         for (auto link : *(leg->getLinks()))
