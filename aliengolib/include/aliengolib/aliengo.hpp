@@ -138,12 +138,11 @@ namespace aliengolib
         robotlib::LegDataMap<std::shared_ptr<robotlib::Frame>> getFeet() override
         {
             auto feet = this->makeLegDataMap<std::shared_ptr<robotlib::Frame>>();
-
             for (auto leg : *(this->getLegs()))
             {
                 feet[leg] = std::make_shared<robotlib::Link>("link");
             }
-
+            std::cout << "TODO - getFeet" << std::endl;
             return feet;
         };
 
