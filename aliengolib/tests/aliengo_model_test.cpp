@@ -98,6 +98,9 @@ TEST(RobotBaseUnitTests, getRobotCoM)
     std::cout << aliengo->getRobotCoM() << std::endl;
 }
 
+/*!
+ * @brief Test getting linear and angular foot jacobian. The ground truth are taken from the simulation, launching the robcogen functions without using Robotlib and Aliengolib.
+ */
 TEST(AliengoUnitTests, getFootJacobian)
 {
     std::shared_ptr<robotlib::RobotBase> robot = createRobotWithUrdf_t(robot_urdf);
