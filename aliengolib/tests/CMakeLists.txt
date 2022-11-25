@@ -1,12 +1,15 @@
 enable_testing()
 
-add_executable(main_tests
-	main_tests.cpp
-    	aliengo_model_test.cpp
+include_directories(
+	${CMAKE_CURRENT_SOURCE_DIR}/../include
 )
 
-target_link_libraries(main_tests
-	aliengolib
+add_executable(aliengo_model_test
+    aliengo_model_test.cpp
+)
+
+target_link_libraries(aliengo_model_test
+	aliengo
 	robotlib
 	${CMAKE_DL_LIBS}
 	gtest
@@ -46,10 +49,6 @@ target_link_libraries(inverse_dynamics_unit_tests
 	robotlib
 	${CMAKE_DL_LIBS}
 	gtest
-)
-
-include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}/../include/pugixml
 )
 
 add_executable(read_urdf_test

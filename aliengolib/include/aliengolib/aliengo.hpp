@@ -14,6 +14,7 @@
 #include "robcogen/transforms.h"
 #include "robcogen/inverse_dynamics.h"
 #include "robcogen/inertia_properties.h"
+#include "robcogen/feet_jacobians.h"
 
 #include <urdf/model.h>
 
@@ -119,15 +120,17 @@ namespace aliengolib
             return foot_pose;
         };
 
+        /*!
+         * @brief Get the foot jacobian.
+         * @details
+         * A reference to a Jacobian instance is passed as parameter and it is set to the foot jacobian values. This avoids returning a new Jacobian object that leads to dynamic memory allocation.
+         * @param[in] q angles of the joints.
+         * @param[in] leg leg corresponding to the foot.
+         * @param[out] footJac jacobian to be filled.
+         */
         virtual void getFootJacobian(const robotlib::JointState &q,
                                      const std::shared_ptr<robotlib::LimbBase> leg,
-                                     robotlib::Jacobian &footJac) override
-        {
-			q.size();
-			leg->getName();
-
-            footJac.setOnes();
-        };
+                                     robotlib::Jacobian &footJac) override;
 
 		virtual void updateLinearJacobian(const robotlib::JointState &joints_positions,
                                           robotlib::LegDataMap<robotlib::Jacobian> &robot_jacobian) const override;
@@ -267,7 +270,8 @@ namespace aliengolib
         std::shared_ptr<iit::Aliengo::dyn::InverseDynamics> inverse_dynamics_;
         std::shared_ptr<iit::Aliengo::MotionTransforms> motion_transforms_;
         std::shared_ptr<iit::Aliengo::Jacobians> jacobians_;
-		
+        std::shared_ptr<iit::Aliengo::FeetJacobians> feet_jacobians_;
+
         void setJointLimitsFromUrdf();
         
         // inv_dyn_.reset(new iit::Aliengo::dyn::InverseDynamics(*aliengo_inertias_, *aliengo_motion_transforms_));

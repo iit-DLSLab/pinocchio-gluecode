@@ -100,6 +100,8 @@ namespace aliengolib
         
         jacobians_.reset(new iit::Aliengo::Jacobians(*robot_params_));
 
+        feet_jacobians_.reset(new iit::Aliengo::FeetJacobians(*jacobians_));
+
         inverse_dynamics_.reset(new iit::Aliengo::dyn::InverseDynamics(*inertias_, *motion_transforms_));
     }
 
@@ -168,7 +170,25 @@ namespace aliengolib
             }
         }
     }
-    
+
+    void Aliengo::getFootJacobian(const robotlib::JointState &q,
+                                  const std::shared_ptr<robotlib::LimbBase> leg,
+                                  robotlib::Jacobian &footJac)
+    {
+        Eigen::Matrix<double, NJOINTS_TOT, 1> joints_positions_matrix;
+        int count{0};
+
+        for(auto joint : auxiliar_joints_variable_)
+        {
+            joints_positions_matrix[count] = q[joint];
+            count++;
+        }
+
+        iit::dog::LegID leg_id = static_cast<iit::dog::LegID>(glue_leg_names_to_ids[leg->getName()]);
+        footJac.block<3,3>(0,0) = feet_jacobians_->getFootJacobian(joints_positions_matrix, leg_id);
+        footJac.block<3,3>(3,0) = feet_jacobians_->getAngularFootJacobian(joints_positions_matrix, leg_id);
+    }
+
     void Aliengo::updateLinearJacobian(const robotlib::JointState &joints_positions,
                                        robotlib::LegDataMap<robotlib::Jacobian> &robot_jacobian) const
     {
