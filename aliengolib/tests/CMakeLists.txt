@@ -21,7 +21,7 @@ add_executable(forward_kinematics_unit_tests
 
 target_link_libraries(forward_kinematics_unit_tests
 	PRIVATE
-	aliengolib
+	aliengo
 	robotlib
 	${CMAKE_DL_LIBS}
 	gtest
@@ -33,7 +33,7 @@ add_executable(inverse_kinematics_unit_tests
 
 target_link_libraries(inverse_kinematics_unit_tests
 	PRIVATE
-	aliengolib
+	aliengo
 	robotlib
 	${CMAKE_DL_LIBS}
 	gtest
@@ -45,7 +45,7 @@ add_executable(inverse_dynamics_unit_tests
 
 target_link_libraries(inverse_dynamics_unit_tests
 	PRIVATE
-	aliengolib
+	aliengo
 	robotlib
 	${CMAKE_DL_LIBS}
 	gtest

@@ -1,14 +1,14 @@
 
 #include <gtest/gtest.h>
-#include <robotlib/robot_base.hpp>
+#include "robotlib/robot_base.hpp"
 
-#include "aliengo.hpp"
+#include "aliengolib/aliengo.hpp"
 
-#include "robcogen/rbd.h"
+#include "aliengolib/robcogen/rbd.h"
 
 
 //TODO: improvements --> fix the path!
-std::string robot_urdf{aliengolib::readURDFifstream("../aliengo.urdf")};
+std::string robot_urdf{aliengolib::readURDFifstream("/usr/include/robots/aliengo.urdf")};
 
 /**
  * @brief Set of unit tests for Aliengo::inverse_kinematics

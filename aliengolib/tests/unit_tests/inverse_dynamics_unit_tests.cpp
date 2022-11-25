@@ -7,12 +7,14 @@
  */
 
 #include <gtest/gtest.h>
-#include <robotlib/robot_base.hpp>
-#include "aliengo.hpp"
+#include "robotlib/robot_base.hpp"
+#include "aliengolib/aliengo.hpp"
 
+//Robcogen
+#include "aliengolib/robcogen/rbd.h"
 
 //TODO: improvements --> fix the path!
-std::string robot_urdf{aliengolib::readURDFifstream("../aliengo.urdf")};
+std::string robot_urdf{aliengolib::readURDFifstream("/usr/include/robots/aliengo.urdf")};
 
 // copy of the rpyToRot function inside rotations.h of iit::commons
 Eigen::Matrix3d inline rpyToRot(const Eigen::Vector3d & rpy){
@@ -42,8 +44,6 @@ Eigen::Matrix3d inline rpyToRot(const Eigen::Vector3d & rpy){
 
 }
 
-//Robcogen
-#include "robcogen/rbd.h"
 /**
  * @brief Set of unit tests for Aliengo::inverse_dynamics function
  */

@@ -49,4 +49,4 @@ install(
 	COMPONENT   aliengo_commons
 )
 
-# add_subdirectory(tests)
+add_subdirectory(tests)
