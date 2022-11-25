@@ -12,8 +12,6 @@ std::string robot_urdf{aliengolib::readURDFifstream("/usr/include/robots/aliengo
 
 /**
  * @brief Set of unit tests for Aliengo::forwardKinematics
- * The ground truth values are taken executing the RCF controller of the aliengo_dev branch, after the initRFC command
- * commit: dls-distro --> 897b0427400f8708b99fe30775eaa88d00ccc63b
  */
 TEST(ForwardKinematics, forward_kinematics)
 {

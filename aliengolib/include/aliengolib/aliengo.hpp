@@ -273,7 +273,7 @@ namespace aliengolib
         std::shared_ptr<iit::Aliengo::FeetJacobians> feet_jacobians_;
 
         void setJointLimitsFromUrdf();
-        
+
         // inv_dyn_.reset(new iit::Aliengo::dyn::InverseDynamics(*aliengo_inertias_, *aliengo_motion_transforms_));
 		// fwd_kin_.reset(new iit::Aliengo::ForwardKinematics(*robot_params_));
 		// feet_jacobians_.reset(new iit::Aliengo::FeetJacobians(*aliengo_jacobians_));
