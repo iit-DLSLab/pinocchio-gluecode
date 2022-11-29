@@ -136,6 +136,16 @@ namespace aliengolib
                                           robotlib::LegDataMap<robotlib::Jacobian> &robot_jacobian) const override;
 
         /*!
+         * @brief Update the angular part of the feet jacobian.
+         * @details
+         * A reference to a Jacobian instance is passed as parameter and it is set to the foot jacobian values. This avoids returning a new Jacobian object that leads to dynamic memory allocation.
+         * @param[in] q angles of the joints.
+         * @param[out] robot_jacobian jacobians associated to each foot.
+         */
+        virtual void updateAngularJacobian(const robotlib::JointState &joints_positions,
+                                          robotlib::LegDataMap<robotlib::Jacobian> &robot_jacobian) const override;
+
+        /*!
          * @brief Update the linear part of the foot jacobian.
          * @details
          * A reference to a Jacobian instance is passed as parameter and it is set to the foot jacobian values. This avoids returning a new Jacobian object that leads to dynamic memory allocation.
