@@ -219,7 +219,7 @@ namespace aliengolib
         //     }
         // }
         for(auto joint : auxiliar_joints_variable_)
-        {                
+        {
             joints_positions_matrix[count] = joints_positions[joint];
             count++;
         }
@@ -260,7 +260,7 @@ namespace aliengolib
         int count{0};
 
         for(auto joint : auxiliar_joints_variable_)
-        {                
+        {
             joints_positions_matrix[count] = joints_positions[joint];
             count++;
         }
@@ -292,7 +292,7 @@ namespace aliengolib
         int count{0};
 
         for(auto joint : auxiliar_joints_variable_)
-        {                
+        {
             joints_positions_matrix[count] = joints_positions[joint];
             count++;
         }

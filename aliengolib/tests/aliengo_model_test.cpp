@@ -157,7 +157,7 @@ TEST(AliengoUnitTests, getFootJacobian)
         robot->getFootJacobian(q, leg, feet_jacobian[leg]);
         for(int i=0; i<6;i++)
         {
-            for (int j=0; j<3; j++)
+            for (int j=0; j<leg->getNJoints(); j++)
             {
                 EXPECT_LE(fabs(feet_jacobian_gt[leg](i,j)-feet_jacobian[leg](i,j)), error_th);
             }

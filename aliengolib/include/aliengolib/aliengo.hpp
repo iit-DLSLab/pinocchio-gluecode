@@ -167,6 +167,7 @@ namespace aliengolib
         virtual void updateAngularFootJacobian(const robotlib::JointState &q,
                                      const std::shared_ptr<robotlib::LimbBase> leg,
                                      robotlib::Jacobian &footJac) const override;
+
         robotlib::LegDataMap<std::shared_ptr<robotlib::Frame>> getFeet() override
         {
             auto feet = this->makeLegDataMap<std::shared_ptr<robotlib::Frame>>();
