@@ -187,7 +187,7 @@ namespace aliengolib
 
     void Aliengo::getFootJacobian(const robotlib::JointState &q,
                                   const std::shared_ptr<robotlib::LimbBase> leg,
-                                  robotlib::Jacobian &footJac)
+                                  robotlib::Jacobian &footJac) const
     {
         Eigen::Matrix<double, NJOINTS_TOT, 1> joints_positions_matrix;
         int count{0};

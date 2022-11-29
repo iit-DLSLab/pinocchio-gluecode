@@ -122,7 +122,7 @@ namespace aliengolib
          */
         virtual void getFootJacobian(const robotlib::JointState &q,
                                      const std::shared_ptr<robotlib::LimbBase> leg,
-                                     robotlib::Jacobian &footJac) override;
+                                     robotlib::Jacobian &footJac) const override;
 
         /*!
          * @brief Update the linear part of the feet jacobian.
