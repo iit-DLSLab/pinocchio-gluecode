@@ -135,6 +135,29 @@ namespace aliengolib
 		virtual void updateLinearJacobian(const robotlib::JointState &joints_positions,
                                           robotlib::LegDataMap<robotlib::Jacobian> &robot_jacobian) const override;
 
+        /*!
+         * @brief Update the linear part of the foot jacobian.
+         * @details
+         * A reference to a Jacobian instance is passed as parameter and it is set to the foot jacobian values. This avoids returning a new Jacobian object that leads to dynamic memory allocation.
+         * @param[in] q angles of the joints.
+         * @param[in] leg leg corresponding to the foot.
+         * @param[out] footJac jacobian to be filled.
+         */
+        virtual void updateLinearFootJacobian(const robotlib::JointState &joints_positions,
+                                          const std::shared_ptr<robotlib::LimbBase> leg,
+                                          robotlib::Jacobian &footJac) const override;
+
+        /*!
+         * @brief Update the angular part of the foot jacobian.
+         * @details
+         * A reference to a Jacobian instance is passed as parameter and it is set to the foot jacobian values. This avoids returning a new Jacobian object that leads to dynamic memory allocation.
+         * @param[in] q angles of the joints.
+         * @param[in] leg leg corresponding to the foot.
+         * @param[out] footJac jacobian to be filled.
+         */
+        virtual void updateAngularFootJacobian(const robotlib::JointState &q,
+                                     const std::shared_ptr<robotlib::LimbBase> leg,
+                                     robotlib::Jacobian &footJac) const override;
         robotlib::LegDataMap<std::shared_ptr<robotlib::Frame>> getFeet() override
         {
             auto feet = this->makeLegDataMap<std::shared_ptr<robotlib::Frame>>();

@@ -218,6 +218,70 @@ namespace aliengolib
 		robot_jacobian["RH"].block<3,3>(0,0) = jacobians_->fr_trunk_J_RH_foot(joints_positions_matrix).block<3,3>(3,0);
     }
 
+    void Aliengo::updateLinearFootJacobian(const robotlib::JointState &joints_positions,
+                                        const std::shared_ptr<robotlib::LimbBase> leg,
+                                        robotlib::Jacobian &footJac) const
+    {
+        Eigen::Matrix<double, NJOINTS_TOT, 1> joints_positions_matrix;
+        int count{0};
+
+        for(auto joint : auxiliar_joints_variable_)
+        {                
+            joints_positions_matrix[count] = joints_positions[joint];
+            count++;
+        }
+
+        jacobians_->updateParameters();
+        if(leg->getName().compare("LF"))
+        {
+            footJac.block<3,3>(0,0) = jacobians_->fr_trunk_J_LF_foot(joints_positions_matrix).block<3,3>(3,0);
+        }
+        else if(leg->getName().compare("RF"))
+        {
+            footJac.block<3,3>(0,0) = jacobians_->fr_trunk_J_RF_foot(joints_positions_matrix).block<3,3>(3,0);
+        }
+        else if(leg->getName().compare("LH"))
+        {
+            footJac.block<3,3>(0,0) = jacobians_->fr_trunk_J_LH_foot(joints_positions_matrix).block<3,3>(3,0);
+        }
+        else if(leg->getName().compare("RH"))
+        {
+            footJac.block<3,3>(0,0) = jacobians_->fr_trunk_J_RH_foot(joints_positions_matrix).block<3,3>(3,0);
+        }
+    }
+
+    void Aliengo::updateAngularFootJacobian(const robotlib::JointState &joints_positions,
+                                        const std::shared_ptr<robotlib::LimbBase> leg,
+                                        robotlib::Jacobian &footJac) const
+    {
+        Eigen::Matrix<double, NJOINTS_TOT, 1> joints_positions_matrix;
+        int count{0};
+
+        for(auto joint : auxiliar_joints_variable_)
+        {                
+            joints_positions_matrix[count] = joints_positions[joint];
+            count++;
+        }
+
+        jacobians_->updateParameters();
+        if(leg->getName().compare("LF"))
+        {
+            footJac.block<3,3>(3,0) = jacobians_->fr_trunk_J_LF_foot(joints_positions_matrix).block<3,3>(0,0);
+        }
+        else if(leg->getName().compare("RF"))
+        {
+            footJac.block<3,3>(3,0) = jacobians_->fr_trunk_J_RF_foot(joints_positions_matrix).block<3,3>(0,0);
+        }
+        else if(leg->getName().compare("LH"))
+        {
+            footJac.block<3,3>(3,0) = jacobians_->fr_trunk_J_LH_foot(joints_positions_matrix).block<3,3>(0,0);
+        }
+        else if(leg->getName().compare("RH"))
+        {
+            footJac.block<3,3>(3,0) = jacobians_->fr_trunk_J_RH_foot(joints_positions_matrix).block<3,3>(0,0);
+        }
+    }
+
     void Aliengo::forwardKinematics(const robotlib::JointState &joint_position,
                                     robotlib::LegDataMap<Eigen::Vector3d> &end_effector_position) const
     {
