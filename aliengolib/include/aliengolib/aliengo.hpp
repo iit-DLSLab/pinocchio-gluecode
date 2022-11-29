@@ -87,11 +87,10 @@ namespace aliengolib
             return foot_pose;
         };
 
-        void getFootPosition(const robotlib::JointState &q,
-                             const std::shared_ptr<robotlib::LimbBase> leg,
-                             Eigen::Vector3d &footPos) override
+         Eigen::Vector3d getFootPosition(const robotlib::JointState &q,
+                             const std::shared_ptr<robotlib::LimbBase> leg) override
         {
-            footPos = this->getFramePosition(q, this->getLink("TRUNK"), leg->getEndEffector());
+            return this->getFramePosition(q, this->getLink("TRUNK"), leg->getEndEffector());
         };
 
         Eigen::Matrix3d getFootOrientation(const robotlib::JointState &q,
