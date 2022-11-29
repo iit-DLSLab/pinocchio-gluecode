@@ -107,6 +107,20 @@ namespace aliengolib
 
     Aliengo::~Aliengo(){}
 
+    Eigen::Vector3d Aliengo::getFramePosition(const robotlib::JointState &q,
+                                         const std::shared_ptr<robotlib::Frame> origin,
+                                         const std::shared_ptr<robotlib::Frame> destination)
+    {
+        Eigen::Matrix<double, NJOINTS_TOT, 1> q_robcogen;
+        for(auto joint : auxiliar_joints_variable_)
+        {
+            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            q_robcogen[joint_id] = q[joint];
+        }
+
+        return iit::rbd::Utils::positionVector( homogeneous_transforms_->getTransform(q_robcogen, glue_origin_frame_names_to_ids[origin->getName()], glue_destination_frame_names_to_ids[destination->getName()]) );
+    }
+
     void Aliengo::setJointLimitsFromUrdf()
     {
         //Get limits from URDF for position, velocity and effort:

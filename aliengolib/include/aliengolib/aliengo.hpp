@@ -35,14 +35,7 @@ namespace aliengolib
 
         Eigen::Vector3d getFramePosition(const robotlib::JointState &q,
                                          const std::shared_ptr<robotlib::Frame> origin,
-                                         const std::shared_ptr<robotlib::Frame> destination) override
-        {
-        	q.size();
-			origin->getName();
-			destination->getName();
-
-            return Eigen::Vector3d().setZero();
-        };
+                                         const std::shared_ptr<robotlib::Frame> destination) override;
 
         Eigen::Matrix3d getFrameOrientation(const robotlib::JointState &q,
                                             const std::shared_ptr<robotlib::Frame> origin,
