@@ -990,7 +990,7 @@ namespace aliengolib
     
     extern "C" std::shared_ptr<robotlib::RobotBase> createRobot_t()
     {
-        std::string urdf_path("/usr/include/robots/aliengo.urdf");
+        std::string urdf_path("/usr/include/aliengo_description/urdfs/aliengo.urdf");
 
         if (!std::filesystem::exists(urdf_path))
         {
