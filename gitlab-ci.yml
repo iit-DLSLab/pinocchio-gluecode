@@ -44,7 +44,7 @@ build-and-test:
     - cd build
     - cmake ..
     - make -j$(nproc)
-artifacts:
+  artifacts:
     paths:
       - build/*
       - bin/*
