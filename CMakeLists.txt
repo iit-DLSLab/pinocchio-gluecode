@@ -86,7 +86,7 @@ install(
 )
 
 install(
-    TARGETS     aliengo
+    TARGETS     ${PROJECT_NAME}
     DESTINATION /usr/lib/
     COMPONENT   ${PROJECT_NAME}
 )
