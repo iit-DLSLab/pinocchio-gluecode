@@ -250,11 +250,44 @@ namespace aliengolib
                                             const Eigen::Matrix<double, 6, 1> &robot_velocity = Eigen::Matrix<double, 6, 1>::Zero(),
                                             const Eigen::Matrix<double, 6, 1> &robot_acceleration = Eigen::Matrix<double, 6, 1>::Zero())
                                             const override;
+
+        /*!
+         * @brief Compute gravity terms.
+         * @details
+         * Instead of using the inverseDynamics function, you can use this function to compute gravity terms. In this way you can define an optimized version of their computation, avoiding unnecessary computational cost provided by the inverse dynamics function.
+         * @param[in] gravity_vector gravity vector in base frame.
+         * @param[in] joint_position angle of each joint.
+         * @param[out] wrench_base wrench applied to the base.
+         * @param[out] tau_joints torque of each joint.
+         */
         virtual void computeGravityCompensation(const Eigen::Matrix<double, 6, 1> &gravity_vector,
-                                                const robotlib::JointState &joint_position,
-                                                Eigen::Matrix<double, 6, 1> &wrench_base,
-                                                robotlib::JointState &tau_joints);
+                                                      const robotlib::JointState &joint_position,
+                                                      Eigen::Matrix<double, 6, 1> &wrench_base,
+                                                      robotlib::JointState &tau_joints) const override;
+
+        /*!
+         * @brief Compute gravity terms and return only the wrench applied to the base to compensate for gravity.
+         * @details
+         * Instead of using the full version of the computeGravityCompensation function, you can use this function to only get the desired wrench, without taking care of the gravity compensation torques.
+         * @param[in] gravity_vector gravity vector in base frame.
+         * @param[in] joint_position angle of each joint.
+         * @return wrench applied to the base.
+         */
+        virtual Eigen::Matrix<double, 6, 1> computeWrenchGravityCompensation(const Eigen::Matrix<double, 6, 1> &gravity_vector,
+                                                      const robotlib::JointState &joint_position) const override;
         
+        /*!
+         * @brief Compute gravity terms and return only the joint torques compensating for gravity.
+         * @details
+         * Instead of using the full version of the computeGravityCompensation function, you can use this function to only get the desired joint torques that compensate for gravity, without taking care of the wrench applied to the base. Notice that this function has the joint state as output parameter, because returning a JointState object leads to dynamic memory allocation.
+         * @param[in] gravity_vector gravity vector in base frame.
+         * @param[in] joint_position angle of each joint.
+         * @param[out] tau_joints torque of each joint.
+         */
+        virtual void computeTorquesGravityCompensation(const Eigen::Matrix<double, 6, 1> &gravity_vector,
+                                                      const robotlib::JointState &joint_position,
+                                                      robotlib::JointState &tau_joints) const override;
+
         // double getRobotMass() const override { return 21.525; }
 
         double getRobotMass() const
