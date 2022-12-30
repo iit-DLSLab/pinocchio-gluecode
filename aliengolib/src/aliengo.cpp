@@ -434,14 +434,14 @@ namespace aliengolib
     }
 
 
-    void Aliengo::inverseDynamics(const Eigen::Matrix<double, 6, 1> &robot_velocity,    // robot base
-                                  const Eigen::Matrix<double, 6, 1> &robot_acceleration,  // robot base
+    void Aliengo::inverseDynamics(Eigen::Matrix<double, 6, 1> &wrench_base,
+                                  robotlib::JointState &tau_joints,
                                   const Eigen::Matrix<double, 6, 1> &gravity_vector,
                                   const robotlib::JointState &joint_position,
                                   const robotlib::JointState &joint_velocity,
                                   const robotlib::JointState &joint_acceleration,
-                                  Eigen::Matrix<double, 6, 1> &wrench_base, ///output
-                                  robotlib::JointState &tau_joints) const   ///output
+                                  const Eigen::Matrix<double, 6, 1> &robot_velocity,
+                                  const Eigen::Matrix<double, 6, 1> &robot_acceleration) const
     {
         Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_position{};
         Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_velocity{};
@@ -488,6 +488,17 @@ namespace aliengolib
             const int joint_id{glue_joint_names_to_ids[joint->getName()]};
             tau_joints[joint] = robcogen_tau_joints[joint_id];
         }
+    }
+
+    void Aliengo::inverseDynamicsHTerm( robotlib::JointState &tau_joints,
+                                        const Eigen::Matrix<double, 6, 1> &gravity_vector,
+                                        const robotlib::JointState &joint_position,
+                                        const robotlib::JointState &joint_velocity,
+                                        const Eigen::Matrix<double, 6, 1> &robot_velocity,
+                                        const Eigen::Matrix<double, 6, 1> &robot_acceleration) const
+    {
+        Eigen::Matrix<double, 6, 1> wrench_base(Eigen::Matrix<double, 6, 1>::Zero());
+        inverseDynamics(wrench_base, tau_joints, gravity_vector, joint_position, joint_velocity, this->makeJointState(0.0), robot_velocity, robot_acceleration);
     }
 
     void Aliengo::computeGravityCompensation(const Eigen::Matrix<double, 6, 1> &gravity_vector,

@@ -41,7 +41,7 @@ TEST(RobotBaseUnitTests, inverseDynamics)
     auto ddq = aliengo->makeJointState();
     auto tau = aliengo->makeJointState();
 
-    aliengo->inverseDynamics(v, a, g, q, dq, ddq, wrench_base, tau);
+    aliengo->inverseDynamics(wrench_base, tau, g, q, dq, ddq, v, a);
 }
 
 TEST(RobotBaseUnitTests, dataMap_constructor_with_initialization)
