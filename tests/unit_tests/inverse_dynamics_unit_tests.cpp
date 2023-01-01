@@ -125,7 +125,7 @@ TEST(InverseDynamics, inverse_dynamics)
   }
  
   // ** Computing the inverse dynamics **
-  robot->inverseDynamics(robot_velocity_input, robot_acceleration_input, gravity_base_input, q_input, qd_input, qdd_input, wrench_base_output, inv_dyn_tau_output);
+  robot->inverseDynamics(wrench_base_output, inv_dyn_tau_output, gravity_base_input, q_input, qd_input, qdd_input, robot_velocity_input, robot_acceleration_input);
   
   // ** Test outputs with ground truth ** //TODO
   // setting threshold
