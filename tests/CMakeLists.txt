@@ -1,18 +1,22 @@
 enable_testing()
 
-include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}/../include
-)
-
 add_executable(aliengo_model_test
     aliengo_model_test.cpp
 )
 
 target_link_libraries(aliengo_model_test
-	aliengo
-	robotlib
-	${CMAKE_DL_LIBS}
-	gtest
+	PRIVATE
+		aliengo
+		robotlib
+		${CMAKE_DL_LIBS}
+		gtest
+)
+
+target_include_directories(aliengo_model_test
+    PUBLIC
+        include
+    PRIVATE
+        /usr/include/eigen3
 )
 
 add_executable(forward_kinematics_unit_tests
@@ -21,10 +25,17 @@ add_executable(forward_kinematics_unit_tests
 
 target_link_libraries(forward_kinematics_unit_tests
 	PRIVATE
-	aliengo
-	robotlib
-	${CMAKE_DL_LIBS}
-	gtest
+		aliengo
+		robotlib
+		${CMAKE_DL_LIBS}
+		gtest
+)
+
+target_include_directories(forward_kinematics_unit_tests
+    PUBLIC
+        include
+    PRIVATE
+        /usr/include/eigen3
 )
 
 add_executable(inverse_kinematics_unit_tests
@@ -33,10 +44,17 @@ add_executable(inverse_kinematics_unit_tests
 
 target_link_libraries(inverse_kinematics_unit_tests
 	PRIVATE
-	aliengo
-	robotlib
-	${CMAKE_DL_LIBS}
-	gtest
+		aliengo
+		robotlib
+		${CMAKE_DL_LIBS}
+		gtest
+)
+
+target_include_directories(inverse_kinematics_unit_tests
+    PUBLIC
+        include
+    PRIVATE
+        /usr/include/eigen3
 )
 
 add_executable(inverse_dynamics_unit_tests
@@ -45,10 +63,17 @@ add_executable(inverse_dynamics_unit_tests
 
 target_link_libraries(inverse_dynamics_unit_tests
 	PRIVATE
-	aliengo
-	robotlib
-	${CMAKE_DL_LIBS}
-	gtest
+		aliengo
+		robotlib
+		${CMAKE_DL_LIBS}
+		gtest
+)
+
+target_include_directories(inverse_dynamics_unit_tests
+    PUBLIC
+        include
+    PRIVATE
+        /usr/include/eigen3
 )
 
 add_executable(read_urdf_test
@@ -57,6 +82,13 @@ add_executable(read_urdf_test
 
 target_link_libraries(read_urdf_test
 	PRIVATE
-	${CMAKE_DL_LIBS}
-	gtest
+		${CMAKE_DL_LIBS}
+		gtest
+)
+
+target_include_directories(read_urdf_test
+    PUBLIC
+        include
+    PRIVATE
+        /usr/include/eigen3
 )
