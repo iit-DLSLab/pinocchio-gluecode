@@ -2,6 +2,7 @@
 #include "aliengolib/aliengo_leg.hpp"
 #include "aliengolib/urdf_params_getter.h"
 #include "aliengolib/robcogen/utils.h"
+#include "robotlib/utils/utils.hpp"
 
 #include <filesystem>
 #include <fstream> 
