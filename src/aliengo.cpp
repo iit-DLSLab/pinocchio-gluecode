@@ -988,14 +988,14 @@ namespace aliengolib
 
             // Initialize imu_pose before iterating
             urdf::Pose current_urdf_pose (current_joint->parent_to_joint_origin_transform);
-            imu_pose = robotlib::get_eigen_matrix4d_from_urdf_pose(current_urdf_pose);
+            imu_pose = robotlib::utils::get_eigen_matrix4d_from_urdf_pose(current_urdf_pose);
 
             // Backward recursion from link frame to which the IMU is attached (actually in the urdf the link frame is the frame of the parent joint of the link) to base frame
             while(!reached_base_frame)
             {
                 current_joint = robot_model_.getLink(current_joint->parent_link_name)->parent_joint;
                 urdf::Pose current_urdf_pose (current_joint->parent_to_joint_origin_transform);
-                Eigen::Matrix4d current_pose {robotlib::get_eigen_matrix4d_from_urdf_pose(current_urdf_pose)};
+                Eigen::Matrix4d current_pose {robotlib::utils::get_eigen_matrix4d_from_urdf_pose(current_urdf_pose)};
                 imu_pose.block<3,3>(0,0) = current_pose.block<3,3>(0,0) * imu_pose.block<3,3>(0,0);
                 imu_pose.block<3,1>(0,3) = current_pose.block<3,1>(0,3) + current_pose.block<3,3>(0,0) * imu_pose.block<3,1>(0,3);
                 reached_base_frame = current_joint->parent_link_name == base_link_name;
