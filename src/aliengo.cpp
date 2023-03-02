@@ -267,19 +267,19 @@ namespace aliengolib
         }
 
         jacobians_->updateParameters();
-        if(leg->getName().compare("LF"))
+        if(leg->getName().compare("LF")==0)
         {
             footJac.block<3,3>(0,0) = jacobians_->fr_trunk_J_LF_foot(joints_positions_matrix).block<3,3>(3,0);
         }
-        else if(leg->getName().compare("RF"))
+        else if(leg->getName().compare("RF")==0)
         {
             footJac.block<3,3>(0,0) = jacobians_->fr_trunk_J_RF_foot(joints_positions_matrix).block<3,3>(3,0);
         }
-        else if(leg->getName().compare("LH"))
+        else if(leg->getName().compare("LH")==0)
         {
             footJac.block<3,3>(0,0) = jacobians_->fr_trunk_J_LH_foot(joints_positions_matrix).block<3,3>(3,0);
         }
-        else if(leg->getName().compare("RH"))
+        else if(leg->getName().compare("RH")==0)
         {
             footJac.block<3,3>(0,0) = jacobians_->fr_trunk_J_RH_foot(joints_positions_matrix).block<3,3>(3,0);
         }
