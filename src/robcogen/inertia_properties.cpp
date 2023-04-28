@@ -43,14 +43,14 @@ iit::Aliengo::dyn::InertiaProperties::InertiaProperties(const dog::KinDynParams&
                                         0.0,
                                         0.0) );
 
-    com_LF_lowerleg = iit::rbd::Vector3d(0.142518,-0.002781,0.000063);  //updated with Aliengo
+    com_LF_lowerleg = iit::rbd::Vector3d(0.172851,-0.002781,0.000063);  //updated with Aliengo
     tensor_LF_lowerleg.fill(
                 0.207+0.06,
 			com_LF_lowerleg,
 			Utils::buildInertiaTensor(
 					0.000039188,
-					0.006341369,
-					0.006355157,
+					0.010091369,
+					0.010105157,
                                         0.0,
                                         0.0,
                                         0.0) );
@@ -79,14 +79,14 @@ iit::Aliengo::dyn::InertiaProperties::InertiaProperties(const dog::KinDynParams&
                                         0.0,
                                         0.0) );
 
-    com_RF_lowerleg = iit::rbd::Vector3d(0.142518,-0.002781,0.000063);  //updated with Aliengo
+    com_RF_lowerleg = iit::rbd::Vector3d(0.172851,-0.002781,0.000063);  //updated with Aliengo
     tensor_RF_lowerleg.fill(
                 0.207+0.06,
 			com_RF_lowerleg,
 			Utils::buildInertiaTensor(
 					0.000039188,
-					0.006341369,
-					0.006355157,
+					0.010091369,
+					0.010105157,
                                         0.0,
                                         0.0,
                                         0.0) );
@@ -115,14 +115,14 @@ iit::Aliengo::dyn::InertiaProperties::InertiaProperties(const dog::KinDynParams&
                                         0.0,
                                         0.0) );
 
-    com_LH_lowerleg = iit::rbd::Vector3d(0.142518,-0.002781,0.000063);  //updated with Aliengo
+    com_LH_lowerleg = iit::rbd::Vector3d(0.172851,-0.002781,0.000063);  //updated with Aliengo
     tensor_LH_lowerleg.fill(
                 0.207+0.06,
 			com_LH_lowerleg,
 			Utils::buildInertiaTensor(
 					0.000039188,
-					0.006341369,
-					0.006355157,
+					0.010091369,
+					0.010105157,
                                         0.0,
                                         0.0,
                                         0.0) );
@@ -151,14 +151,14 @@ iit::Aliengo::dyn::InertiaProperties::InertiaProperties(const dog::KinDynParams&
                                         0.0,
                                         0.0) );
 
-    com_RH_lowerleg = iit::rbd::Vector3d(0.142518,-0.002781,0.000063);  //updated with Aliengo
+    com_RH_lowerleg = iit::rbd::Vector3d(0.172851,-0.002781,0.000063);  //updated with Aliengo
     tensor_RH_lowerleg.fill(
                 0.207+0.06,
 			com_RH_lowerleg,
 			Utils::buildInertiaTensor(
 					0.000039188,
-					0.006341369,
-					0.006355157,
+					0.010091369,
+					0.010105157,
                                         0.0,
                                         0.0,
                                         0.0) );
