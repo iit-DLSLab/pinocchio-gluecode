@@ -13,8 +13,8 @@
 //Robcogen
 #include "aliengolib/robcogen/rbd.h"
 
-//TODO: improvements --> fix the path!
-std::string robot_urdf{aliengolib::readURDFifstream("/usr/include/robots/aliengo.urdf")};
+///! Robot urdf in string format.
+std::string robot_urdf{aliengolib::readURDFifstream(aliengolib::aliengo_urdf_path)};
 
 // copy of the rpyToRot function inside rotations.h of iit::commons
 Eigen::Matrix3d inline rpyToRot(const Eigen::Vector3d & rpy){
