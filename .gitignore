@@ -1,1 +1,7 @@
-build/*
+build
+html
+latex
+*.sw
+*.swo
+.vscode
+

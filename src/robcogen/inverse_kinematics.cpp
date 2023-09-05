@@ -39,6 +39,11 @@ InverseKinematics::InverseKinematics(const dog::KinDynParams &default_pg) :
     haaYOffset_sign_flip[RF] = -1;
     haaYOffset_sign_flip[LH] = +1;
     haaYOffset_sign_flip[RH] = -1;
+
+    old_feet_jacobians_[0] = Eigen::Matrix3d::Zero();
+    old_feet_jacobians_[1] = Eigen::Matrix3d::Zero();
+    old_feet_jacobians_[2] = Eigen::Matrix3d::Zero();
+    old_feet_jacobians_[3] = Eigen::Matrix3d::Zero();
 }
 
 InverseKinematics::~InverseKinematics() {

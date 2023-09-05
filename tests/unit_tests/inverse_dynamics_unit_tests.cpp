@@ -13,8 +13,8 @@
 //Robcogen
 #include "aliengolib/robcogen/rbd.h"
 
-//TODO: improvements --> fix the path!
-std::string robot_urdf{aliengolib::readURDFifstream("/usr/include/robots/aliengo.urdf")};
+///! Robot urdf in string format.
+std::string robot_urdf{aliengolib::readURDFifstream(aliengolib::aliengo_urdf_path)};
 
 // copy of the rpyToRot function inside rotations.h of iit::commons
 Eigen::Matrix3d inline rpyToRot(const Eigen::Vector3d & rpy){
@@ -115,7 +115,7 @@ TEST(InverseDynamics, inverse_dynamics)
     for(auto joint : *leg->getJoints())
     {
       std::string joint_name{joint->getName()};
-      const int joint_id{aliengolib::glue_joint_names_to_ids[joint_name]};
+      const int joint_id{aliengolib::glue_joint_names_to_ids.at(joint_name)};
 
       q_input[joint] = q_input_eigen[joint_id];
       qd_input[joint] = qd_input_eigen[joint_id];
@@ -125,7 +125,7 @@ TEST(InverseDynamics, inverse_dynamics)
   }
  
   // ** Computing the inverse dynamics **
-  robot->inverseDynamics(wrench_base_output, inv_dyn_tau_output, gravity_base_input, q_input, qd_input, qdd_input, robot_velocity_input, robot_acceleration_input);
+  robot->inverseDynamics(robot_velocity_input, robot_acceleration_input, gravity_base_input, q_input, qd_input, qdd_input, wrench_base_output, inv_dyn_tau_output);
   
   // ** Test outputs with ground truth ** //TODO
   // setting threshold

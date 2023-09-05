@@ -1,5 +1,5 @@
-#ifndef IIT_ALIENGO_PARAMS_LENGTHS_H_
-#define IIT_ALIENGO_PARAMS_LENGTHS_H_
+#ifndef _IIT_ALIENGO_PARAMS_LENGTHS_H_
+#define _IIT_ALIENGO_PARAMS_LENGTHS_H_
 
 namespace iit {
 namespace Aliengo {

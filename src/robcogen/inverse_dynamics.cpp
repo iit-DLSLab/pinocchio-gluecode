@@ -35,8 +35,7 @@ iit::Aliengo::dyn::InverseDynamics::InverseDynamics(InertiaProperties& inertia, 
         RH_lowerleg_Ic(RH_lowerleg_I)
 {
 #ifndef EIGEN_NO_DEBUG
-    std::cout << "Robot Aliengo, InverseDynamics::InverseDynamics()" << std::endl;
-    std::cout << "Compiled with Eigen debug active" << std::endl;
+    std::cout << "Robot Aliengo, InverseDynamics::InverseDynamics() compiled with Eigen debug active" << std::endl;
 #endif
     LF_hipassembly_v.setZero();
     LF_upperleg_v.setZero();

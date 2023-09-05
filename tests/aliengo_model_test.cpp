@@ -1,12 +1,29 @@
-#include "robotlib/robot_base.hpp"
+/*!
+ * @file aliengo_model_test.cpp
+ *
+ * @brief Tests for Aliengo model and robot main functions
+ *
+ * @authors Authors in alphabetical order:
+ *
+ *     Gianluca Cerilli (IIT DLS Lab) - Contact: gianluca.cerilli@iit.it
+ *
+ *     Geoff Fink (IIT DLS Lab) - Contact: geoff.fink@iit.it
+ *
+ *     Marco Marchitto (IIT DLS Lab) - Contact: marco.marchitto@iit.it
+ */
+
+#include <robotlib/robot_base.hpp>
 #include "aliengolib/aliengo.hpp"
 
 #include <gtest/gtest.h>
 #include <memory>
 
-//TODO: improvements --> fix the path!
-std::string robot_urdf{aliengolib::readURDFifstream("/usr/include/robots/aliengo.urdf")};
+//! Robot urdf in string format.
+std::string robot_urdf{aliengolib::readURDFifstream(aliengolib::aliengo_urdf_path)};
 
+/*!
+ * @brief Test that prints the Aliengo model structure
+ */
 TEST(AliengoUnitTests, aliengoModel)
 {
     std::shared_ptr<robotlib::RobotBase> aliengo = createRobotWithUrdf_t(robot_urdf);
@@ -20,12 +37,18 @@ TEST(AliengoUnitTests, aliengoModel)
     }
 }
 
+/*!
+ * @brief Test that prints the Aliengo mass
+ */
 TEST(RobotBaseUnitTests, getRobotMass)
 {
     std::shared_ptr<robotlib::RobotBase> aliengo = createRobotWithUrdf_t(robot_urdf);
     std::cout << aliengo->getRobotMass() << std::endl;
 }
 
+/*!
+ * @brief Test that calls the inverse dynamics on Aliengo parameters
+ */
 TEST(RobotBaseUnitTests, inverseDynamics)
 {
     /// Dummy quadruped
@@ -41,9 +64,12 @@ TEST(RobotBaseUnitTests, inverseDynamics)
     auto ddq = aliengo->makeJointState();
     auto tau = aliengo->makeJointState();
 
-    aliengo->inverseDynamics(wrench_base, tau, g, q, dq, ddq, v, a);
+    aliengo->inverseDynamics(v, a, g, q, dq, ddq, wrench_base, tau);
 }
 
+/*!
+ * @brief Test that prints the Aliengo model data maps and jacobian structures
+ */
 TEST(RobotBaseUnitTests, dataMap_constructor_with_initialization)
 {
     /// Dummy quadruped
@@ -121,7 +147,7 @@ TEST(AliengoUnitTests, getFootJacobian)
         for(auto joint : *leg->getJoints())
         {
         std::string joint_name{joint->getName()};
-        const int joint_id{aliengolib::glue_joint_names_to_ids[joint_name]};
+        const int joint_id{aliengolib::glue_joint_names_to_ids.at(joint_name)};
         q[joint] = q_eigen[joint_id];
         }
     }
