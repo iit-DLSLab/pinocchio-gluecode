@@ -13,7 +13,7 @@
  */
 
 #include <robotlib/robot_base.hpp>
-#include "aliengo.hpp"
+#include "aliengolib/aliengo.hpp"
 
 #include <gtest/gtest.h>
 #include <memory>
@@ -64,7 +64,7 @@ TEST(RobotBaseUnitTests, inverseDynamics)
     auto ddq = aliengo->makeJointState();
     auto tau = aliengo->makeJointState();
 
-    aliengo->inverseDynamics(wrench_base, tau, g, q, dq, ddq, v, a);
+    aliengo->inverseDynamics(v, a, g, q, dq, ddq, wrench_base, tau);
 }
 
 /*!
@@ -147,7 +147,7 @@ TEST(AliengoUnitTests, getFootJacobian)
         for(auto joint : *leg->getJoints())
         {
         std::string joint_name{joint->getName()};
-        const int joint_id{aliengolib::glue_joint_names_to_ids[joint_name]};
+        const int joint_id{aliengolib::glue_joint_names_to_ids.at(joint_name)};
         q[joint] = q_eigen[joint_id];
         }
     }

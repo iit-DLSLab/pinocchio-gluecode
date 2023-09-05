@@ -12,7 +12,7 @@
  *     Marco Marchitto (IIT DLS Lab) - Contact: marco.marchitto@iit.it
  */
 
-#include "utils.hpp"
+#include "aliengolib/utils.hpp"
 
 #include <gtest/gtest.h>
 #include <fstream>

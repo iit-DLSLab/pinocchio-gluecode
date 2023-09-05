@@ -20,12 +20,13 @@
 #include <cmath>
 #include "robcogen/rbd.h"
 
-#include "dog/leg_data_map.h"
-#include "dog/declarations.h"
-#include "dog/inertia_properties.h"
-#include "dog/inverse_dynamics.h"
+#include "aliengolib/dog/leg_data_map.h"
+#include "aliengolib/dog/declarations.h"
+#include "aliengolib/dog/inertia_properties.h"
+#include "aliengolib/dog/inverse_dynamics.h"
+#include "aliengolib/dog/transforms.h"
 
-#include "geometry/rotations.h"
+#include "aliengolib/geometry/rotations.h"
 
 #include <sstream>
 

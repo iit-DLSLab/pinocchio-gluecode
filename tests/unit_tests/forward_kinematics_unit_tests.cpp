@@ -15,9 +15,9 @@
 #include <gtest/gtest.h>
 #include <robotlib/robot_base.hpp>
 
-#include "aliengo.hpp"
+#include "aliengolib/aliengo.hpp"
 
-#include "robcogen/rbd.h"
+#include "aliengolib/robcogen/rbd.h"
 
 //! Robot urdf in string format.
 std::string robot_urdf{aliengolib::readURDFifstream(aliengolib::aliengo_urdf_path)};
@@ -32,13 +32,13 @@ TEST(ForwardKinematics, forward_kinematics)
   Eigen::VectorXd q_input_eigen{};
   q_input_eigen.setZero(12);
   
-  robotlib::RobotBase::JointState q_input{robot->makeJointState(0)};
+  robotlib::JointState q_input{robot->makeJointState(0)};
 
   Eigen::Matrix<double, 3, 1> default_value{};
   default_value.setZero();
 
-  robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> foot_position_gt{robot->makeLegDataMap<Eigen::Matrix<double, 3, 1>>(default_value)};
-  robotlib::RobotBase::LegDataMap<Eigen::Matrix<double, 3, 1>> foot_position{robot->makeLegDataMap<Eigen::Matrix<double, 3, 1>>(default_value)};
+  robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> foot_position_gt{robot->makeLegDataMap<Eigen::Matrix<double, 3, 1>>(default_value)};
+  robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> foot_position{robot->makeLegDataMap<Eigen::Matrix<double, 3, 1>>(default_value)};
 
   // Ground truth values, HP: the order of the values is the same as the one of the joints defined in the glue!
   q_input_eigen << -0.00685785, 0.735254, -1.55269, 0.00561501, 0.892426, -1.56661, -0.014925, 0.903532, -1.57601, -0.00918953, 0.74764, -1.56549;

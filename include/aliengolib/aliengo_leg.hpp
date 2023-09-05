@@ -57,28 +57,28 @@ namespace aliengolib
         * @param[in] joint Joint object for which you get the name of the parent.
         * @return name of the joint's parent. 
         */
-        virtual const std::string jointToParentName(const std::shared_ptr<robotlib::Joint> joint) const override;
+        virtual std::string jointToParentName(const std::shared_ptr<robotlib::Joint> joint) const override;
 
         /*!
         * @brief Get the name of the joint's child of the leg.
         * @param[in] joint Joint object for which you get the name of the child.
         * @return name of the joint's child.
         */
-        virtual const std::string jointToChildName(const std::shared_ptr<robotlib::Joint> joint) const override;
+        virtual std::string jointToChildName(const std::shared_ptr<robotlib::Joint> joint) const override;
 
         /*!
         * @brief Get the name of link's parent of the leg.
         * @param[in] link Link object for which you get the name of the parent.
         * @return name of the link's parent.
         */
-        virtual const std::string linkToParentName(const std::shared_ptr<robotlib::Link> link) const override;
+        virtual std::string linkToParentName(const std::shared_ptr<robotlib::Link> link) const override;
 
         /*!
         * @brief Get the name of the link's child of the leg.
         * @param[in] link Link object for which you get the name of the child.
         * @return name of the link's child.
         */
-        virtual const std::string linkToChildName(const std::shared_ptr<robotlib::Link> link) const override;
+        virtual std::string linkToChildName(const std::shared_ptr<robotlib::Link> link) const override;
 
     private:
         //! Variable mapping each joint name to its parent and child names.

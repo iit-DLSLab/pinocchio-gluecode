@@ -14,12 +14,15 @@
  * @bug No known bugs.
  */
 
-#include "aliengo.hpp"
-#include "aliengo_leg.hpp"
-#include "dog/urdf_params_getter.h"
+#include "aliengolib/aliengo.hpp"
+#include "aliengolib/aliengo_leg.hpp"
+#include "aliengolib/urdf_params_getter.h"
 
-#include "robcogen/utils.h"
+#include "aliengolib/robcogen/utils.h"
 #include "robotlib/utils/utils.hpp"
+
+#include <filesystem>
+#include <fstream>
 
 namespace aliengolib
 {
@@ -162,12 +165,12 @@ namespace aliengolib
 
                         setJointLimits(joint, q_min, q_max, qd_max, tau_max);
                         
-                        std::cout << "Set limits for joint " << urdf_joint_name << ":" << std::endl;
-                        std::cout << "q_min = " << q_min << std::endl;
-                        std::cout << "q_max = " << q_max << std::endl;
-                        std::cout << "qd_max = " << qd_max << std::endl; 
-                        std::cout << "tau_max = " << tau_max << std::endl;
-                        std::cout << "\n";
+                        // std::cout << "Set limits for joint " << urdf_joint_name << ":" << std::endl;
+                        // std::cout << "q_min = " << q_min << std::endl;
+                        // std::cout << "q_max = " << q_max << std::endl;
+                        // std::cout << "qd_max = " << qd_max << std::endl; 
+                        // std::cout << "tau_max = " << tau_max << std::endl;
+                        // std::cout << "\n";
                     }
                 }
 
@@ -177,21 +180,21 @@ namespace aliengolib
 
     Eigen::Vector3d Aliengo::getFramePosition(const robotlib::JointState &q,
                                          const std::shared_ptr<robotlib::Frame> origin,
-                                         const std::shared_ptr<robotlib::Frame> destination)
+                                         const std::shared_ptr<robotlib::Frame> destination) const
     {
         Eigen::Matrix<double, NJOINTS_TOT, 1> q_robcogen;
         for(auto joint : auxiliar_joints_variable_)
         {
-            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
             q_robcogen[joint_id] = q[joint];
         }
 
         return iit::rbd::Utils::positionVector( homogeneous_transforms_->getTransform(q_robcogen, glue_origin_frame_names_to_ids[origin->getName()], glue_destination_frame_names_to_ids[destination->getName()]) );
     }
     
-    Eigen::Matrix3d Aliengo::getFrameOrientation(const robotlib::RobotBase::JointState &q,
+    Eigen::Matrix3d Aliengo::getFrameOrientation(const robotlib::JointState &q,
                                         const std::shared_ptr<robotlib::Frame> origin,
-                                        const std::shared_ptr<robotlib::Frame> destination)
+                                        const std::shared_ptr<robotlib::Frame> destination) const
     {
         q.size();
         origin->getName();
@@ -202,9 +205,9 @@ namespace aliengolib
         return Eigen::Matrix3d().setZero();
     }
 
-    Eigen::Matrix4d Aliengo::getFramePose(const robotlib::RobotBase::JointState &q,
+    Eigen::Matrix4d Aliengo::getFramePose(const robotlib::JointState &q,
                                     const std::shared_ptr<robotlib::Frame> origin,
-                                    const std::shared_ptr<robotlib::Frame> destination)
+                                    const std::shared_ptr<robotlib::Frame> destination) const
     {
         Eigen::Matrix4d frame_pose{};
         frame_pose.setZero();
@@ -216,20 +219,20 @@ namespace aliengolib
         return frame_pose;
     }
 
-    Eigen::Vector3d Aliengo::getFootPosition(const robotlib::RobotBase::JointState &q,
-                                    const std::shared_ptr<robotlib::Frame> foot)
+    Eigen::Vector3d Aliengo::getFootPosition(const robotlib::JointState &q,
+                                    const std::shared_ptr<robotlib::Frame> foot) const
     {
         return this->getFramePosition(q, this->getLink("TRUNK"), foot);
     }
 
-    Eigen::Matrix3d Aliengo::getFootOrientation(const robotlib::RobotBase::JointState &q,
-                                        const std::shared_ptr<robotlib::Frame> foot)
+    Eigen::Matrix3d Aliengo::getFootOrientation(const robotlib::JointState &q,
+                                        const std::shared_ptr<robotlib::Frame> foot) const
     {
         return this->getFrameOrientation(q, this->getLink("TRUNK"), foot);
     }
 
-    Eigen::Matrix4d Aliengo::getFootPose(const robotlib::RobotBase::JointState &q,
-                                const std::shared_ptr<robotlib::Frame> foot)
+    Eigen::Matrix4d Aliengo::getFootPose(const robotlib::JointState &q,
+                                const std::shared_ptr<robotlib::Frame> foot) const
     {
         Eigen::Matrix4d foot_pose{};
         foot_pose.setZero();
@@ -241,20 +244,20 @@ namespace aliengolib
         return foot_pose;
     }
 
-    Eigen::Vector3d Aliengo::getFootPosition(const robotlib::RobotBase::JointState &q,
-                            const std::shared_ptr<robotlib::LimbBase> leg)
+    Eigen::Vector3d Aliengo::getFootPosition(const robotlib::JointState &q,
+                            const std::shared_ptr<robotlib::LimbBase> leg) const
     {
         return this->getFramePosition(q, this->getLink("TRUNK"), leg->getEndEffector());
     }
 
-    Eigen::Matrix3d Aliengo::getFootOrientation(const robotlib::RobotBase::JointState &q,
-                                        const std::shared_ptr<robotlib::LimbBase> leg)
+    Eigen::Matrix3d Aliengo::getFootOrientation(const robotlib::JointState &q,
+                                        const std::shared_ptr<robotlib::LimbBase> leg) const
     {
         return this->getFrameOrientation(q, this->getLink("TRUNK"), leg->getEndEffector());
     }
 
-    Eigen::Matrix4d Aliengo::getFootPose(const robotlib::RobotBase::JointState &q,
-                                const std::shared_ptr<robotlib::LimbBase> leg)
+    Eigen::Matrix4d Aliengo::getFootPose(const robotlib::JointState &q,
+                                const std::shared_ptr<robotlib::LimbBase> leg) const
     {
         Eigen::Matrix4d foot_pose{};
         foot_pose.setZero();
@@ -299,7 +302,7 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
         count++;
     }
 
-    iit::dog::LegID leg_id = static_cast<iit::dog::LegID>(glue_leg_names_to_ids[leg->getName()]);
+    iit::dog::LegID leg_id = static_cast<iit::dog::LegID>(glue_leg_names_to_ids.at(leg->getName()));
     footJac.block<3,3>(0,0) = feet_jacobians_->getFootJacobian(joints_positions_matrix, leg_id);
     footJac.block<3,3>(3,0) = feet_jacobians_->getAngularFootJacobian(joints_positions_matrix, leg_id);
 }
@@ -390,7 +393,7 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
     }
 
     void Aliengo::forwardKinematics(const robotlib::JointState &joint_position,
-                                    robotlib::LegDataMap<Eigen::Vector3d> &end_effector_position)
+                                    robotlib::LegDataMap<Eigen::Vector3d> &end_effector_position) const
     {
         homogeneous_transforms_->updateParameters();
         // Mapping from robotlib structure to robcogen ones, TODO: maybe a function mapping robotlib to eigen structure is needed
@@ -436,11 +439,11 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
     void Aliengo::inverseDynamics(const Eigen::Matrix<double, 6, 1> &robot_velocity,    // robot base
                                 const Eigen::Matrix<double, 6, 1> &robot_acceleration,  // robot base
                                 const Eigen::Matrix<double, 6, 1> &gravity_vector,
-                                const JointState &joint_position,
-                                const JointState &joint_velocity,
-                                const JointState &joint_acceleration,
+                                const robotlib::JointState &joint_position,
+                                const robotlib::JointState &joint_velocity,
+                                const robotlib::JointState &joint_acceleration,
                                 Eigen::Matrix<double, 6, 1> &wrench_base, ///output
-                                JointState &tau_joints)                   ///output
+                                robotlib::JointState &tau_joints) const             ///output
     {
         Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_position{};
         Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_velocity{};
@@ -477,13 +480,13 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
                                         const Eigen::Matrix<double, 6, 1> &robot_acceleration) const
     {
         Eigen::Matrix<double, 6, 1> wrench_base(Eigen::Matrix<double, 6, 1>::Zero());
-        inverseDynamics(wrench_base, tau_joints, gravity_vector, joint_position, joint_velocity, this->makeJointState(0.0), robot_velocity, robot_acceleration);
+        inverseDynamics(robot_velocity, robot_acceleration, gravity_vector, joint_position, joint_velocity, this->makeJointState(0.0), wrench_base, tau_joints);
     }
 
     void Aliengo::computeGravityCompensation(const Eigen::Matrix<double, 6, 1> &gravity_vector,
-                                                      const JointState &joint_position,
-                                                      Eigen::Matrix<double, 6, 1> &wrench_base, ///output
-                                                      JointState &tau_joints)              ///output
+                                             const robotlib::JointState &joint_position,
+                                             Eigen::Matrix<double, 6, 1> &wrench_base, ///output
+                                             robotlib::JointState &tau_joints) const
     {
         Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_position{};
         Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_tau_joints{};
@@ -519,7 +522,7 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
 
         for(auto joint : auxiliar_joints_variable_)
         {
-            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
             robcogen_joint_position[joint_id] = joint_position[joint];
         }
 
@@ -542,7 +545,7 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
 
         for(auto joint : auxiliar_joints_variable_)
         {
-            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
             robcogen_joint_position[joint_id] = joint_position[joint];
         }
 
@@ -550,13 +553,13 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
 
         for(auto joint : auxiliar_joints_variable_)
         {
-            const int joint_id{glue_joint_names_to_ids[joint->getName()]};
+            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
             tau_joints[joint] = robcogen_tau_joints[joint_id];
         }
     }
 
-     void Aliengo::inverseKinematics(const LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
-                                    JointState &joint_position)
+     void Aliengo::inverseKinematics(const robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
+                                    robotlib::JointState &joint_position) const
      {
         iit::dog::LegDataMap<Eigen::Vector3d> robcogen_end_effector_position{};
         Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_position{};
@@ -623,7 +626,7 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
         }
     }
 
-    Eigen::Matrix<double, 3, 1> Aliengo::getWholeBodyCOM(const JointState &joint_position)
+    Eigen::Matrix<double, 3, 1> Aliengo::getWholeBodyCOM(const robotlib::JointState &joint_position) const
     {
         Eigen::Matrix<double, NJOINTS_TOT, 1> joint_position_matrix = Eigen::Matrix<double, NJOINTS_TOT, 1>::Zero();
 
@@ -711,18 +714,18 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
         return tmpSum / inertias_->getTotalMass();
     }
 
-    Eigen::Vector3d Aliengo::getCoMFromBase(const JointState &q,
+    Eigen::Vector3d Aliengo::getCoMFromBase(const robotlib::JointState &q,
                                 const Eigen::Vector3d &base_orient,
-                                const Eigen::Vector3d &base_pos)
+                                const Eigen::Vector3d &base_pos) const
     {
         Eigen::Matrix3d R = iit::commons::rpyToRot(base_orient);
         Eigen::Vector3d offCoM = getWholeBodyCOM(q);
         return base_pos + R.transpose() * offCoM;         //CoM is in the world frame off CoM is in base frame
     }
 
-    Eigen::Vector3d Aliengo::getBaseFromCoM(const JointState &q,
+    Eigen::Vector3d Aliengo::getBaseFromCoM(const robotlib::JointState &q,
                                 const Eigen::Vector3d &base_orient,
-                                const Eigen::Vector3d &CoM)
+                                const Eigen::Vector3d &CoM) const
     {
         Eigen::Matrix3d b_R_w = iit::commons::rpyToRot(base_orient);
         Eigen::Vector3d offCoM = getWholeBodyCOM(q);
@@ -731,7 +734,7 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
 
     //compute spatial velocity of the CoM (in base frame) (only joint influence)
     Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVel(const robotlib::JointState &q,
-                                                            const robotlib::JointState &qd)
+                                                            const robotlib::JointState &qd) const
     {
         q.size();   // TODO: Not used. Created to remove warning
         qd.size();   // TODO: Not used. Created to remove warning
@@ -748,7 +751,7 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
     
     Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
                                                                 const Eigen::Matrix3d &R,
-                                                                const JointState &q)
+                                                                const robotlib::JointState &q) const
     {
         Eigen::Matrix<double, 6, 1> CoMVel = Eigen::Matrix<double, 6, 1>::Zero();
 
@@ -759,7 +762,7 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
 
     Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
                                                             const Eigen::Matrix3d &R,
-                                                            const Eigen::Vector3d offset_com)
+                                                            const Eigen::Vector3d offset_com) const
     {
         Eigen::Matrix<double, 6, 1> CoMVel = Eigen::Matrix<double, 6, 1>::Zero();
 
@@ -851,7 +854,7 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
         return tmpSum / (getRobotMass() - getTrunkMass());
     }
 
-    Eigen::Matrix4d Aliengo::getImuBaseOffset(const std::string imu_link_name, const std::string base_link_name) const
+    Eigen::Matrix4d Aliengo::getImuBaseOffset(const std::string& imu_link_name, const std::string& base_link_name) const
     {
         //Imu pose in base frame updated recursively
         Eigen::Matrix4d imu_pose {Eigen::Matrix4d::Zero()};
@@ -890,19 +893,19 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
         return inertias_->getLegMass();
     }
     
-    void Aliengo::setInvKinTimePeriod(const double& period) const
+    void Aliengo::setInvKinTimePeriod(const double period)
     {
         inverse_kinematics_->setTimePeriod(period);
     } 
 
-    void Aliengo::setTrunkCom(const Eigen::Vector3d &trunk_com) const
+    void Aliengo::setTrunkCom(const Eigen::Vector3d &trunk_com)
     {
         robot_params_->setValue_trunk_com_x(trunk_com(0));
         robot_params_->setValue_trunk_com_y(trunk_com(1));
         robot_params_->setValue_trunk_com_z(trunk_com(2));
     }
 
-    void Aliengo::setTrunkMass(const double& trunk_mass) const
+    void Aliengo::setTrunkMass(const double trunk_mass)
     {
         robot_params_->setValue_trunk_mass(trunk_mass);   
     }
@@ -910,6 +913,11 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
     double Aliengo::getRobotMass() const
     {
         return inertias_->getTotalMass();
+    }
+
+    Eigen::Vector3d Aliengo::getRobotCoM() const {
+        std::cout << "TODO: getRobotCoM" << std::endl;
+        return Eigen::Vector3d().setZero();
     }
 
     Eigen::Matrix<double, 3, 1> Aliengo::getTrunkCOM() const
