@@ -112,7 +112,7 @@ set(CPACK_DEB_COMPONENT_INSTALL              ON)
 
 set(CPACK_DEBIAN_ALIENGO_PACKAGE_NAME            "dls-libaliengo" CACHE INTERNAL "")
 set(CPACK_DEBIAN_ALIENGO_FILE_NAME               "dls-libaliengo-${PROJECT_VERSION}.deb" CACHE INTERNAL "")  
-set(CPACK_DEBIAN_ALIENGO_PACKAGE_DEPENDS         "robotlib" CACHE INTERNAL "")
+set(CPACK_DEBIAN_ALIENGO_PACKAGE_DEPENDS         "robotlib, aliengo-description" CACHE INTERNAL "")
 
 set(CPACK_DEBIAN_ALIENGO_DEV_PACKAGE_NAME        "dls-libaliengo-dev" CACHE INTERNAL "")
 set(CPACK_DEBIAN_ALIENGO_DEV_FILE_NAME           "dls-libaliengo-dev-${PROJECT_VERSION}.deb" CACHE INTERNAL "")  
