@@ -93,7 +93,7 @@ install(
 
 install(
     FILES       aliengo.urdf
-    DESTINATION /usr/include/robots/
+    DESTINATION ${DLS_INSTALL_MODEL_DIR}
 	COMPONENT   ${PROJECT_NAME}
 )
 
