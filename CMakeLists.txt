@@ -91,6 +91,11 @@ install(
     COMPONENT   ${PROJECT_NAME}
 )
 
+if(NOT DEFINED DLS_INSTALL_MODEL_DIR)
+    set(DLS_INSTALL_MODEL_DIR /usr/include/robots CACHE STRING "Directory where the robots urdfs are stored")
+endif()
+
+
 install(
     FILES       aliengo.urdf
     DESTINATION ${DLS_INSTALL_MODEL_DIR}
