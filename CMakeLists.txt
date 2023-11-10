@@ -1,6 +1,6 @@
 # Project configuration
 cmake_minimum_required(VERSION 3.15)
-project(aliengo)
+project(aliengo_lib)
 
 add_compile_options("-std=c++2a")
 
@@ -110,13 +110,13 @@ set(CPACK_VERBATIM_VARIABLES                 ON)
 set(CPACK_GENERATOR                          "DEB")
 set(CPACK_DEB_COMPONENT_INSTALL              ON)
 
-set(CPACK_DEBIAN_ALIENGO_PACKAGE_NAME            "dls-libaliengo" CACHE INTERNAL "")
-set(CPACK_DEBIAN_ALIENGO_FILE_NAME               "dls-libaliengo-${PROJECT_VERSION}.deb" CACHE INTERNAL "")  
-set(CPACK_DEBIAN_ALIENGO_PACKAGE_DEPENDS         "robotlib, aliengo-description" CACHE INTERNAL "")
+set(CPACK_DEBIAN_ALIENGO_LIB_PACKAGE_NAME            "dls-libaliengo" CACHE INTERNAL "")
+set(CPACK_DEBIAN_ALIENGO_LIB_FILE_NAME               "dls-libaliengo-${PROJECT_VERSION}.deb" CACHE INTERNAL "")  
+set(CPACK_DEBIAN_ALIENGO_LIB_PACKAGE_DEPENDS         "robotlib, aliengo-description" CACHE INTERNAL "")
 
-set(CPACK_DEBIAN_ALIENGO_DEV_PACKAGE_NAME        "dls-libaliengo-dev" CACHE INTERNAL "")
-set(CPACK_DEBIAN_ALIENGO_DEV_FILE_NAME           "dls-libaliengo-dev-${PROJECT_VERSION}.deb" CACHE INTERNAL "")  
-set(CPACK_DEBIAN_ALIENGO_DEV_PACKAGE_DEPENDS     "dls-libaliengo, robotlib-dev" CACHE INTERNAL "")
+set(CPACK_DEBIAN_ALIENGO_LIB_DEV_PACKAGE_NAME        "dls-libaliengo-dev" CACHE INTERNAL "")
+set(CPACK_DEBIAN_ALIENGO_LIB_DEV_FILE_NAME           "dls-libaliengo-dev-${PROJECT_VERSION}.deb" CACHE INTERNAL "")  
+set(CPACK_DEBIAN_ALIENGO_LIB_DEV_PACKAGE_DEPENDS     "dls-libaliengo, robotlib-dev" CACHE INTERNAL "")
 
 get_cmake_property(CPACK_COMPONENTS_ALL COMPONENTS)
 list(REMOVE_ITEM CPACK_COMPONENTS_ALL "Unspecified")
