@@ -125,6 +125,21 @@ namespace aliengolib
                                        robotlib::JointState &joint_position) const override;
 
         /*!
+         * @brief Inverse kinematics.
+         * @details
+         * It computes the angle and velocity of each joint from the position and velocity of each end effector expressed in base frame.
+        *
+         * @param[in] end_effector_position position of each end effector (foot) in base frame.
+         * @param[in] end_effector_velocity velocity of each end effector (foot) in base frame.
+         * @param[out] joint_position angle of each joint.
+         * @param[out] joint_velocity velocity of each joint.
+         */
+        virtual void inverseKinematics(const robotlib::LegDataMap<Eigen::Vector3d> &end_effector_position,
+                                       const robotlib::LegDataMap<Eigen::Vector3d> &end_effector_velocity,
+                                       robotlib::JointState &joint_position,
+                                       robotlib::JointState &joint_velocity) const override;
+
+        /*!
          * @brief Inverse dynamics.
          * @details
          * It computes the torque of each joint and the wrench at the base.

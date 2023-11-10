@@ -582,6 +582,42 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
     }
 
     void Aliengo::inverseKinematics(const robotlib::LegDataMap<Eigen::Vector3d> &end_effector_position,
+                                       const robotlib::LegDataMap<Eigen::Vector3d> &end_effector_velocity,
+                                       robotlib::JointState &joint_position,
+                                       robotlib::JointState &joint_velocity) const
+    {
+        iit::dog::LegDataMap<Eigen::Vector3d> robcogen_end_effector_position{};
+        iit::dog::LegDataMap<Eigen::Vector3d> robcogen_end_effector_velocity{};
+        
+        Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_position{};
+        Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_velocity{};
+
+        robcogen_joint_position.setZero();
+        robcogen_joint_velocity.setZero();
+
+
+        for (auto leg : *legs_)
+        {
+            const int leg_id{glue_leg_names_to_ids.at(leg->getName())};
+
+            robcogen_end_effector_position[leg_id] = end_effector_position[leg];
+            robcogen_end_effector_velocity[leg_id] = end_effector_velocity[leg];            
+        }
+
+        inverse_kinematics_->getJointState(robcogen_end_effector_position,
+                                           robcogen_end_effector_velocity,
+                                           robcogen_joint_position,
+                                           robcogen_joint_velocity);
+
+        for(auto joint : auxiliar_joints_variable_)
+        {
+            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
+            joint_position[joint] = robcogen_joint_position[joint_id];
+            joint_velocity[joint] = robcogen_joint_velocity[joint_id];
+        }
+    }
+
+    void Aliengo::inverseKinematics(const robotlib::LegDataMap<Eigen::Vector3d> &end_effector_position,
                                     const robotlib::LegDataMap<Eigen::Vector3d> &end_effector_velocity,
                                     const robotlib::LegDataMap<Eigen::Vector3d> &end_effector_acceleration,
                                     robotlib::JointState &joint_position,
