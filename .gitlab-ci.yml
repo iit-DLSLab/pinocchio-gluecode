@@ -11,22 +11,6 @@ stages:
   - packdeploy 
 
 # ------------------------------------------------------------------------------
-# Preamble Stage
-# ------------------------------------------------------------------------------
-# Print versions of installed programmes on the docker image. 
-# This is helpful for a quick sanity check when things break
-preamble:
-  stage: preamble
-  tags:
-    - dls2
-  script:
-    - source /root/dls_gitlab_ci/gitlab-preamble.sh
-  artifacts:
-    paths:
-      - version
-      - release
-
-# ------------------------------------------------------------------------------
 # Build Stage
 # ------------------------------------------------------------------------------
 # Print versions of installed programmes on the docker image.
