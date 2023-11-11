@@ -86,6 +86,7 @@ install(
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "aliengo")
+
 install(
     TARGETS     ${PROJECT_NAME}
     DESTINATION /usr/lib/
@@ -115,14 +116,17 @@ set(CPACK_DEBIAN_PACKAGE_MAINTAINER          "dlslab")
 set(CPACK_VERBATIM_VARIABLES                 ON)
 set(CPACK_GENERATOR                          "DEB")
 set(CPACK_DEB_COMPONENT_INSTALL              ON)
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS           ON)
 
 set(CPACK_DEBIAN_ALIENGO_LIB_PACKAGE_NAME            "dls-aliengo-lib" CACHE INTERNAL "")
 set(CPACK_DEBIAN_ALIENGO_LIB_FILE_NAME               "dls-aliengo-lib-${PROJECT_VERSION}.deb" CACHE INTERNAL "")  
 set(CPACK_DEBIAN_ALIENGO_LIB_PACKAGE_DEPENDS         "robotlib, dls-aliengo-description" CACHE INTERNAL "")
+set(CPACK_DEBIAN_ALIENGO_LIB_PACKAGE_SHLIBDEPS       ON)
 
 set(CPACK_DEBIAN_ALIENGO_LIB_DEV_PACKAGE_NAME        "dls-aliengo-lib-dev" CACHE INTERNAL "")
 set(CPACK_DEBIAN_ALIENGO_LIB_DEV_FILE_NAME           "dls-aliengo-lib-dev-${PROJECT_VERSION}.deb" CACHE INTERNAL "")  
 set(CPACK_DEBIAN_ALIENGO_LIB_DEV_PACKAGE_DEPENDS     "dls-aliengo-lib, robotlib-dev" CACHE INTERNAL "")
+set(CPACK_DEBIAN_ALIENGO_LIB_DEV_PACKAGE_SHLIBDEPS   ON)
 
 get_cmake_property(CPACK_COMPONENTS_ALL COMPONENTS)
 list(REMOVE_ITEM CPACK_COMPONENTS_ALL "Unspecified")
