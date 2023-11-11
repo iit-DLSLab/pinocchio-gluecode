@@ -1,7 +1,4 @@
 build
-html
-latex
-*.sw
-*.swo
-.vscode
-
+compile_commands.json
+/.vscode
+/.setup.lock
