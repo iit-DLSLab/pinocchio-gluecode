@@ -85,6 +85,7 @@ install(
     COMPONENT   ${PROJECT_NAME}_dev
 )
 
+set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "aliengo")
 install(
     TARGETS     ${PROJECT_NAME}
     DESTINATION /usr/lib/
