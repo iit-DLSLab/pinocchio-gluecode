@@ -136,7 +136,7 @@ namespace aliengolib
     };
 
     //! Path to the aliengo urdf.
-    inline const std::string aliengo_urdf_path {"/usr/lib/robots/aliengo.urdf"};
+    inline const std::string aliengo_urdf_path {"/usr/include/aliengo_description/urdfs/aliengo.urdf"};
 
     /*!
     * @brief Copy the source 4x4 matrix into the destination one.
