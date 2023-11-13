@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.15)
 project(aliengo_lib)
 
 add_compile_options("-std=c++2a")
+set(CMAKE_BUILD_TYPE Release)
 
 # ==============================================================================
 # Calculate correct project version number
@@ -46,6 +47,12 @@ execute_process(
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+# verify var definition if the building comes from the dls_deploy or is stand_alone
+if(NOT DEFINED DLS_INSTALL_MODEL_DIR)
+    list(APPEND CMAKE_MODULE_PATH "/usr/include/dls2/cmake")
+    include(dls_options)
+endif()
+
 add_library(${PROJECT_NAME}
     SHARED
         src/aliengo.cpp
@@ -79,33 +86,25 @@ target_link_libraries(${PROJECT_NAME}
         urdf    
 )
 
+# set the output name of the library
+set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "aliengo")
+
+# ================================== Install =================================
 install(
     DIRECTORY   include
-    DESTINATION /usr/include/
-    COMPONENT   ${PROJECT_NAME}_dev
+    DESTINATION ${DLS_INSTALL_MODEL_HEADER_DIR}
+    COMPONENT   aliengo_lib_dev
 )
-
-set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "aliengo")
 
 install(
     TARGETS     ${PROJECT_NAME}
-    DESTINATION /usr/lib/
-    COMPONENT   ${PROJECT_NAME}
-)
-
-if(NOT DEFINED DLS_INSTALL_MODEL_DIR)
-    set(DLS_INSTALL_MODEL_DIR /usr/include/robots CACHE STRING "Directory where the robots urdfs are stored")
-endif()
-
-
-install(
-    FILES       aliengo.urdf
     DESTINATION ${DLS_INSTALL_MODEL_DIR}
-	COMPONENT   ${PROJECT_NAME}
+    COMPONENT   aliengo_lib
 )
 
 add_subdirectory(tests)
 
+# ================================== Packaging =================================
 set(CPACK_PACKAGE_VERSION_MAJOR              ${PROJECT_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR              ${PROJECT_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH              ${PROJECT_VERSION_PATCH})
@@ -121,12 +120,10 @@ set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS           ON)
 set(CPACK_DEBIAN_ALIENGO_LIB_PACKAGE_NAME            "dls-aliengo-lib" CACHE INTERNAL "")
 set(CPACK_DEBIAN_ALIENGO_LIB_FILE_NAME               "dls-aliengo-lib-${PROJECT_VERSION}.deb" CACHE INTERNAL "")  
 set(CPACK_DEBIAN_ALIENGO_LIB_PACKAGE_DEPENDS         "dls-robotlib, dls-aliengo-description" CACHE INTERNAL "")
-set(CPACK_DEBIAN_ALIENGO_LIB_PACKAGE_SHLIBDEPS       ON)
 
 set(CPACK_DEBIAN_ALIENGO_LIB_DEV_PACKAGE_NAME        "dls-aliengo-lib-dev" CACHE INTERNAL "")
 set(CPACK_DEBIAN_ALIENGO_LIB_DEV_FILE_NAME           "dls-aliengo-lib-dev-${PROJECT_VERSION}.deb" CACHE INTERNAL "")  
 set(CPACK_DEBIAN_ALIENGO_LIB_DEV_PACKAGE_DEPENDS     "dls-aliengo-lib, dls-robotlib-dev" CACHE INTERNAL "")
-set(CPACK_DEBIAN_ALIENGO_LIB_DEV_PACKAGE_SHLIBDEPS   ON)
 
 get_cmake_property(CPACK_COMPONENTS_ALL COMPONENTS)
 list(REMOVE_ITEM CPACK_COMPONENTS_ALL "Unspecified")
