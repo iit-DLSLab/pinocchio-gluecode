@@ -24,6 +24,9 @@
 #include "utils.hpp"
 // #include "robcogen/jacobians.h"
 
+#include "pinocchio/multibody/data.hpp"
+#include "pinocchio/multibody/fwd.hpp"
+
 // ROBCOGEN INCLUDES
 #include "robcogen/inverse_kinematics.h"
 #include "robcogen/transforms.h"
@@ -33,7 +36,6 @@
 #include "robcogen/feet_jacobians.h"
 
 #include <urdf/model.h>
-
 
 namespace aliengolib
 {
@@ -80,7 +82,7 @@ namespace aliengolib
           * @param[out] end_effector_position position of each end effector (foot) in base frame.
           */
         virtual void forwardKinematics(const robotlib::JointState &joint_position,
-                                       robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position) const override;
+                                       robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position) override;
 
         /*!
          * @brief Forward kinematics.
@@ -94,8 +96,12 @@ namespace aliengolib
         virtual void forwardKinematics(const robotlib::JointState &joint_position,
                                        const robotlib::JointState &joint_velocity,
                                        robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
-                                       robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity) const override;
-
+                                       robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity) override;
+        virtual void forwardKinematics(const robotlib::JointState &joint_position,
+                                    const robotlib::JointState &joint_velocity,
+                                    robotlib::LegDataMap<Eigen::Vector3d> &end_effector_position,
+                                    robotlib::LegDataMap<Eigen::Vector3d> &end_effector_velocity,
+                                    const int type) override;
         /*!
          * @brief Inverse kinematics.
          * @details
@@ -112,7 +118,7 @@ namespace aliengolib
                                        const robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_acceleration,
                                        robotlib::JointState &joint_position,
                                        robotlib::JointState &joint_velocity,
-                                       robotlib::JointState &joint_acceleration) const override;
+                                       robotlib::JointState &joint_acceleration) override;
 
         /*!
          * @brief Inverse kinematics.
@@ -122,7 +128,7 @@ namespace aliengolib
          * @param[out] joint_position angle of each joint.
          */
         virtual void inverseKinematics(const robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
-                                       robotlib::JointState &joint_position) const override;
+                                       robotlib::JointState &joint_position) override;
 
         /*!
          * @brief Inverse kinematics.
@@ -137,7 +143,7 @@ namespace aliengolib
         virtual void inverseKinematics(const robotlib::LegDataMap<Eigen::Vector3d> &end_effector_position,
                                        const robotlib::LegDataMap<Eigen::Vector3d> &end_effector_velocity,
                                        robotlib::JointState &joint_position,
-                                       robotlib::JointState &joint_velocity) const override;
+                                       robotlib::JointState &joint_velocity) override;
 
         /*!
          * @brief Inverse dynamics.
@@ -159,7 +165,7 @@ namespace aliengolib
                                      const robotlib::JointState &joint_velocity,
                                      const robotlib::JointState &joint_acceleration,
                                      Eigen::Matrix<double, 6, 1> &wrench_base,
-                                     robotlib::JointState &tau_joints) const override;
+                                     robotlib::JointState &tau_joints) override;
 
         /*!
          * @brief Inverse dynamics to compute the Centrifugal, Coriolis and Gravity terms.
@@ -178,7 +184,7 @@ namespace aliengolib
                                             const robotlib::JointState &joint_velocity,
                                             const Eigen::Matrix<double, 6, 1> &robot_velocity = Eigen::Matrix<double, 6, 1>::Zero(),
                                             const Eigen::Matrix<double, 6, 1> &robot_acceleration = Eigen::Matrix<double, 6, 1>::Zero())
-                                            const override;
+                                           override;
 
         /*!
          * @brief Compute gravity terms.
@@ -514,6 +520,15 @@ namespace aliengolib
         std::shared_ptr<iit::Aliengo::Jacobians> jacobians_;
         //! Feet Jacobians.
         std::shared_ptr<iit::Aliengo::FeetJacobians> feet_jacobians_;
+
+        pinocchio::Model robot_model_pin;
+        pinocchio::Data robot_data_pin;
+        // Pinocchio order the joints following an alphanumeric order, so we need to map our order to the pinocchio one and viceversa
+        // our convention: lf rf lh rh
+        // pinocchio one: lf lh rf rh
+        std::map<int,int> idx_map = {{3,6},{4,7},{5,8}};
+
+        void reoderJoints(Eigen::VectorXd& data) const;
     };
 } //namespace aliengolib
 

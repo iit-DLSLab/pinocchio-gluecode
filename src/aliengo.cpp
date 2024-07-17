@@ -21,6 +21,10 @@
 #include "aliengolib/robcogen/utils.h"
 #include "robotlib/utils/utils.hpp"
 
+#include "pinocchio/algorithm/joint-configuration.hpp"
+#include "pinocchio/algorithm/frames.hpp"
+#include "pinocchio/parsers/urdf.hpp"
+
 #include <filesystem>
 #include <fstream>
 
@@ -37,6 +41,11 @@ namespace aliengolib
                 std::make_shared<const robotlib::Container<std::shared_ptr<robotlib::LimbBase>, NARMS>>(arms))
                 
     {
+        // load pinocchio model from urdf
+        const std::string urdf_name = "/usr/include/aliengo_description/urdfs/aliengo.urdf";
+        pinocchio::urdf::buildModel(urdf_name, robot_model_pin);
+        robot_data_pin = pinocchio::Data(robot_model_pin);
+
         std::array<std::shared_ptr<robotlib::Joint>, NLEGS> children;
 
         children[0] = getJoint("LF_HAA");
@@ -393,46 +402,152 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
     }
 
     void Aliengo::forwardKinematics(const robotlib::JointState &joint_position,
-                                    robotlib::LegDataMap<Eigen::Vector3d> &end_effector_position) const
+                                    robotlib::LegDataMap<Eigen::Vector3d> &end_effector_position)
     {
-        homogeneous_transforms_->updateParameters();
-        // Mapping from robotlib structure to robcogen ones, TODO: maybe a function mapping robotlib to eigen structure is needed
-        // NB: this mapping assumes that the robcogen order is the same as the one defining the legs and joints of Aliengo!
-        Eigen::Matrix<double, NJOINTS_TOT, 1> q_robcogen;
-        
-        for(auto joint : auxiliar_joints_variable_)
-        {
-            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-            q_robcogen[joint_id] = joint_position[joint];
-        }
-        end_effector_position["LF"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_LF_foot(q_robcogen));
-        end_effector_position["RF"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_RF_foot(q_robcogen));
-        end_effector_position["LH"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_LH_foot(q_robcogen));
-        end_effector_position["RH"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_RH_foot(q_robcogen));
+        Eigen::VectorXd q = joint_position.vec_();
+        reoderJoints(q);
+        pinocchio::forwardKinematics(robot_model_pin, robot_data_pin, q);
+        pinocchio::updateFramePlacements(robot_model_pin, robot_data_pin);
+
+        pinocchio::FrameIndex base_frame_id = robot_model_pin.getFrameId(robot_model_pin.frames[2].name); //base frame
+        pinocchio::SE3 baseMo = robot_data_pin.oMf[base_frame_id].inverse();
+
+        // feet positions
+        end_effector_position["LF"] = (baseMo*robot_data_pin.oMf[robot_model_pin.getFrameId("lf_foot")]).translation();
+        end_effector_position["RF"] = (baseMo*robot_data_pin.oMf[robot_model_pin.getFrameId("rf_foot")]).translation();
+        end_effector_position["LH"] = (baseMo*robot_data_pin.oMf[robot_model_pin.getFrameId("lh_foot")]).translation();
+        end_effector_position["RH"] = (baseMo*robot_data_pin.oMf[robot_model_pin.getFrameId("rh_foot")]).translation();
     }
 
     void Aliengo::forwardKinematics(const robotlib::JointState &joint_position,
                                     const robotlib::JointState &joint_velocity,
                                     robotlib::LegDataMap<Eigen::Vector3d> &end_effector_position,
-                                    robotlib::LegDataMap<Eigen::Vector3d> &end_effector_velocity) const
+                                    robotlib::LegDataMap<Eigen::Vector3d> &end_effector_velocity)
     {
-        forwardKinematics(joint_position, end_effector_position);
+        Eigen::VectorXd q = joint_position.vec_();
+        Eigen::VectorXd qd = joint_velocity.vec_();
+        reoderJoints(q);
+        reoderJoints(qd);
+        pinocchio::forwardKinematics(robot_model_pin, robot_data_pin, q, qd);
+        pinocchio::updateFramePlacements(robot_model_pin, robot_data_pin);
 
-        for (auto leg : *legs_)
-        {
-            //TODO improve getting the jacobian from one leg only NRT!
-            robotlib::LegDataMap<robotlib::Jacobian> full_feet_jacobian_tmp = this->makeFeetJacobian();
-            updateLinearJacobian(joint_position, full_feet_jacobian_tmp);
+        pinocchio::FrameIndex base_frame_id = robot_model_pin.getFrameId(robot_model_pin.frames[2].name); //base frame
+        pinocchio::SE3 baseMo = robot_data_pin.oMf[base_frame_id].inverse();
 
-            Eigen::Vector3d joint_velocity_leg{Eigen::Vector3d::Zero()};
-            int count{0};
-            for(auto joint: *leg->getJoints())
+        // feet positions
+        end_effector_position["LF"] = (baseMo*robot_data_pin.oMf[robot_model_pin.getFrameId("lf_foot")]).translation();
+        end_effector_position["RF"] = (baseMo*robot_data_pin.oMf[robot_model_pin.getFrameId("rf_foot")]).translation();
+        end_effector_position["LH"] = (baseMo*robot_data_pin.oMf[robot_model_pin.getFrameId("lh_foot")]).translation();
+        end_effector_position["RH"] = (baseMo*robot_data_pin.oMf[robot_model_pin.getFrameId("rh_foot")]).translation();
+
+        // feet velocities
+        end_effector_velocity["LF"] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model_pin, robot_data_pin, robot_model_pin.getFrameId("lf_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
+        end_effector_velocity["RF"] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model_pin, robot_data_pin, robot_model_pin.getFrameId("rf_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
+        end_effector_velocity["LH"] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model_pin, robot_data_pin, robot_model_pin.getFrameId("lh_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
+        end_effector_velocity["RH"] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model_pin, robot_data_pin, robot_model_pin.getFrameId("rh_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
+        
+    }
+
+    void Aliengo::forwardKinematics(const robotlib::JointState &joint_position,
+                                    const robotlib::JointState &joint_velocity,
+                                    robotlib::LegDataMap<Eigen::Vector3d> &end_effector_position,
+                                    robotlib::LegDataMap<Eigen::Vector3d> &end_effector_velocity,
+                                    const int type)
+    {
+        if(type==0){//robcogen
+            homogeneous_transforms_->updateParameters();
+            // Mapping from robotlib structure to robcogen ones, TODO: maybe a function mapping robotlib to eigen structure is needed
+            // NB: this mapping assumes that the robcogen order is the same as the one defining the legs and joints of Aliengo!
+            Eigen::Matrix<double, NJOINTS_TOT, 1> q_robcogen;
+            
+            for(auto joint : auxiliar_joints_variable_)
             {
-                joint_velocity_leg[count] = joint_velocity[joint];
-                count++;
+                const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
+                q_robcogen[joint_id] = joint_position[joint];
             }
+            end_effector_position["LF"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_LF_foot(q_robcogen));
+            end_effector_position["RF"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_RF_foot(q_robcogen));
+            end_effector_position["LH"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_LH_foot(q_robcogen));
+            end_effector_position["RH"] = iit::rbd::Utils::positionVector( homogeneous_transforms_->fr_trunk_X_RH_foot(q_robcogen));
 
-            end_effector_velocity[leg] =  full_feet_jacobian_tmp[leg].block<3,3>(0,0)*joint_velocity_leg;
+            for (auto leg : *legs_)
+            {
+                //TODO improve getting the jacobian from one leg only NRT!
+                robotlib::LegDataMap<robotlib::Jacobian> full_feet_jacobian_tmp = this->makeFeetJacobian();
+                updateLinearJacobian(joint_position, full_feet_jacobian_tmp);
+
+                Eigen::Vector3d joint_velocity_leg{Eigen::Vector3d::Zero()};
+                int count{0};
+                for(auto joint: *leg->getJoints())
+                {
+                    joint_velocity_leg[count] = joint_velocity[joint];
+                    count++;
+                }
+
+                end_effector_velocity[leg] =  full_feet_jacobian_tmp[leg].block<3,3>(0,0)*joint_velocity_leg;
+            }
+        }
+
+        else if(type==1){ // pinocchio with LOCAL_WORLD_ALIGNED
+            Eigen::VectorXd q = joint_position.vec_();
+            Eigen::VectorXd qd = joint_velocity.vec_();
+            reoderJoints(q);
+            reoderJoints(qd);
+            pinocchio::forwardKinematics(robot_model_pin, robot_data_pin, q, qd);
+            pinocchio::updateFramePlacements(robot_model_pin, robot_data_pin);
+
+            pinocchio::FrameIndex base_frame_id = robot_model_pin.getFrameId(robot_model_pin.frames[2].name); //base frame
+            pinocchio::SE3 baseMo = robot_data_pin.oMf[base_frame_id].inverse();
+
+            // feet positions
+            end_effector_position["LF"] = (baseMo*robot_data_pin.oMf[robot_model_pin.getFrameId("lf_foot")]).translation();
+            end_effector_position["RF"] = (baseMo*robot_data_pin.oMf[robot_model_pin.getFrameId("rf_foot")]).translation();
+            end_effector_position["LH"] = (baseMo*robot_data_pin.oMf[robot_model_pin.getFrameId("lh_foot")]).translation();
+            end_effector_position["RH"] = (baseMo*robot_data_pin.oMf[robot_model_pin.getFrameId("rh_foot")]).translation();
+
+            // feet velocities
+            end_effector_velocity["LF"] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model_pin, robot_data_pin, robot_model_pin.getFrameId("lf_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
+            end_effector_velocity["RF"] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model_pin, robot_data_pin, robot_model_pin.getFrameId("rf_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
+            end_effector_velocity["LH"] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model_pin, robot_data_pin, robot_model_pin.getFrameId("lh_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
+            end_effector_velocity["RH"] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model_pin, robot_data_pin, robot_model_pin.getFrameId("rh_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
+        }
+        else if(type==2){ // pinocchio with LOCAL_WORLD_ALIGNED, jacobian            
+            Eigen::VectorXd q = joint_position.vec_();
+            Eigen::VectorXd qd = joint_velocity.vec_();
+            reoderJoints(q);
+            reoderJoints(qd);
+
+            pinocchio::forwardKinematics(robot_model_pin, robot_data_pin, q, qd);
+            pinocchio::updateFramePlacements(robot_model_pin, robot_data_pin);
+
+            pinocchio::FrameIndex base_frame_id = robot_model_pin.getFrameId(robot_model_pin.frames[2].name); //base frame
+            pinocchio::SE3 baseMo = robot_data_pin.oMf[base_frame_id].inverse();
+
+            // feet positions
+            end_effector_position["LF"] = (baseMo*robot_data_pin.oMf[robot_model_pin.getFrameId("lf_foot")]).translation();
+            end_effector_position["RF"] = (baseMo*robot_data_pin.oMf[robot_model_pin.getFrameId("rf_foot")]).translation();
+            end_effector_position["LH"] = (baseMo*robot_data_pin.oMf[robot_model_pin.getFrameId("lh_foot")]).translation();
+            end_effector_position["RH"] = (baseMo*robot_data_pin.oMf[robot_model_pin.getFrameId("rh_foot")]).translation();
+
+            // feet velocities
+            for(auto leg : *legs_){
+                const std::string name = leg->getName();
+                std::string name_lowercase = name;
+                transform(name_lowercase.begin(), name_lowercase.end(), name_lowercase.begin(), ::tolower);
+                pinocchio::context::Data::Matrix6x J(6, robot_model_pin.nv);
+                J.setZero();
+                auto joint_idx = robot_model_pin.getJointId(name_lowercase+"_kfe_joint");
+                auto frame_idx = robot_model_pin.getFrameId(name_lowercase+"_foot");
+                pinocchio::computeJointJacobian(robot_model_pin, robot_data_pin, q, joint_idx, J);
+                auto local_vel = J*qd;
+                auto local_foot_transl = robot_model_pin.frames[frame_idx].placement.translation();
+                auto oMjoint = robot_data_pin.oMi[joint_idx];
+                auto oMf = robot_data_pin.oMf[frame_idx];
+                // end_effector_velocity[name] = baseMo.rotation()*oMjoint.rotation()*(local_vel.block<3,1>(0,0) + local_vel.block<3,1>(3,0).cross(local_foot_transl));
+
+                pinocchio::computeFrameJacobian(robot_model_pin, robot_data_pin, q, frame_idx, pinocchio::LOCAL_WORLD_ALIGNED, J);
+                end_effector_velocity[name] = baseMo.rotation()*(J.block<3,1>(0,0)*qd);
+            }
         }
     }
 
@@ -443,7 +558,7 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
                                 const robotlib::JointState &joint_velocity,
                                 const robotlib::JointState &joint_acceleration,
                                 Eigen::Matrix<double, 6, 1> &wrench_base, ///output
-                                robotlib::JointState &tau_joints) const             ///output
+                                robotlib::JointState &tau_joints)             ///output
     {
         Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_position{};
         Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_velocity{};
@@ -477,7 +592,7 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
                                         const robotlib::JointState &joint_position,
                                         const robotlib::JointState &joint_velocity,
                                         const Eigen::Matrix<double, 6, 1> &robot_velocity,
-                                        const Eigen::Matrix<double, 6, 1> &robot_acceleration) const
+                                        const Eigen::Matrix<double, 6, 1> &robot_acceleration)
     {
         Eigen::Matrix<double, 6, 1> wrench_base(Eigen::Matrix<double, 6, 1>::Zero());
         inverseDynamics(robot_velocity, robot_acceleration, gravity_vector, joint_position, joint_velocity, this->makeJointState(0.0), wrench_base, tau_joints);
@@ -559,7 +674,7 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
     }
 
      void Aliengo::inverseKinematics(const robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
-                                    robotlib::JointState &joint_position) const
+                                    robotlib::JointState &joint_position)
      {
         iit::dog::LegDataMap<Eigen::Vector3d> robcogen_end_effector_position{};
         Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_position{};
@@ -584,7 +699,7 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
     void Aliengo::inverseKinematics(const robotlib::LegDataMap<Eigen::Vector3d> &end_effector_position,
                                        const robotlib::LegDataMap<Eigen::Vector3d> &end_effector_velocity,
                                        robotlib::JointState &joint_position,
-                                       robotlib::JointState &joint_velocity) const
+                                       robotlib::JointState &joint_velocity)
     {
         iit::dog::LegDataMap<Eigen::Vector3d> robcogen_end_effector_position{};
         iit::dog::LegDataMap<Eigen::Vector3d> robcogen_end_effector_velocity{};
@@ -622,7 +737,7 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
                                     const robotlib::LegDataMap<Eigen::Vector3d> &end_effector_acceleration,
                                     robotlib::JointState &joint_position,
                                     robotlib::JointState &joint_velocity,
-                                    robotlib::JointState &joint_acceleration) const
+                                    robotlib::JointState &joint_acceleration)
     {
         iit::dog::LegDataMap<Eigen::Vector3d> robcogen_end_effector_position{};
         iit::dog::LegDataMap<Eigen::Vector3d> robcogen_end_effector_velocity{};
@@ -959,6 +1074,15 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
     Eigen::Matrix<double, 3, 1> Aliengo::getTrunkCOM() const
     {
         return inertias_->getCOM_trunk();
+    }
+
+    void Aliengo::reoderJoints(Eigen::VectorXd& data) const{
+        auto old_data = data;
+        for(auto &[key, value] : idx_map)
+        {
+            data[value] = old_data[key];
+            data[key] = old_data[value];
+        }
     }
 
     std::shared_ptr<AliengoLeg> makeLeg(const std::string &legName) // function used to generate a leg inside the create_function
