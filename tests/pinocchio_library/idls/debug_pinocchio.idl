@@ -1,0 +1,17 @@
+struct DebugPinocchioMsg
+{
+    //sequence<double> feet_position_robcogen;
+    // sequence<double> feet_position_pin;
+    //sequence<double> feet_velocity_robcogen;
+    //sequence<double> feet_velocity_pin;
+    
+    double q_inv_kin_gt[12]; // joints configuration
+    double q_inv_kin[12]; // joints configuration
+    double q_inv_kin_robcogen[12]; // joints configuration
+
+    double err_inv_kin[12];
+    double q_init_guess[12]; // joints configuration
+
+    double ee_pose_des[6]; //pos, rpy
+    double ee_parent_joint_pose_des[6]; //pos, rpy
+};

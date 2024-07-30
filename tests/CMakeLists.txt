@@ -92,3 +92,6 @@ target_include_directories(read_urdf_test
     PRIVATE
         /usr/include/eigen3
 )
+
+add_subdirectory(pinocchio_library)
+add_subdirectory(simulation_tests)
