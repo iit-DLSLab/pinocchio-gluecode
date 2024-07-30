@@ -97,11 +97,7 @@ namespace aliengolib
                                        const robotlib::JointState &joint_velocity,
                                        robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
                                        robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity) override;
-        virtual void forwardKinematics(const robotlib::JointState &joint_position,
-                                    const robotlib::JointState &joint_velocity,
-                                    robotlib::LegDataMap<Eigen::Vector3d> &end_effector_position,
-                                    robotlib::LegDataMap<Eigen::Vector3d> &end_effector_velocity,
-                                    const int type) override;
+
         /*!
          * @brief Inverse kinematics.
          * @details
@@ -232,8 +228,8 @@ namespace aliengolib
          * @return destination frame position expressed in origin one.
          */
         virtual Eigen::Vector3d getFramePosition(const robotlib::JointState &q,
-                                                 const std::shared_ptr<robotlib::Frame> origin,
-                                                 const std::shared_ptr<robotlib::Frame> destination) const override;
+                                                 const std::string origin,
+                                                 const std::string destination) override;
 
         /*!
          * @brief Get orientation of the destination frame expressed in the origin one.
@@ -243,78 +239,78 @@ namespace aliengolib
          * @return destination frame orientation expressed in origin one.
          */
         virtual Eigen::Matrix3d getFrameOrientation(const robotlib::JointState &q,
-                                                    const std::shared_ptr<robotlib::Frame> origin,
-                                                    const std::shared_ptr<robotlib::Frame> destination) const override;
+                                                    const std::string origin,
+                                                    const std::string destination) override;
         /*!
-         * @brief Get pose of the destination frame expressed in the origin one.
+         * @brief Get pose (in homogeneous coordinates) of the destination frame expressed in the origin one.
          * @param[in] q angles of the joints.
          * @param[in] origin origin frame.
          * @param[in] destination destination frame.
          * @return destination frame pose expressed in origin one.
          */
         virtual Eigen::Matrix4d getFramePose(const robotlib::JointState &q,
-                                             const std::shared_ptr<robotlib::Frame> origin,
-                                             const std::shared_ptr<robotlib::Frame> destination) const override;
+                                             const std::string origin,
+                                             const std::string destination) override;
                                      
-		/*!
-         * @brief Get foot position with respect to the trunk frame, expressed in trunk frame.
-         * @param[in] q angles of the joints.
-         * @param[in] foot foot frame.
-         * @return foot position expressed in trunk frame.
-         */
-        virtual Eigen::Vector3d getFootPosition(const robotlib::JointState &q,
-                                                const std::shared_ptr<robotlib::Frame> foot) const override;
+		// /*!
+    //      * @brief Get foot position with respect to the trunk frame, expressed in trunk frame.
+    //      * @param[in] q angles of the joints.
+    //      * @param[in] foot foot frame.
+    //      * @return foot position expressed in trunk frame.
+    //      */
+    //     virtual Eigen::Vector3d getFootPosition(const robotlib::JointState &q,
+    //                                             const std::shared_ptr<robotlib::Frame> foot) override;
 
-		/*!
-         * @brief Get foot position with respect to the trunk frame, expressed in trunk frame.
-         * @details
-         * This function gets the foot corresponding to the leg in input and then it computes the foot position.
-         * @param[in] q angles of the joints.
-         * @param[in] leg leg corresponding to the foot.
-         * @return foot position expressed in trunk frame.
-         */
-        virtual Eigen::Vector3d getFootPosition(const robotlib::JointState &q,
-                                     const std::shared_ptr<robotlib::LimbBase> leg) const override;
+		// /*!
+    //      * @brief Get foot position with respect to the trunk frame, expressed in trunk frame.
+    //      * @details
+    //      * This function gets the foot corresponding to the leg in input and then it computes the foot position.
+    //      * @param[in] q angles of the joints.
+    //      * @param[in] leg leg corresponding to the foot.
+    //      * @return foot position expressed in trunk frame.
+    //      */
+    //     virtual Eigen::Vector3d getFootPosition(const robotlib::JointState &q,
+    //                                  const std::shared_ptr<robotlib::LimbBase> leg) override;
 
-        /*!
-         * @brief Get foot orientation expressed in trunk frame.
-         * @param[in] q angles of the joints.
-         * @param[in] foot foot frame.
-         * @return foot orientation expressed in trunk frame.
-         */
-        virtual Eigen::Matrix3d getFootOrientation(const robotlib::JointState &q,
-                                                   const std::shared_ptr<robotlib::Frame> foot) const override;
+    //     /*!
+    //      * @brief Get foot orientation expressed in trunk frame.
+    //      * @param[in] q angles of the joints.
+    //      * @param[in] foot foot frame.
+    //      * @return foot orientation expressed in trunk frame.
+    //      */
+    //     virtual Eigen::Matrix3d getFootOrientation(const robotlib::JointState &q,
+    //                                                const std::shared_ptr<robotlib::Frame> foot) override;
 
-        /*!
-         * @brief Get foot orientation with respect to the trunk frame, expressed in trunk frame.
-         * @details
-         * This function gets the foot corresponding to the leg in input and then it computes the foot orientation.
-         * @param[in] q angles of the joints.
-         * @param[in] leg leg corresponding to the foot.
-         * @return foot orientation expressed in trunk frame.
-         */
-        virtual Eigen::Matrix3d getFootOrientation(const robotlib::JointState &q,
-                                                   const std::shared_ptr<robotlib::LimbBase> leg) const override;
+    //     /*!
+    //      * @brief Get foot orientation with respect to the trunk frame, expressed in trunk frame.
+    //      * @details
+    //      * This function gets the foot corresponding to the leg in input and then it computes the foot orientation.
+    //      * @param[in] q angles of the joints.
+    //      * @param[in] leg leg corresponding to the foot.
+    //      * @return foot orientation expressed in trunk frame.
+    //      */
+    //     virtual Eigen::Matrix3d getFootOrientation(const robotlib::JointState &q,
+    //                                                const std::shared_ptr<robotlib::LimbBase> leg) override;
 
-        /*!
-         * @brief Get foot pose expressed in trunk frame.
-         * @param[in] q angles of the joints.
-         * @param[in] foot foot frame.
-         * @return foot pose expressed in trunk frame.
-         */
-        virtual Eigen::Matrix4d getFootPose(const robotlib::JointState &q,
-                                            const std::shared_ptr<robotlib::Frame> foot) const override;
+    //     /*!
+    //      * @brief Get foot pose expressed in trunk frame.
+    //      * @param[in] q angles of the joints.
+    //      * @param[in] foot foot frame.
+    //      * @return foot pose expressed in trunk frame.
+    //      */
+    //     virtual Eigen::Matrix4d getFootPose(const robotlib::JointState &q,
+    //                                         const std::shared_ptr<robotlib::Frame> foot) override;
 
-        /*!
-         * @brief Get foot pose with respect to the trunk frame, expressed in trunk frame.
-         * @details
-         * This function gets the foot corresponding to the leg in input and then it computes the foot pose.
-         * @param[in] q angles of the joints.
-         * @param[in] leg leg corresponding to the foot.
-         * @return foot pose expressed in trunk frame.
-         */
-        virtual Eigen::Matrix4d getFootPose(const robotlib::JointState &q,
-                                            const std::shared_ptr<robotlib::LimbBase> leg) const override;
+    //     /*!
+    //      * @brief Get foot pose with respect to the trunk frame, expressed in trunk frame.
+    //      * @details
+    //      * This function gets the foot corresponding to the leg in input and then it computes the foot pose.
+    //      * @param[in] q angles of the joints.
+    //      * @param[in] leg leg corresponding to the foot.
+    //      * @return foot pose expressed in trunk frame.
+    //      */
+    //     virtual Eigen::Matrix4d getFootPose(const robotlib::JointState &q,
+    //                                         const std::shared_ptr<robotlib::LimbBase> leg) override;
         /*!
          * @brief Get the foot jacobian.
          * @details
