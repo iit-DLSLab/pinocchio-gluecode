@@ -524,7 +524,10 @@ namespace aliengolib
         // pinocchio one: lf lh rf rh
         std::map<int,int> idx_map = {{3,6},{4,7},{5,8}};
 
-        void reoderJoints(Eigen::VectorXd& data) const;
+        Eigen::VectorXd reorderJoints(const Eigen::VectorXd& data) const;
+        Eigen::VectorXd fromRobotlibToPinocchioJointState(const robotlib::JointState &joint_position);
+        Eigen::VectorXd fromRobotlibToPinocchioJointVelocity(const robotlib::JointState &joint_velocity);
+
     };
 } //namespace aliengolib
 
