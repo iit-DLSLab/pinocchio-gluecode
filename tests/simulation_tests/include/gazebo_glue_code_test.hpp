@@ -23,6 +23,10 @@
 
 #include "dls_messages/dds/gazebo_glue_code_test.h"
 
+
+#include "pinocchio/multibody/data.hpp"
+#include "pinocchio/multibody/fwd.hpp"
+
 #include <chrono>
 
 namespace dls
@@ -34,6 +38,12 @@ namespace dls
    class GazeboPluginGlueTest : public gazebo::ModelPlugin
    {
    public:
+
+        enum class InverseDynamicsTest
+        {
+            GRAVITY_COMPENSATION,
+            NON_LINEAR_EFFECTS
+        };
 
         /**
         * @brief Constructor
@@ -67,6 +77,26 @@ namespace dls
 
         Time time_factor;
         GazeboGlueCodeTestMsg msg;
+
+
+		std::shared_ptr<robotlib::JointState> joints_positions;
+		std::shared_ptr<robotlib::JointState> joints_velocity;
+		std::shared_ptr<robotlib::JointState> joints_acceleration;
+		std::shared_ptr<robotlib::JointState> joints_torques;
+
+        void testForwardKinematics();
+	    void testGetPose();
+        void testInverseDynamics(const InverseDynamicsTest test_type);
+        void testGravityCompensation();
+        void testNonLinearEffects();
+	    Eigen::VectorXd reorderJoints(const Eigen::VectorXd& data) const;
+
+        pinocchio::Model robot_model;
+        pinocchio::Data robot_data;
+        // Pinocchio order the joints following an alphanumeric order, so we need to map our order to the pinocchio one and viceversa
+        // our convention: lf rf lh rh
+        // pinocchio one: lf lh rf rh
+        std::map<int,int> idx_map = {{3,6},{4,7},{5,8}};
     };
 
    GZ_REGISTER_MODEL_PLUGIN(GazeboPluginGlueTest);

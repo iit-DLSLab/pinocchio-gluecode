@@ -7,6 +7,8 @@ include(dls_message)		# message generation function
 
 set(GAZEBO_GLUE_CODE_TEST gazebo_gluecode_test)
 
+find_package(pinocchio REQUIRED)
+
 add_library(${GAZEBO_GLUE_CODE_TEST} 
     SHARED 
         src/gazebo_glue_code_test.cpp
@@ -44,6 +46,8 @@ target_link_libraries(${GAZEBO_GLUE_CODE_TEST}
         ${GAZEBO_LIBRARIES}
         dls_framework
         robotlib
+        ${pinocchio_LIBRARIES}
+        pinocchio_parsers
 )
 
 # Add idls here

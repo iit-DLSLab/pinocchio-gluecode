@@ -5,6 +5,13 @@
 #include <sstream>
 #include <iostream>
 
+#include "pinocchio/algorithm/joint-configuration.hpp"
+#include "pinocchio/algorithm/frames.hpp"
+#include "pinocchio/parsers/urdf.hpp"
+
+#include <pinocchio/algorithm/rnea.hpp>
+
+#include "robotlib/utils/eigen_utils.hpp"
 namespace dls
 {
 	GazeboPluginGlueTest::GazeboPluginGlueTest() 
@@ -14,6 +21,10 @@ namespace dls
 			dls::domains::signals
 		))
 	{
+        const std::string urdf_name = "/usr/include/aliengo_description/urdfs/aliengo.urdf";
+        pinocchio::urdf::buildModel(urdf_name, pinocchio::JointModelFreeFlyer(), robot_model);
+        robot_data = pinocchio::Data(robot_model);
+
 		ddslink->addWriter("gazebo_glue_code_test", dls::topicType("gazebo_glue_code_test", new GazeboGlueCodeTestMsgPubSubType()));
 	 }
 
@@ -76,6 +87,11 @@ namespace dls
 			}
 		}
 		
+		joints_positions = std::make_shared<robotlib::JointState>(pRobot->makeJointState(0.0));
+		joints_velocity = std::make_shared<robotlib::JointState>(pRobot->makeJointState(0.0));
+		joints_acceleration = std::make_shared<robotlib::JointState>(pRobot->makeJointState(0.0));
+		joints_torques = std::make_shared<robotlib::JointState>(pRobot->makeJointState(0.0));
+
 		this->update_connection = gazebo::event::Events::ConnectWorldUpdateBegin
 		(
 			std::bind(&GazeboPluginGlueTest::run, this)
@@ -86,7 +102,68 @@ namespace dls
 
 
     void GazeboPluginGlueTest::run()
-	{
+	{	
+		// -- get joints data
+		int i=0;
+		for(auto &leg : *joints_positions)
+		{
+			for(auto &joint : *leg.data_)
+			{
+				(*joints_positions)[joint.key_] = this->sim_joints[i]->Position();
+				(*joints_velocity)[joint.key_] = this->sim_joints[i]->GetVelocity(0);
+				(*joints_torques)[joint.key_] = this->sim_joints[i]->GetForce(0);
+				i++;
+			}
+		}
+
+		// testForwardKinematics();
+
+		// testGetPose();
+
+		testInverseDynamics(InverseDynamicsTest::GRAVITY_COMPENSATION);
+		testInverseDynamics(InverseDynamicsTest::NON_LINEAR_EFFECTS);
+
+		// Send dds message
+		ddslink->sendMessage("gazebo_glue_code_test", &msg);
+	}
+
+	void GazeboPluginGlueTest::testForwardKinematics(){
+		const std::string base_frame = "base_link";
+		auto base_pose = this->sim_model->GetLink(base_frame)->WorldPose();
+		int i = 0;
+		for(auto &leg : *pRobot->getLegs())
+		{
+			std::string leg_name = leg->getName();
+			std::string leg_name_lower = leg_name;
+			std::transform(leg_name_lower.begin(), leg_name_lower.end(), leg_name_lower.begin(), ::tolower);
+			const std::string frame = leg_name_lower+"_foot";
+			auto frame_pose = this->sim_model->GetLink(frame)->WorldPose();
+			auto frame_vel = this->sim_model->GetLink(frame)->WorldLinearVel();
+			auto b_frame_pose = base_pose.Inverse() * frame_pose;
+			auto b_frame_vel = base_pose.Inverse().Rot() * frame_vel;
+			auto ee_position = pRobot->makeLegDataMap<Eigen::Vector3d>(Eigen::Vector3d::Zero());
+			auto ee_velocity = pRobot->makeLegDataMap<Eigen::Vector3d>(Eigen::Vector3d::Zero());
+			pRobot->forwardKinematics(*joints_positions, *joints_velocity, ee_position, ee_velocity);
+			// -- fill dds message field
+			// --- position and velocity
+			msg.feet_pos_gt()[i+0] = b_frame_pose.Pos().X();
+			msg.feet_pos_gt()[i+1] = b_frame_pose.Pos().Y();
+			msg.feet_pos_gt()[i+2] = b_frame_pose.Pos().Z();
+			msg.feet_vel_gt()[i+0] = b_frame_vel.X();
+			msg.feet_vel_gt()[i+1] = b_frame_vel.Y();
+			msg.feet_vel_gt()[i+2] = b_frame_vel.Z();
+			msg.feet_pos()[i+0] = ee_position[leg_name](0);
+			msg.feet_pos()[i+1] = ee_position[leg_name](1);
+			msg.feet_pos()[i+2] = ee_position[leg_name](2);
+			msg.feet_vel()[i+0] = ee_velocity[leg_name](0);
+			msg.feet_vel()[i+1] = ee_velocity[leg_name](1);
+			msg.feet_vel()[i+2] = ee_velocity[leg_name](2);
+			i += leg->getJoints()->size();
+		}
+	}
+
+	void GazeboPluginGlueTest::testGetPose(){
+		// test getFoot position, getFoot orientation and getFoot pose
 		// get relative position of left lower leg w.r.t right upper leg
 		const std::string from_frame = "lf_lowerleg";
 		const std::string to_frame = "rf_upperleg";
@@ -106,26 +183,12 @@ namespace dls
 		msg.relative_ori_gt()[2] = relative_pose_gt.Rot().Euler()[2];
 
 		// compute relative pose using robotlib
-		// -- get joints data
-		robotlib::JointState joints_positions = pRobot->makeJointState(0.0);
-		robotlib::JointState joints_velocity = pRobot->makeJointState(0.0);
-		robotlib::JointState joints_torques = pRobot->makeJointState(0.0);
-		int i=0;
-		for(auto &leg : joints_positions)
-		{
-			for(auto &joint : *leg.data_)
-			{
-				joints_positions[joint.key_] = this->sim_joints[i]->Position();
-				joints_velocity[joint.key_] = this->sim_joints[i]->GetVelocity(0);
-				joints_torques[joint.key_] = this->sim_joints[i]->GetForce(0);
-				i++;
-			}
-		}
+
 		// -- call robotlib getFramePosition and getFrameOrientation
 		robotlib::LegDataMap<Eigen::Vector3d> end_effector_position =  pRobot->makeLegDataMap<Eigen::Vector3d>();
 
-		auto relative_pos = pRobot->getFramePosition(joints_positions, from_frame, to_frame);
-		auto relative_rot = pRobot->getFrameOrientation(joints_positions, from_frame, to_frame);
+		auto relative_pos = pRobot->getFramePosition(*joints_positions, from_frame, to_frame);
+		auto relative_rot = pRobot->getFrameOrientation(*joints_positions, from_frame, to_frame);
 		auto relative_ori = dls::math::rotTorpy(relative_rot.transpose());
 
 		// -- fill dds message field
@@ -139,7 +202,7 @@ namespace dls
 		msg.relative_ori()[2] = relative_ori(2);
 
 		// -- call robotlib getFramePose
-		auto relative_pose = pRobot->getFramePose(joints_positions, from_frame, to_frame);
+		auto relative_pose = pRobot->getFramePose(*joints_positions, from_frame, to_frame);
 		relative_ori = dls::math::rotTorpy(relative_pose.block<3,3>(0,0).transpose());
 		// -- fill dds message field
 		msg.relative_pose()[0] = relative_pose.block<3,1>(0,3)(0);
@@ -148,10 +211,225 @@ namespace dls
 		msg.relative_pose()[3] = relative_ori(0);
 		msg.relative_pose()[4] = relative_ori(1);
 		msg.relative_pose()[5] = relative_ori(2);
-
-		// Send dds message
-		ddslink->sendMessage("gazebo_glue_code_test", &msg);
 	}
-	
 
+
+	void GazeboPluginGlueTest::testInverseDynamics(const InverseDynamicsTest test_type){
+		if(test_type==InverseDynamicsTest::GRAVITY_COMPENSATION)
+		{
+			testGravityCompensation();
+		}
+		else if (test_type==InverseDynamicsTest::NON_LINEAR_EFFECTS)
+		{
+			testNonLinearEffects();
+		}
+	}
+
+	void GazeboPluginGlueTest::testGravityCompensation(){
+
+		// define inputs: q, qd=qdd=0
+		const std::string base_frame = "base_link";
+		auto base_pose = this->sim_model->GetLink(base_frame)->WorldPose();
+		auto w_base_lin_vel = this->sim_model->GetLink(base_frame)->WorldLinearVel();
+		auto w_base_ang_vel = this->sim_model->GetLink(base_frame)->WorldAngularVel();
+		auto b_base_lin_vel = base_pose.Rot().Inverse() * w_base_lin_vel;
+		auto b_base_ang_vel = base_pose.Rot().Inverse() * w_base_ang_vel;
+
+		Eigen::VectorXd q = pinocchio::neutral(robot_model);
+		q.block<3,1>(0,0) = Eigen::Vector3d(base_pose.Pos().X(), base_pose.Pos().Y(), base_pose.Pos().Z());
+
+		Eigen::Quaterniond quaternion_base = dls::math::rpyToquat(Eigen::Vector3d(base_pose.Rot().Euler()[0], base_pose.Rot().Euler()[1], base_pose.Rot().Euler()[2]));
+		q(3) = quaternion_base.x();
+		q(4) = quaternion_base.y();
+		q(5) = quaternion_base.z();
+		q(6) = quaternion_base.w();
+
+		q.tail(pRobot->getNJOINTS()) = reorderJoints(joints_positions->vec_());
+		Eigen::VectorXd qd = Eigen::VectorXd::Zero(robot_model.nv);
+		Eigen::VectorXd qdd = Eigen::VectorXd::Zero(robot_model.nv);
+
+		// compute base and joints gravity terms
+		const int n_joints = pRobot->getNJOINTS();
+		// -- method 1: using rnea
+		// pinocchio::rnea(robot_model, robot_data, q, qd, qdd);
+		// auto g_base = robot_data.tau.block<6,1>(0,0);
+		// auto g_joints = robot_data.tau.tail(n_joints);
+		// -- method 2: using computeGeneralizedGravity
+		// pinocchio::computeGeneralizedGravity(robot_model, robot_data, q);
+		// auto g_base = robot_data.g.block<6,1>(0,0);
+		// auto g_joints = robot_data.g.tail(n_joints);
+		// -- method 3: using robotlib
+		Eigen::Matrix<double, 6, 1> g_base;
+		robotlib::JointState g_joints = pRobot->makeJointState(0.0);
+		pRobot->computeGravityTerm(q.block<7,1>(0,0), *joints_positions, g_base, g_joints);
+
+		// find contacts and compute contact jacobian
+		std::array<std::string,4> contact_frames = {"lf_foot", "rf_foot", "lh_foot", "rh_foot"};
+		std::array<int, 4> contact_idx = {0, 0, 0, 0};
+		int n_contacts = contact_frames.size();
+		Eigen::MatrixXd J_linear_contacts_base = Eigen::MatrixXd::Zero(3*n_contacts, 6);
+		Eigen::MatrixXd J_linear_contacts_joints = Eigen::MatrixXd::Zero(3*n_contacts, n_joints);
+		for (int i=0; i<contact_frames.size(); i++)
+		{
+			contact_idx[i] = robot_model.getFrameId(contact_frames[i]);
+			// compute contact jacobian
+			Eigen::MatrixXd J = Eigen::MatrixXd::Zero(6, robot_model.nv);
+			pinocchio::computeFrameJacobian(robot_model, robot_data, q, contact_idx[i], pinocchio::LOCAL, J);
+			J_linear_contacts_base.block<3, 6>(i*3, 0) = J.block<3, 6>(0, 0);
+			J_linear_contacts_joints.block(i*3, 0, 3, n_joints) = J.block(0, 6, 3, n_joints);
+		}
+		Eigen::MatrixXd J_linear_contacts_base_T = J_linear_contacts_base.transpose();
+		Eigen::MatrixXd J_linear_contacts_base_pseudo =  J_linear_contacts_base_T.completeOrthogonalDecomposition().pseudoInverse();
+
+		// Contact forces at local coordinates (at each foot coordinate)
+		Eigen::MatrixXd contact_f_des = J_linear_contacts_base_pseudo * g_base;
+		// compute desired tau
+		Eigen::MatrixXd J_linear_contacts_joints_T = J_linear_contacts_joints.transpose();
+		Eigen::VectorXd tau = g_joints.vec_() - J_linear_contacts_joints_T*contact_f_des;
+		
+		// ********************** Compute torques using rnea ********************** 
+		pinocchio::framesForwardKinematics(robot_model, robot_data, q);
+
+		// -- contact forces at the parent joint frame of the link in contact
+		std::array<int, 4> joint_contact_idx = {0, 0, 0, 0};
+		for(int i=0; i<n_contacts; i++)
+		{
+			joint_contact_idx[i] = robot_model.frames[contact_idx[i]].parentJoint;
+		}
+		pinocchio::container::aligned_vector<pinocchio::Force> joint_f_des(robot_model.njoints, pinocchio::Force::Zero());
+		for(int i=0; i<n_contacts; i++)
+		{
+			pinocchio::Force contact_f_des_i(contact_f_des.block<3,1>(i*3, 0), Eigen::Vector3d::Zero());
+			joint_f_des[joint_contact_idx[i]] = robot_data.oMi[joint_contact_idx[i]].actInv(
+											robot_data.oMf[contact_idx[i]].act(contact_f_des_i));
+		}
+		// -- call rnea algorithm
+		// method 1: call rnea
+		pinocchio::rnea(robot_model, robot_data, q, qd, qdd, joint_f_des);
+		// method 2: call computeStaticTorque
+		// pinocchio::computeStaticTorque(robot_model, robot_data, q, joint_f_des);
+		Eigen::VectorXd tau_rnea = robot_data.tau;
+		// method 3: use robotlib
+		robotlib::JointState tau_joints = pRobot->makeJointState(0.0);
+		robotlib::LegDataMap<Eigen::Vector3d> ee_position = pRobot->makeLegDataMap<Eigen::Vector3d>(Eigen::Vector3d::Zero());
+		pRobot->forwardKinematics(*joints_positions, ee_position);
+		robotlib::eigen::aligned_map<std::string, Eigen::Vector3d> f_ext;
+		for(int i=0; i<n_contacts; i++)
+		{
+			f_ext.insert({contact_frames[i], contact_f_des.block<3,1>(i*3, 0)});
+		}
+		pRobot->inverseDynamics(q.block<7,1>(0,0),
+								Eigen::Matrix<double, 6, 1>::Zero(),
+                                Eigen::Matrix<double, 6, 1>::Zero(),
+                                *joints_positions,
+                                pRobot->makeJointState(0.0),
+                                pRobot->makeJointState(0.0),
+                                f_ext,
+                                tau_joints);
+		
+
+		// Save contact forces at base link frame for testing (q relative to base are in base coordinates?)	
+		const int base_idx = robot_model.getFrameId(base_frame);
+		Eigen::MatrixXd base_f_des = Eigen::MatrixXd::Zero(3*n_contacts, 1);
+		for(int i=0; i<n_contacts; i++)
+		{
+			pinocchio::Force contact_f_des_i(contact_f_des.block<3,1>(i*3, 0),Eigen::Vector3d::Zero());
+			base_f_des.block<3,1>(i*3, 0) = robot_data.oMf[base_idx].actInv(
+											robot_data.oMf[contact_idx[i]].act(contact_f_des_i)).linear();
+		}	
+
+		// -- fill dds message field
+		// --- forces
+		for(int i=0; i<base_f_des.size(); i++)
+		{
+			msg.feet_forces()[i] = base_f_des(i);
+		}
+		// --- torques
+		tau = reorderJoints(tau);
+		// for(int i=0; i<n_joints; i++)
+		// {
+		// 	msg.tau()[i+6] = tau(i);
+		// }
+		for(int i=0; i<n_joints; i++)
+		{
+			msg.tau()[i+6] = tau_joints.vec_()(i); // robotlib
+		}
+		for(int i = 0; i< n_joints; i++){
+			msg.tau_gt()[i+6] = joints_torques->vec_()(i);
+		}
+		// tau_rnea.tail(pRobot->getNJOINTS()) = reorderJoints(tau_rnea.tail(pRobot->getNJOINTS()));
+		// for(int i = 0; i< robot_model.nv; i++){
+		// 	msg.tau_gt()[i] = tau_rnea(i);
+		// }
+	}
+
+	void GazeboPluginGlueTest::testNonLinearEffects(){
+		const std::string base_frame = "base_link";
+		auto base_pose = this->sim_model->GetLink(base_frame)->WorldPose();
+		// robot state
+		Eigen::VectorXd q = pinocchio::neutral(robot_model);
+		q.block<3,1>(0,0) = Eigen::Vector3d(base_pose.Pos().X(), base_pose.Pos().Y(), base_pose.Pos().Z());
+		Eigen::Quaterniond quaternion_base = dls::math::rpyToquat(Eigen::Vector3d(base_pose.Rot().Euler()[0], base_pose.Rot().Euler()[1], base_pose.Rot().Euler()[2]));
+		q(3) = quaternion_base.x();
+		q(4) = quaternion_base.y();
+		q(5) = quaternion_base.z();
+		q(6) = quaternion_base.w();
+		q.tail(pRobot->getNJOINTS()) = reorderJoints(joints_positions->vec_());
+
+		// robot velocity
+		Eigen::VectorXd qd = Eigen::VectorXd::Zero(robot_model.nv);
+		auto w_base_lin_vel = this->sim_model->GetLink(base_frame)->WorldLinearVel();
+		auto w_base_ang_vel = this->sim_model->GetLink(base_frame)->WorldAngularVel();
+		auto b_base_lin_vel = base_pose.Rot().Inverse() * w_base_lin_vel;
+		auto b_base_ang_vel = base_pose.Rot().Inverse() * w_base_ang_vel;
+		qd.head(3) = Eigen::Vector3d(b_base_lin_vel.X(), b_base_lin_vel.Y(), b_base_lin_vel.Z());
+		qd.segment(3,3) = Eigen::Vector3d(b_base_ang_vel.X(), b_base_ang_vel.Y(), b_base_ang_vel.Z());
+		qd.tail(pRobot->getNJOINTS()) = reorderJoints(joints_velocity->vec_());
+		
+		// non linear effects
+		Eigen::VectorXd nle = Eigen::VectorXd::Zero(robot_model.nv);
+		// method 1: using pinocchio
+		// pinocchio::nonLinearEffects(robot_model, robot_data, q, qd);
+		// nle = robot_data.nle;
+		// nle.tail(pRobot->getNJOINTS()) = reorderJoints(nle.tail(pRobot->getNJOINTS()));
+		// method 2: using robotlib
+		Eigen::Matrix<double, 6, 1> nle_base;
+		auto nle_joints = pRobot->makeJointState(0.0);
+		Eigen::Matrix<double, 6, 1> base_vel = qd.head(6);
+		pRobot->computeNonLinearEffects(q.block<7,1>(0,0), base_vel, *joints_positions, *joints_velocity, nle_base, nle_joints);
+		nle.head(6) = nle_base;
+		nle.tail(pRobot->getNJOINTS()) = nle_joints.vec_();
+		
+		// non linear effects without base velocity
+		// method 1: using pinocchio
+		// qd.head(3) = Eigen::Vector3d::Zero();
+		// qd.segment(3,3) = Eigen::Vector3d::Zero();
+		// pinocchio::nonLinearEffects(robot_model, robot_data, q, qd);
+		// auto nle_no_base_info = robot_data.nle;
+		// nle_no_base_info.tail(pRobot->getNJOINTS()) = reorderJoints(nle_no_base_info.tail(pRobot->getNJOINTS()));
+		// method 2: using robotlib
+		Eigen::VectorXd nle_no_base_info = Eigen::VectorXd::Zero(robot_model.nv);
+		pRobot->computeNonLinearEffects(q.block<7,1>(0,0), Eigen::Matrix<double, 6, 1>::Zero(), *joints_positions, *joints_velocity, nle_base, nle_joints);
+		nle_no_base_info.head(6) = nle_base;
+		nle_no_base_info.tail(pRobot->getNJOINTS()) = nle_joints.vec_();
+
+		// Compute non linear effect without considering base velocity and getting only the nle acting on the joints
+		// pRobot->computeNonLinearEffects(q.block<7,1>(0,0), *joints_positions, *joints_velocity, nle_joints);
+
+		// -- fill dds message field
+		for(int i = 0; i< robot_model.nv; i++){
+			msg.nle()[i] = nle(i);
+			msg.nle_no_base_info()[i] = nle_no_base_info(i);
+		}
+	}
+
+	Eigen::VectorXd GazeboPluginGlueTest::reorderJoints(const Eigen::VectorXd& data) const{
+        Eigen::VectorXd new_data = data;
+        for(auto &[key, value] : idx_map)
+        {
+            new_data[value] = data[key];
+            new_data[key] = data[value];
+        }
+        return new_data;
+    }
 }
