@@ -162,66 +162,97 @@ namespace aliengolib
                                      const robotlib::JointState &joint_acceleration,
                                      Eigen::Matrix<double, 6, 1> &wrench_base,
                                      robotlib::JointState &tau_joints) override;
-
         /*!
-         * @brief Inverse dynamics to compute the Centrifugal, Coriolis and Gravity terms.
+         * @brief Inverse dynamics.
          * @details
-         * The robot velocity and acceleration are set to zero by default.
-         * @param[out] tau_joints torque of each joint.
-         * @param[in] gravity_vector gravity vector in base frame.
-         * @param[in] joint_position angle of each joint.
-         * @param[in] joint_velocity velocity of each joint.
+         * It computes the torque at each joint. Before calling this function, you need to call forwardKinematics first
+         * Use cases:
+         * - robot gravity compensation: robot_velocity = 0, robot_acceleration = 0, joint_velocity = 0, joint_acceleration = 0, f_contact = forces to substain robot weight.
+         * - leg gravity compensation: robot_velocity = 0, robot_acceleration = 0, joint_velocity = 0, joint_acceleration = 0, f_contact = 0.
+         * - realize desired contact forces and robot accelerations: 
+         *    robot_velocity = actual robot velocity
+         *    robot_acceleration = desired robot acceleration
+         *    joint_position = actual joint position
+         *    joint_velocity = actual joint velocity
+         *    joint_acceleration = desired joint acceleration
+         *    f_contact = desired contact forces. 
+         * 
+         * @param[in] robot_pose pose of the robot base in base frame.
          * @param[in] robot_velocity velocity of the robot base in base frame.
          * @param[in] robot_acceleration  acceleration of the robot base in base frame.
-         */
-        virtual void inverseDynamicsHTerm(  robotlib::JointState &tau_joints,
-                                            const Eigen::Matrix<double, 6, 1> &gravity_vector,
-                                            const robotlib::JointState &joint_position,
-                                            const robotlib::JointState &joint_velocity,
-                                            const Eigen::Matrix<double, 6, 1> &robot_velocity = Eigen::Matrix<double, 6, 1>::Zero(),
-                                            const Eigen::Matrix<double, 6, 1> &robot_acceleration = Eigen::Matrix<double, 6, 1>::Zero())
-                                           override;
-
-        /*!
-         * @brief Compute gravity terms.
-         * @details
-         * Instead of using the inverseDynamics function, you can use this function to compute gravity terms. In this way you can define an optimized version of their computation, avoiding unnecessary computational cost provided by the inverse dynamics function.
-         * @param[in] gravity_vector gravity vector in base frame.
          * @param[in] joint_position angle of each joint.
-         * @param[out] wrench_base wrench applied to the base.
+         * @param[in] joint_velocity velocity of each joint.
+         * @param[in] joint_acceleration acceleration of each joint.
+         * @param[in] f_contact map defined as follows: [contact_frame, contact_force], where contact_force is expressed in base_frame.
          * @param[out] tau_joints torque of each joint.
          */
-        virtual void computeGravityCompensation(const Eigen::Matrix<double, 6, 1> &gravity_vector,
-                                                      const robotlib::JointState &joint_position,
-                                                      Eigen::Matrix<double, 6, 1> &wrench_base,
-                                                      robotlib::JointState &tau_joints) const override;
-
-
-        /*!
-         * @brief Compute gravity terms and return only the wrench applied to the base to compensate for gravity.
-         * @details
-         * Instead of using the full version of the computeGravityCompensation function, you can use this function to only get the desired wrench, without taking care of the gravity compensation torques.
-         * @param[in] gravity_vector gravity vector in base frame.
-         * @param[in] joint_position angle of each joint.
-         * @return wrench applied to the base.
-         */
-        virtual Eigen::Matrix<double, 6, 1> computeWrenchGravityCompensation(const Eigen::Matrix<double, 6, 1> &gravity_vector,
-                                                      const robotlib::JointState &joint_position) const override;
+        virtual void inverseDynamics(
+                                const Eigen::Matrix<double, 7, 1> &robot_pose,    // robot base
+                                const Eigen::Matrix<double, 6, 1> &robot_velocity,
+                                const Eigen::Matrix<double, 6, 1> &robot_acceleration,
+                                const robotlib::JointState &joint_position,
+                                const robotlib::JointState &joint_velocity,
+                                const robotlib::JointState &joint_acceleration,
+                                const robotlib::eigen::aligned_map<std::string, Eigen::Vector3d>& f_contact,
+                                robotlib::JointState &tau_joints) override;
         
         /*!
-         * @brief Compute gravity terms and return only the joint torques compensating for gravity.
-         * @details
-         * Instead of using the full version of the computeGravityCompensation function, you can use this function to only get the desired joint torques that compensate for gravity, without taking care of the wrench applied to the base. Notice that this function has the joint state as output parameter, because returning a JointState object leads to dynamic memory allocation.
-         * @param[in] gravity_vector gravity vector in base frame.
-         * @param[in] joint_position angle of each joint.
-         * @param[out] tau_joints torque of each joint.
-         */
-        virtual void computeTorquesGravityCompensation(const Eigen::Matrix<double, 6, 1> &gravity_vector,
-                                                      const robotlib::JointState &joint_position,
-                                                      robotlib::JointState &tau_joints) const override;
+          * @brief Inverse dynamics to compute the Centrifugal, Coriolis and Gravity terms.
+          * @details
+          * The robot velocity and acceleration are set to zero by default.
+          * @param[in] robot_pose pose of the robot base in world frame.
+          * @param[in] robot_velocity velocity of the robot base in base frame.
+          * @param[in] joint_position angle of each joint.
+          * @param[in] joint_velocity velocity of each joint.
+          * @param[out] nle non linear effects.
+          */
+        virtual void computeNonLinearEffects( const Eigen::Matrix<double, 7, 1> &robot_pose,
+                                        const Eigen::Matrix<double, 6, 1> &robot_velocity,
+                                        const robotlib::JointState &joint_position,
+                                        const robotlib::JointState &joint_velocity,
+                                        Eigen::Matrix<double, 6, 1> &nle_base,
+                                        robotlib::JointState &nle_joints) override;
 
         /*!
-         * @brief Get position of the destination frame expressed in the origin one.
+        * @brief Inverse dynamics to compute the Centrifugal, Coriolis and Gravity terms.
+        * @details
+        * The robot velocity is to zero by default.
+        * @param[in] robot_pose pose of the robot base in world frame.
+        * @param[in] robot_velocity velocity of the robot base in base frame.
+        * @param[in] joint_position angle of each joint.
+        * @param[in] joint_velocity velocity of each joint.
+        * @param[out] nle_joints non linear effects acting on the joints.
+        */
+        virtual void computeNonLinearEffects( const Eigen::Matrix<double, 7, 1> &robot_pose,
+                                        const robotlib::JointState &joint_position,
+                                        const robotlib::JointState &joint_velocity,
+                                        robotlib::JointState &nle_joints) override;
+        /*!
+          * @brief Compute gravity terms.
+          * @details
+          * Instead of using the inverseDynamics function, you can use this function to compute gravity terms. In this way you can define an optimized version of their computation, avoiding unnecessary computational cost provided by the inverse dynamics function.
+          * @param[in] robot_pose pose of the robot base in base frame.
+          * @param[in] joint_position angle of each joint.
+          * @param[out] g_base gravity term related to the base.
+          * @param[out] g_joints gravity term related to the joints.
+          */
+        virtual void computeGravityTerm(  const Eigen::Matrix<double, 7, 1> &robot_pose,
+                                          const robotlib::JointState &joint_position,
+                                          Eigen::Matrix<double, 6, 1> &g_base,
+                                          robotlib::JointState &g_joints) override;
+        /*!
+        * @brief Compute gravity terms, setting only the one related to the joints.
+        * @details
+        * Instead of using the inverseDynamics function, you can use this function to compute gravity terms. In this way you can define an optimized version of their computation, avoiding unnecessary computational cost provided by the inverse dynamics function.
+        * @param[in] robot_pose pose of the robot base in base frame.
+        * @param[in] joint_position angle of each joint.
+        * @param[out] g_joints gravity term related to the joints.
+        */
+        virtual void computeGravityTerm(  const Eigen::Matrix<double, 7, 1> &robot_pose,
+                                          const robotlib::JointState &joint_position,
+                                          robotlib::JointState &g_joints) override;
+        /*!
+         * @brief Get position of the origin frame expressed in the destination one.
          * @param[in] q angles of the joints.
          * @param[in] origin origin frame.
          * @param[in] destination destination frame.
@@ -232,7 +263,7 @@ namespace aliengolib
                                                  const std::string destination) override;
 
         /*!
-         * @brief Get orientation of the destination frame expressed in the origin one.
+         * @brief Get orientation of the origin frame expressed in the destination one.
          * @param[in] q angles of the joints.
          * @param[in] origin origin frame.
          * @param[in] destination destination frame.
@@ -242,7 +273,7 @@ namespace aliengolib
                                                     const std::string origin,
                                                     const std::string destination) override;
         /*!
-         * @brief Get pose (in homogeneous coordinates) of the destination frame expressed in the origin one.
+         * @brief Get pose (in homogeneous coordinates) of the origin frame expressed in the destination one.
          * @param[in] q angles of the joints.
          * @param[in] origin origin frame.
          * @param[in] destination destination frame.
@@ -526,7 +557,10 @@ namespace aliengolib
 
         Eigen::VectorXd reorderJoints(const Eigen::VectorXd& data) const;
         Eigen::VectorXd fromRobotlibToPinocchioJointState(const robotlib::JointState &joint_position);
+        Eigen::VectorXd fromRobotlibToPinocchioJointState(const Eigen::Matrix<double, 7, 1> &robot_pose, const robotlib::JointState &joint_position);
         Eigen::VectorXd fromRobotlibToPinocchioJointVelocity(const robotlib::JointState &joint_velocity);
+        Eigen::VectorXd fromRobotlibToPinocchioJointVelocity(const Eigen::Matrix<double, 6, 1> &robot_velocity, const robotlib::JointState &joint_velocity);
+
 
     };
 } //namespace aliengolib

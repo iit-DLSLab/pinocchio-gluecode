@@ -24,6 +24,9 @@
 #include "pinocchio/algorithm/joint-configuration.hpp"
 #include "pinocchio/algorithm/frames.hpp"
 #include "pinocchio/parsers/urdf.hpp"
+#include <pinocchio/algorithm/rnea.hpp>
+
+#include "robotlib/utils/eigen_utils.hpp"
 
 #include <filesystem>
 #include <fstream>
@@ -419,10 +422,24 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
         q.tail(this->getNJOINTS()) = reorderJoints(joint_position.vec_());
         return q;
     }
+    
+    Eigen::VectorXd Aliengo::fromRobotlibToPinocchioJointState(const Eigen::Matrix<double, 7, 1> &robot_pose, const robotlib::JointState &joint_position){
+        Eigen::VectorXd q = pinocchio::neutral(robot_model_pin);
+        q.tail(this->getNJOINTS()) = reorderJoints(joint_position.vec_());
+        q.head(7) = robot_pose;
+        return q;
+    }
 
     Eigen::VectorXd Aliengo::fromRobotlibToPinocchioJointVelocity(const robotlib::JointState &joint_velocity){
         Eigen::VectorXd qd = Eigen::VectorXd::Zero(robot_model_pin.nv);
         qd.tail(this->getNJOINTS()) = reorderJoints(joint_velocity.vec_());
+        return qd;
+    }
+    
+    Eigen::VectorXd Aliengo::fromRobotlibToPinocchioJointVelocity(const Eigen::Matrix<double, 6, 1> &robot_velocity, const robotlib::JointState &joint_velocity){
+        Eigen::VectorXd qd = Eigen::VectorXd::Zero(robot_model_pin.nv);
+        qd.tail(this->getNJOINTS()) = reorderJoints(joint_velocity.vec_());
+        qd.head(6) = robot_velocity;
         return qd;
     }
 
@@ -507,90 +524,79 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
         }
     }
 
-    void Aliengo::inverseDynamicsHTerm( robotlib::JointState &tau_joints,
-                                        const Eigen::Matrix<double, 6, 1> &gravity_vector,
+    void Aliengo::inverseDynamics(const Eigen::Matrix<double, 7, 1> &robot_pose,    // robot base
+                                const Eigen::Matrix<double, 6, 1> &robot_velocity,    // robot base
+                                const Eigen::Matrix<double, 6, 1> &robot_acceleration,  // robot base
+                                const robotlib::JointState &joint_position,
+                                const robotlib::JointState &joint_velocity,
+                                const robotlib::JointState &joint_acceleration,
+                                const robotlib::eigen::aligned_map<std::string, Eigen::Vector3d> &f_contact,
+                                robotlib::JointState &tau_joints)             ///output
+    {
+        // map from robotlib to pinocchio
+        Eigen::VectorXd q = fromRobotlibToPinocchioJointState(robot_pose, joint_position);
+        Eigen::VectorXd qd = fromRobotlibToPinocchioJointVelocity(robot_velocity, joint_velocity);
+        Eigen::VectorXd qdd = fromRobotlibToPinocchioJointVelocity(robot_acceleration, joint_acceleration);
+
+        // compute contact forces in joint frame
+        pinocchio::container::aligned_vector<pinocchio::Force> joint_f_contact(robot_model_pin.njoints, pinocchio::Force::Zero());
+        for(auto &[frame_name, force] : f_contact)
+        {
+            const pinocchio::FrameIndex frame_id = robot_model_pin.getFrameId(frame_name);
+            const pinocchio::JointIndex joint_id = robot_model_pin.frames[frame_id].parentJoint;
+            pinocchio::Force pin_force(force, Eigen::Vector3d::Zero());
+			joint_f_contact[joint_id] = robot_data_pin.oMi[joint_id].actInv(
+											robot_data_pin.oMf[frame_id].act(pin_force));
+        }
+        pinocchio::rnea(robot_model_pin, robot_data_pin, q, qd, qdd, joint_f_contact);
+        tau_joints = reorderJoints(robot_data_pin.tau.tail(this->getNJOINTS()));
+    }
+
+
+    void Aliengo::computeGravityTerm(  const Eigen::Matrix<double, 7, 1> &robot_pose,
+                                          const robotlib::JointState &joint_position,
+                                          Eigen::Matrix<double, 6, 1> &g_base,
+                                          robotlib::JointState &g_joints)
+    {
+        Eigen::VectorXd q = fromRobotlibToPinocchioJointState(robot_pose, joint_position);
+
+        pinocchio::computeGeneralizedGravity(robot_model_pin, robot_data_pin, q); // equivalent to pinocchio::rnea(model, data, q, 0, 0).
+
+		g_base = robot_data_pin.g.block<6,1>(0,0);
+		g_joints = reorderJoints(robot_data_pin.g.tail(this->getNJOINTS()));
+    }
+    
+    void Aliengo::computeGravityTerm(  const Eigen::Matrix<double, 7, 1> &robot_pose,
+                                          const robotlib::JointState &joint_position,
+                                          robotlib::JointState &g_joints)
+    {
+        Eigen::Matrix<double, 6, 1> g_base = Eigen::Matrix<double, 6, 1>::Zero();
+        computeGravityTerm(robot_pose, joint_position, g_base, g_joints);
+    }
+
+    void Aliengo::computeNonLinearEffects( const Eigen::Matrix<double, 7, 1> &robot_pose,
+                                        const Eigen::Matrix<double, 6, 1> &robot_velocity,
                                         const robotlib::JointState &joint_position,
                                         const robotlib::JointState &joint_velocity,
-                                        const Eigen::Matrix<double, 6, 1> &robot_velocity,
-                                        const Eigen::Matrix<double, 6, 1> &robot_acceleration)
+                                        Eigen::Matrix<double, 6, 1> &nle_base,
+                                        robotlib::JointState &nle_joints
+                                        )
     {
-        Eigen::Matrix<double, 6, 1> wrench_base(Eigen::Matrix<double, 6, 1>::Zero());
-        inverseDynamics(robot_velocity, robot_acceleration, gravity_vector, joint_position, joint_velocity, this->makeJointState(0.0), wrench_base, tau_joints);
+        Eigen::VectorXd q = fromRobotlibToPinocchioJointState(robot_pose, joint_position);
+        Eigen::VectorXd qd = fromRobotlibToPinocchioJointVelocity(robot_velocity, joint_velocity);
+        pinocchio::nonLinearEffects(robot_model_pin, robot_data_pin, q, qd);
+
+		nle_base = robot_data_pin.nle.block<6,1>(0,0);
+		nle_joints = reorderJoints(robot_data_pin.nle.tail(this->getNJOINTS()));
     }
 
-    void Aliengo::computeGravityCompensation(const Eigen::Matrix<double, 6, 1> &gravity_vector,
-                                             const robotlib::JointState &joint_position,
-                                             Eigen::Matrix<double, 6, 1> &wrench_base, ///output
-                                             robotlib::JointState &tau_joints) const
+    void Aliengo::computeNonLinearEffects( const Eigen::Matrix<double, 7, 1> &robot_pose,
+                                        const robotlib::JointState &joint_position,
+                                        const robotlib::JointState &joint_velocity,
+                                        robotlib::JointState &nle_joints)
     {
-        Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_position{};
-        Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_tau_joints{};
-
-        robcogen_joint_position.setZero();
-        robcogen_tau_joints.setZero();
-
-        for(auto joint : auxiliar_joints_variable_)
-        {
-            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-            robcogen_joint_position[joint_id] = joint_position[joint];
-        }
-
-        inverse_dynamics_->G_terms_fully_actuated(wrench_base, robcogen_tau_joints, gravity_vector, robcogen_joint_position);
-
-        for(auto joint : auxiliar_joints_variable_)
-        {
-            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-            tau_joints[joint] = robcogen_tau_joints[joint_id];
-        }
-    }
-
-    Eigen::Matrix<double, 6, 1> Aliengo::computeWrenchGravityCompensation(const Eigen::Matrix<double, 6, 1> &gravity_vector,
-                                                      const robotlib::JointState &joint_position) const
-    {
-        Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_position{};
-        Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_tau_joints{};
-        Eigen::Matrix<double, 6, 1> wrench_base;
-
-        robcogen_joint_position.setZero();
-        robcogen_tau_joints.setZero();
-        wrench_base.setZero();
-
-        for(auto joint : auxiliar_joints_variable_)
-        {
-            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-            robcogen_joint_position[joint_id] = joint_position[joint];
-        }
-
-        inverse_dynamics_->G_terms_fully_actuated(wrench_base, robcogen_tau_joints, gravity_vector, robcogen_joint_position);
-
-        return wrench_base;
-    }
-
-    void Aliengo::computeTorquesGravityCompensation(const Eigen::Matrix<double, 6, 1> &gravity_vector,
-                                             const robotlib::JointState &joint_position,
-                                             robotlib::JointState &tau_joints) const
-    {
-        Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_position{};
-        Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_tau_joints{};
-        Eigen::Matrix<double, 6, 1> wrench_base;
-
-        robcogen_joint_position.setZero();
-        robcogen_tau_joints.setZero();
-        wrench_base.setZero();
-
-        for(auto joint : auxiliar_joints_variable_)
-        {
-            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-            robcogen_joint_position[joint_id] = joint_position[joint];
-        }
-
-        inverse_dynamics_->G_terms_fully_actuated(wrench_base, robcogen_tau_joints, gravity_vector, robcogen_joint_position);
-
-        for(auto joint : auxiliar_joints_variable_)
-        {
-            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-            tau_joints[joint] = robcogen_tau_joints[joint_id];
-        }
+        Eigen::Matrix<double, 6, 1> nle_base = Eigen::Matrix<double, 6, 1>::Zero();
+        computeNonLinearEffects(robot_pose, Eigen::Matrix<double,6,1>::Zero(), joint_position, joint_velocity, nle_base, nle_joints);
     }
 
      void Aliengo::inverseKinematics(const robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
