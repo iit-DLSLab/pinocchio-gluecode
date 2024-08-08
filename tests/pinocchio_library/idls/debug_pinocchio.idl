@@ -5,13 +5,17 @@ struct DebugPinocchioMsg
     //sequence<double> feet_velocity_robcogen;
     //sequence<double> feet_velocity_pin;
     
-    double q_inv_kin_gt[12]; // joints configuration
-    double q_inv_kin[12]; // joints configuration
-    double q_inv_kin_robcogen[12]; // joints configuration
+    double q_inv_kin_gt[19]; // joints configuration
+    double q_inv_kin[19]; // joints configuration
+    double q_inv_kin_robcogen[19]; // joints configuration
 
-    double err_inv_kin[12];
-    double q_init_guess[12]; // joints configuration
+    double err_inv_kin[6];
+    double q_init_guess[19]; // joints configuration
 
     double ee_pose_des[6]; //pos, rpy
     double ee_parent_joint_pose_des[6]; //pos, rpy
+
+    double tau_gt[12]; 
+    double tau_est[12]; 
+    double tau_robcogen[12]; 
 };
