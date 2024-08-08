@@ -103,7 +103,7 @@ namespace dls
 
     void GazeboPluginGlueTest::run()
 	{	
-		// -- get joints data
+		// get joints data
 		int i=0;
 		for(auto &leg : *joints_positions)
 		{
@@ -116,12 +116,37 @@ namespace dls
 			}
 		}
 
+		// get robot state
+		base_pose = this->sim_model->GetLink(base_frame)->WorldPose();
+		// -- robot position
+		q = pinocchio::neutral(robot_model);
+		q.block<3,1>(0,0) = Eigen::Vector3d(base_pose.Pos().X(), base_pose.Pos().Y(), base_pose.Pos().Z());
+		Eigen::Quaterniond quaternion_base = dls::math::rpyToquat(Eigen::Vector3d(base_pose.Rot().Euler()[0], base_pose.Rot().Euler()[1], base_pose.Rot().Euler()[2]));
+		q(3) = quaternion_base.x();
+		q(4) = quaternion_base.y();
+		q(5) = quaternion_base.z();
+		q(6) = quaternion_base.w();
+		q.tail(pRobot->getNJOINTS()) = reorderJoints(joints_positions->vec_());
+
+		// -- robot velocity
+		qd = Eigen::VectorXd::Zero(robot_model.nv);
+		qd.tail(pRobot->getNJOINTS()) = reorderJoints(joints_velocity->vec_());
+		auto w_base_lin_vel = this->sim_model->GetLink(base_frame)->WorldLinearVel();
+		auto w_base_ang_vel = this->sim_model->GetLink(base_frame)->WorldAngularVel();
+		auto b_base_lin_vel = base_pose.Rot().Inverse() * w_base_lin_vel;
+		auto b_base_ang_vel = base_pose.Rot().Inverse() * w_base_ang_vel;
+		qd.head(3) = Eigen::Vector3d(b_base_lin_vel.X(), b_base_lin_vel.Y(), b_base_lin_vel.Z());
+		qd.segment(3,3) = Eigen::Vector3d(b_base_ang_vel.X(), b_base_ang_vel.Y(), b_base_ang_vel.Z());
+		qdd = Eigen::VectorXd::Zero(robot_model.nv);
+
 		// testForwardKinematics();
 
 		// testGetPose();
 
-		testInverseDynamics(InverseDynamicsTest::GRAVITY_COMPENSATION);
-		testInverseDynamics(InverseDynamicsTest::NON_LINEAR_EFFECTS);
+		// testInverseDynamics(InverseDynamicsTest::GRAVITY_COMPENSATION);
+		// testInverseDynamics(InverseDynamicsTest::NON_LINEAR_EFFECTS);
+
+		testJacobians();
 
 		// Send dds message
 		ddslink->sendMessage("gazebo_glue_code_test", &msg);
@@ -226,6 +251,8 @@ namespace dls
 	}
 
 	void GazeboPluginGlueTest::testGravityCompensation(){
+		
+
 
 		// define inputs: q, qd=qdd=0
 		const std::string base_frame = "base_link";
@@ -248,6 +275,12 @@ namespace dls
 		Eigen::VectorXd qd = Eigen::VectorXd::Zero(robot_model.nv);
 		Eigen::VectorXd qdd = Eigen::VectorXd::Zero(robot_model.nv);
 
+		// 		auto frame_id = robot_model.getFrameId("lf_kfe_joint");
+		// std::cout <<"***************************" << std::endl;
+		// Eigen::MatrixXd footJac = Eigen::MatrixXd::Zero(6, robot_model.nv);
+		// pinocchio::computeFrameJacobian(robot_model, robot_data, q, frame_id, pinocchio::LOCAL_WORLD_ALIGNED, footJac);
+		// std::cout << footJac << std::endl;
+		// std::cout << "############################" << std::endl;
 		// compute base and joints gravity terms
 		const int n_joints = pRobot->getNJOINTS();
 		// -- method 1: using rnea
@@ -423,6 +456,95 @@ namespace dls
 		}
 	}
 
+	void GazeboPluginGlueTest::testJacobians(){
+	// obj: get the jacobian in base frame considering the fact that the robot has a floating base
+	// set frame
+	const std::string frame = "rf_foot";	
+	// frame pose
+	auto w_frame_pose = this->sim_model->GetLink(frame)->WorldPose();
+	// frame velocity in world frame
+	auto w_frame_vel = this->sim_model->GetLink(frame)->WorldLinearVel();
+	auto w_frame_ang_vel = this->sim_model->GetLink(frame)->WorldAngularVel();
+	// base velocity in world frame
+	auto w_base_vel = this->sim_model->GetLink(base_frame)->WorldLinearVel();
+	auto w_base_ang_vel = this->sim_model->GetLink(base_frame)->WorldAngularVel();
+	// base velocity in base frame
+	auto b_base_vel = base_pose.Rot().Inverse() * w_base_vel;
+	auto b_base_ang_vel = base_pose.Rot().Inverse() * w_base_ang_vel;
+	// frame velocity in base frame
+	auto b_base_to_frame_pos = base_pose.Inverse().Rot()*(w_frame_pose.Pos() - base_pose.Pos());
+	auto b_frame_vel = base_pose.Inverse().Rot() * w_frame_vel - b_base_vel - b_base_ang_vel.Cross(b_base_to_frame_pos);
+	auto b_frame_ang_vel = base_pose.Inverse().Rot() * w_frame_ang_vel- b_base_ang_vel;
+
+	// ********* compute foot velocity using pinocchio**********
+	// getFrameJacobian with LOCAL_WORLD_ALIGNED
+	auto frame_id = robot_model.getFrameId(frame);
+	Eigen::MatrixXd footJac = Eigen::MatrixXd::Zero(6, robot_model.nv);
+	pinocchio::computeFrameJacobian(robot_model, robot_data, q, frame_id, pinocchio::LOCAL_WORLD_ALIGNED, footJac);
+
+	// compute linear foot velocity in world frame
+	Eigen::MatrixXd footJac_lin = footJac.block(0,0,3, robot_model.nv);
+	Eigen::Vector3d w_frame_vel_pin = footJac_lin*qd;
+	// compute linear foot velocity in base frame
+	footJac_lin.block<3,6>(0,0).setZero();
+	Eigen::Matrix3d b_R_w = dls::math::quatToRotMat(Eigen::Quaterniond(q.block<4,1>(3,0))); // orientation of the world frame expressed in base frame
+	Eigen::MatrixXd b_footJac_lin = b_R_w*footJac_lin;
+	Eigen::Vector3d b_frame_vel_pin = b_footJac_lin*qd;
+
+
+	// compute angular velocity in world frame
+	Eigen::MatrixXd footJac_ang = footJac.block(3,0,3, robot_model.nv);
+	Eigen::Vector3d w_frame_ang_vel_pin = footJac_ang*qd;
+	// compute angular velocity in base frame
+	footJac_ang.block<3,6>(0,0).setZero();
+	Eigen::MatrixXd b_footJac_ang = b_R_w*footJac_ang;
+	Eigen::Vector3d b_frame_ang_vel_pin = b_footJac_ang*qd;
+	
+	// ********* compute foot velocity using robotlib**********
+	// -- method 1: using limbs jacobian
+	// Eigen::MatrixXd J = Eigen::MatrixXd::Zero(6, pRobot->getNJOINTS());
+	// pRobot->computeLimbsJacobian(*joints_positions, frame, J);
+	// qd_ordered.tail(pRobot->getNJOINTS()) = reorderJoints(qd.tail(pRobot->getNJOINTS()));
+	// b_frame_vel_pin = J.block(0,0,3, pRobot->getNJOINTS()) *qd_ordered.tail(pRobot->getNJOINTS());
+	// b_frame_ang_vel_pin = J.block(3,0,3, pRobot->getNJOINTS()) *qd_ordered.tail(pRobot->getNJOINTS());
+
+	// -- method 2: using whole body jacobian
+	Eigen::MatrixXd J = Eigen::MatrixXd::Zero(6, robot_model.nv);
+	pRobot->computeWholeBodyJacobian(q.head(7), *joints_positions, frame, J);
+	J.block<6,6>(0,0).setZero();
+	auto qd_ordered = qd;
+	qd_ordered.tail(pRobot->getNJOINTS()) = reorderJoints(qd.tail(pRobot->getNJOINTS()));
+	b_frame_vel_pin = J.block(0,0,3, robot_model.nv ) * qd_ordered;
+	b_frame_ang_vel_pin = J.block(3,0,3, robot_model.nv) * qd_ordered;
+
+	// -- fill dds message field
+	msg.feet_vel()[0] = w_frame_vel_pin(0);
+	msg.feet_vel()[1] = w_frame_vel_pin(1);
+	msg.feet_vel()[2] = w_frame_vel_pin(2);
+	msg.feet_vel_gt()[0] = w_frame_vel.X();
+	msg.feet_vel_gt()[1] = w_frame_vel.Y();
+	msg.feet_vel_gt()[2] = w_frame_vel.Z();
+	msg.feet_vel()[3] = b_frame_vel_pin(0);
+	msg.feet_vel()[4] = b_frame_vel_pin(1);
+	msg.feet_vel()[5] = b_frame_vel_pin(2);
+	msg.feet_vel_gt()[3] = b_frame_vel.X();
+	msg.feet_vel_gt()[4] = b_frame_vel.Y();
+	msg.feet_vel_gt()[5] = b_frame_vel.Z();
+	msg.feet_vel()[6] = w_frame_ang_vel_pin(0);
+	msg.feet_vel()[7] = w_frame_ang_vel_pin(1);
+	msg.feet_vel()[8] = w_frame_ang_vel_pin(2);
+	msg.feet_vel_gt()[6] = w_frame_ang_vel.X();
+	msg.feet_vel_gt()[7] = w_frame_ang_vel.Y();
+	msg.feet_vel_gt()[8] = w_frame_ang_vel.Z();
+
+	msg.feet_vel()[9] = b_frame_ang_vel_pin(0);
+	msg.feet_vel()[10] = b_frame_ang_vel_pin(1);
+	msg.feet_vel()[11] = b_frame_ang_vel_pin(2);
+	msg.feet_vel_gt()[9] = b_frame_ang_vel.X();
+	msg.feet_vel_gt()[10] = b_frame_ang_vel.Y();
+	msg.feet_vel_gt()[11] = b_frame_ang_vel.Z();
+
+	}
 	Eigen::VectorXd GazeboPluginGlueTest::reorderJoints(const Eigen::VectorXd& data) const{
         Eigen::VectorXd new_data = data;
         for(auto &[key, value] : idx_map)

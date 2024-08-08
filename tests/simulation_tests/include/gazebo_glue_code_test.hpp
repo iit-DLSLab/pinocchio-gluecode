@@ -9,6 +9,7 @@
 #include <gazebo/sensors/ContactSensor.hh>
 
 #include <ignition/transport.hh>
+#include <ignition/math/Pose3.hh>
 
 #include "dls2/util/messaging/dds_participant.hpp"
 #include "dls2/log/log.hpp"
@@ -89,6 +90,7 @@ namespace dls
         void testInverseDynamics(const InverseDynamicsTest test_type);
         void testGravityCompensation();
         void testNonLinearEffects();
+        void testJacobians();
 	    Eigen::VectorXd reorderJoints(const Eigen::VectorXd& data) const;
 
         pinocchio::Model robot_model;
@@ -97,6 +99,13 @@ namespace dls
         // our convention: lf rf lh rh
         // pinocchio one: lf lh rf rh
         std::map<int,int> idx_map = {{3,6},{4,7},{5,8}};
+
+
+		const std::string base_frame = "base_link";
+        ignition::math::Pose3d base_pose;
+        Eigen::VectorXd q;
+        Eigen::VectorXd qd;
+        Eigen::VectorXd qdd;
     };
 
    GZ_REGISTER_MODEL_PLUGIN(GazeboPluginGlueTest);
