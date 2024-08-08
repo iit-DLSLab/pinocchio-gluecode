@@ -128,6 +128,7 @@ namespace aliengolib
 
     void Aliengo::setJointLimitsFromUrdf()
     {
+        
         //Get limits from URDF for position, velocity and effort:
         for(std::pair<std::string, std::shared_ptr<urdf::Joint> > jointPair : robot_model_.joints_)
         {
@@ -243,179 +244,46 @@ namespace aliengolib
 
         return frame_pose;
     }
-
-    // Eigen::Vector3d Aliengo::getFootPosition(const robotlib::JointState &q,
-    //                                 const std::shared_ptr<robotlib::Frame> foot)
-    // {
-    //     return this->getFramePosition(q, this->getLink("TRUNK"), foot);
-    // }
-
-    // Eigen::Matrix3d Aliengo::getFootOrientation(const robotlib::JointState &q,
-    //                                     const std::shared_ptr<robotlib::Frame> foot)
-    // {
-    //     return this->getFrameOrientation(q, this->getLink("TRUNK"), foot);
-    // }
-
-    // Eigen::Matrix4d Aliengo::getFootPose(const robotlib::JointState &q,
-    //                             const std::shared_ptr<robotlib::Frame> foot)
-    // {
-    //     Eigen::Matrix4d foot_pose{};
-    //     foot_pose.setZero();
-
-    //     foot_pose.block(0, 3, 3, 1) << getFootPosition(q, foot);
-    //     foot_pose.block(0, 0, 3, 3) << getFootOrientation(q, foot);
-    //     foot_pose.row(3) << 0, 0, 0, 1;
-
-    //     return foot_pose;
-    // }
-
-    // Eigen::Vector3d Aliengo::getFootPosition(const robotlib::JointState &q,
-    //                         const std::shared_ptr<robotlib::LimbBase> leg)
-    // {
-    //     return this->getFramePosition(q, this->getLink("TRUNK"), leg->getEndEffector());
-    // }
-
-    // Eigen::Matrix3d Aliengo::getFootOrientation(const robotlib::JointState &q,
-    //                                     const std::shared_ptr<robotlib::LimbBase> leg)
-    // {
-    //     return this->getFrameOrientation(q, this->getLink("TRUNK"), leg->getEndEffector());
-    // }
-
-    // Eigen::Matrix4d Aliengo::getFootPose(const robotlib::JointState &q,
-    //                             const std::shared_ptr<robotlib::LimbBase> leg)
-    // {
-    //     Eigen::Matrix4d foot_pose{};
-    //     foot_pose.setZero();
-
-    //     foot_pose.block(0, 3, 3, 1) << getFootPosition(q, leg->getEndEffector());
-    //     foot_pose.block(0, 0, 3, 3) << getFootOrientation(q, leg->getEndEffector());
-    //     foot_pose.row(3) << 0, 0, 0, 1;
-
-    //     return foot_pose;
-    // }
     
-void Aliengo::updateLinearJacobian(const robotlib::JointState &joints_positions,
-                                       robotlib::LegDataMap<robotlib::Jacobian> &robot_jacobian) const
-{
-    Eigen::Matrix<double, NJOINTS_TOT, 1> joints_positions_matrix;
-    int count{0};
+    void Aliengo::computeLimbsJacobian(    const robotlib::JointState &q,
+                                            const std::string& frame_name,
+                                            Eigen::MatrixXd &jacobian){
+            // map robotlib to pinocchio
+            Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(q);
 
-    for(auto joint : auxiliar_joints_variable_)
-    {
-        joints_positions_matrix[count] = joints_positions[joint];
-        count++;
+            // compute jacobian in base frame: since we are setting the robot pose to Identity (using fromRobotlibToPinocchioJointState(q)) the jacobian computed in LOCAL_WORLD_ALIGNED is the jacobian in the base frame
+            const int frame_id = robot_model_pin.getFrameId(frame_name);
+            Eigen::MatrixXd J = Eigen::MatrixXd::Zero(6, robot_model_pin.nv);
+            pinocchio::computeFrameJacobian(robot_model_pin, robot_data_pin, q_pin, frame_id, pinocchio::LOCAL_WORLD_ALIGNED, J);
+
+            // set output
+            const int jacobian_cols = robot_model_pin.nv;-6; // -6 because we are not considering the floating base joint
+            jacobian = J.block(0,6,6, jacobian_cols); //6 because it is a geometric jacobian (lin, ang)
+
+            jacobian = reorderLimbsJacobian(jacobian);
     }
 
-    jacobians_->updateParameters();
+    void Aliengo::computeWholeBodyJacobian( 
+                                            const Eigen::Matrix<double, 7, 1> &robot_pose,   
+                                            const robotlib::JointState &q,
+                                            const std::string& frame_name,
+                                            Eigen::MatrixXd &jacobian){
+        // map robotlib to pinocchio
+        Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(robot_pose, q);
 
-    robot_jacobian["LF"].block<3,3>(0,0) = jacobians_->fr_trunk_J_LF_foot(joints_positions_matrix).block<3,3>(3,0);
-	robot_jacobian["RF"].block<3,3>(0,0) = jacobians_->fr_trunk_J_RF_foot(joints_positions_matrix).block<3,3>(3,0);
-	robot_jacobian["LH"].block<3,3>(0,0) = jacobians_->fr_trunk_J_LH_foot(joints_positions_matrix).block<3,3>(3,0);
-	robot_jacobian["RH"].block<3,3>(0,0) = jacobians_->fr_trunk_J_RH_foot(joints_positions_matrix).block<3,3>(3,0);
-}
+        // compute jacobian in world frame        
+        const int frame_id = robot_model_pin.getFrameId(frame_name);
+        Eigen::MatrixXd J = Eigen::MatrixXd::Zero(6, robot_model_pin.nv);
+        pinocchio::computeFrameJacobian(robot_model_pin, robot_data_pin, q_pin, frame_id, pinocchio::LOCAL_WORLD_ALIGNED, J);
 
-void Aliengo::getFootJacobian(const robotlib::JointState &q,
-                              const std::shared_ptr<robotlib::LimbBase> leg,
-                              robotlib::Jacobian &footJac) const
-{
-    Eigen::Matrix<double, NJOINTS_TOT, 1> joints_positions_matrix;
-    int count{0};
+        // compute jacobian in base frame
+        Eigen::Matrix3d b_R_w = robotlib::utils::quatToRotMat(Eigen::Quaterniond(q_pin.block<4,1>(3,0))); // orientation of the world frame expressed in base frame
+        jacobian.block(0,0,3, robot_model_pin.nv) = b_R_w * J.block(0,0,3, robot_model_pin.nv);
+        jacobian.block(3,0,3, robot_model_pin.nv) = b_R_w * J.block(3,0,3, robot_model_pin.nv);
 
-    for(auto joint : auxiliar_joints_variable_)
-    {
-        joints_positions_matrix[count] = q[joint];
-        count++;
+        jacobian = reorderWholeBodyJacobian(jacobian);
     }
 
-    iit::dog::LegID leg_id = static_cast<iit::dog::LegID>(glue_leg_names_to_ids.at(leg->getName()));
-    footJac.block<3,3>(0,0) = feet_jacobians_->getFootJacobian(joints_positions_matrix, leg_id);
-    footJac.block<3,3>(3,0) = feet_jacobians_->getAngularFootJacobian(joints_positions_matrix, leg_id);
-}
-
-
-    void Aliengo::updateAngularJacobian(const robotlib::JointState &joints_positions,
-                                       robotlib::LegDataMap<robotlib::Jacobian> &robot_jacobian) const
-    {
-        // TODO: test
-        Eigen::Matrix<double, NJOINTS_TOT, 1> joints_positions_matrix;
-        int count{0};
-
-        for(auto joint : auxiliar_joints_variable_)
-        {                
-            joints_positions_matrix[count] = joints_positions[joint];
-            count++;
-        }
-
-        jacobians_->updateParameters();
-        robot_jacobian["LF"].block<3,3>(3,0) = jacobians_->fr_trunk_J_LF_foot(joints_positions_matrix).block<3,3>(0,0);
-		robot_jacobian["RF"].block<3,3>(3,0) = jacobians_->fr_trunk_J_RF_foot(joints_positions_matrix).block<3,3>(0,0);
-		robot_jacobian["LH"].block<3,3>(3,0) = jacobians_->fr_trunk_J_LH_foot(joints_positions_matrix).block<3,3>(0,0);
-		robot_jacobian["RH"].block<3,3>(3,0) = jacobians_->fr_trunk_J_RH_foot(joints_positions_matrix).block<3,3>(0,0);
-    }
-
-    void Aliengo::updateLinearFootJacobian(const robotlib::JointState &joints_positions,
-                                        const std::shared_ptr<robotlib::LimbBase> leg,
-                                        robotlib::Jacobian &footJac) const
-    {
-        Eigen::Matrix<double, NJOINTS_TOT, 1> joints_positions_matrix;
-        int count{0};
-
-        for(auto joint : auxiliar_joints_variable_)
-        {
-            joints_positions_matrix[count] = joints_positions[joint];
-            count++;
-        }
-
-        jacobians_->updateParameters();
-        if(leg->getName().compare("LF")==0)
-        {
-            footJac.block<3,3>(0,0) = jacobians_->fr_trunk_J_LF_foot(joints_positions_matrix).block<3,3>(3,0);
-        }
-        else if(leg->getName().compare("RF")==0)
-        {
-            footJac.block<3,3>(0,0) = jacobians_->fr_trunk_J_RF_foot(joints_positions_matrix).block<3,3>(3,0);
-        }
-        else if(leg->getName().compare("LH")==0)
-        {
-            footJac.block<3,3>(0,0) = jacobians_->fr_trunk_J_LH_foot(joints_positions_matrix).block<3,3>(3,0);
-        }
-        else if(leg->getName().compare("RH")==0)
-        {
-            footJac.block<3,3>(0,0) = jacobians_->fr_trunk_J_RH_foot(joints_positions_matrix).block<3,3>(3,0);
-        }
-    }
-
-    void Aliengo::updateAngularFootJacobian(const robotlib::JointState &joints_positions,
-                                        const std::shared_ptr<robotlib::LimbBase> leg,
-                                        robotlib::Jacobian &footJac) const
-    {
-        Eigen::Matrix<double, NJOINTS_TOT, 1> joints_positions_matrix;
-        int count{0};
-
-        for(auto joint : auxiliar_joints_variable_)
-        {
-            joints_positions_matrix[count] = joints_positions[joint];
-            count++;
-        }
-
-        jacobians_->updateParameters();
-        if(leg->getName().compare("LF"))
-        {
-            footJac.block<3,3>(3,0) = jacobians_->fr_trunk_J_LF_foot(joints_positions_matrix).block<3,3>(0,0);
-        }
-        else if(leg->getName().compare("RF"))
-        {
-            footJac.block<3,3>(3,0) = jacobians_->fr_trunk_J_RF_foot(joints_positions_matrix).block<3,3>(0,0);
-        }
-        else if(leg->getName().compare("LH"))
-        {
-            footJac.block<3,3>(3,0) = jacobians_->fr_trunk_J_LH_foot(joints_positions_matrix).block<3,3>(0,0);
-        }
-        else if(leg->getName().compare("RH"))
-        {
-            footJac.block<3,3>(3,0) = jacobians_->fr_trunk_J_RH_foot(joints_positions_matrix).block<3,3>(0,0);
-        }
-    }
 
     Eigen::VectorXd Aliengo::fromRobotlibToPinocchioJointState(const robotlib::JointState &joint_position){
         Eigen::VectorXd q = pinocchio::neutral(robot_model_pin);
@@ -486,42 +354,6 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
         end_effector_velocity["RF"] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model_pin, robot_data_pin, robot_model_pin.getFrameId("rf_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
         end_effector_velocity["LH"] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model_pin, robot_data_pin, robot_model_pin.getFrameId("lh_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
         end_effector_velocity["RH"] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model_pin, robot_data_pin, robot_model_pin.getFrameId("rh_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
-    }
-
-    void Aliengo::inverseDynamics(const Eigen::Matrix<double, 6, 1> &robot_velocity,    // robot base
-                                const Eigen::Matrix<double, 6, 1> &robot_acceleration,  // robot base
-                                const Eigen::Matrix<double, 6, 1> &gravity_vector,
-                                const robotlib::JointState &joint_position,
-                                const robotlib::JointState &joint_velocity,
-                                const robotlib::JointState &joint_acceleration,
-                                Eigen::Matrix<double, 6, 1> &wrench_base, ///output
-                                robotlib::JointState &tau_joints)             ///output
-    {
-        Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_position{};
-        Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_velocity{};
-        Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_joint_acceleration{};
-        Eigen::Matrix<double, NJOINTS_TOT, 1> robcogen_tau_joints{};
-
-        robcogen_joint_position.setZero();
-        robcogen_joint_velocity.setZero();
-        robcogen_joint_acceleration.setZero();
-        robcogen_tau_joints.setZero();
-
-        for(auto joint : auxiliar_joints_variable_)
-        {
-            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-            robcogen_joint_position[joint_id] = joint_position[joint];
-            robcogen_joint_velocity[joint_id] = joint_velocity[joint];
-            robcogen_joint_acceleration[joint_id] = joint_acceleration[joint];
-        }
-
-        inverse_dynamics_->id_fully_actuated(wrench_base, robcogen_tau_joints, gravity_vector, robot_velocity, robot_acceleration, robcogen_joint_position, robcogen_joint_velocity, robcogen_joint_acceleration);
-
-        for(auto joint : auxiliar_joints_variable_)
-        {
-            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-            tau_joints[joint] = robcogen_tau_joints[joint_id];
-        }
     }
 
     void Aliengo::inverseDynamics(const Eigen::Matrix<double, 7, 1> &robot_pose,    // robot base
@@ -1010,6 +842,26 @@ void Aliengo::getFootJacobian(const robotlib::JointState &q,
             new_data[key] = data[value];
         }
         return new_data;
+    }
+
+    Eigen::MatrixXd Aliengo::reorderLimbsJacobian(const Eigen::MatrixXd& jacobian) const{
+        Eigen::MatrixXd new_jac = jacobian;
+        for(auto &[key, value] : idx_map)
+        {
+            new_jac.block<6,1>(0,value) = jacobian.block<6,1>(0,key);
+            new_jac.block<6,1>(0,key) = jacobian.block<6,1>(0,value);
+        }
+        return new_jac;
+    }
+
+    Eigen::MatrixXd Aliengo::reorderWholeBodyJacobian(const Eigen::MatrixXd& jacobian) const{
+        Eigen::MatrixXd new_jac = jacobian;
+        for(auto &[key, value] : idx_map)
+        {
+            new_jac.block<6,1>(0,value+6) = jacobian.block<6,1>(0,key+6);
+            new_jac.block<6,1>(0,key+6) = jacobian.block<6,1>(0,value+6);
+        }
+        return new_jac;
     }
 
     std::shared_ptr<AliengoLeg> makeLeg(const std::string &legName) // function used to generate a leg inside the create_function

@@ -144,27 +144,6 @@ namespace aliengolib
         /*!
          * @brief Inverse dynamics.
          * @details
-         * It computes the torque of each joint and the wrench at the base.
-         * @param[in] robot_velocity velocity of the robot base in base frame.
-         * @param[in] robot_acceleration  acceleration of the robot base in base frame.
-         * @param[in] gravity_vector gravity vector in base frame.
-         * @param[in] joint_position angle of each joint.
-         * @param[in] joint_velocity velocity of each joint.
-         * @param[in] joint_acceleration acceleration of each joint.
-         * @param[out] wrench_base wrench applied to the base.
-         * @param[out] tau_joints torque of each joint.
-         */
-        virtual void inverseDynamics(const Eigen::Matrix<double, 6, 1> &robot_velocity,
-                                     const Eigen::Matrix<double, 6, 1> &robot_acceleration,
-                                     const Eigen::Matrix<double, 6, 1> &gravity_vector,
-                                     const robotlib::JointState &joint_position,
-                                     const robotlib::JointState &joint_velocity,
-                                     const robotlib::JointState &joint_acceleration,
-                                     Eigen::Matrix<double, 6, 1> &wrench_base,
-                                     robotlib::JointState &tau_joints) override;
-        /*!
-         * @brief Inverse dynamics.
-         * @details
          * It computes the torque at each joint. Before calling this function, you need to call forwardKinematics first
          * Use cases:
          * - robot gravity compensation: robot_velocity = 0, robot_acceleration = 0, joint_velocity = 0, joint_acceleration = 0, f_contact = forces to substain robot weight.
@@ -342,61 +321,29 @@ namespace aliengolib
     //      */
     //     virtual Eigen::Matrix4d getFootPose(const robotlib::JointState &q,
     //                                         const std::shared_ptr<robotlib::LimbBase> leg) override;
+
+        
         /*!
-         * @brief Get the foot jacobian.
-         * @details
-         * A reference to a Jacobian instance is passed as parameter and it is set to the foot jacobian values. This avoids returning a new Jacobian object that leads to dynamic memory allocation.
-         * @param[in] q angles of the joints.
-         * @param[in] leg leg corresponding to the foot.
-         * @param[out] footJac jacobian to be filled.
-         */
-        virtual void getFootJacobian(const robotlib::JointState &q,
-                                     const std::shared_ptr<robotlib::LimbBase> leg,
-                                     robotlib::Jacobian &footJac) const override;
+          * @brief Get the geometric jacobian of the frame expressed in base frame, related to the limbs only (so considering the actuated joints). The order is linear_jacobian, angular_jacobian. For a complete jacobian, see getFrameWholeBodyJacobian.
+          * @param[in] q angles of the joints.
+          * @param[in] frame_name name of the frame.
+          * @param[out] jacobian jacobian to be filled.
+          */
+        virtual void computeLimbsJacobian( const robotlib::JointState &q,
+                                    const std::string& frame_name,
+                                    Eigen::MatrixXd &jacobian) override;
 
         /*!
-         * @brief Update the linear part of the feet jacobian.
-         * @details
-         * A reference to a Jacobian instance is passed as parameter and it is set to the foot jacobian values. This avoids returning a new Jacobian object that leads to dynamic memory allocation.
-         * @param[in] q angles of the joints.
-         * @param[out] robot_jacobian jacobians associated to each foot.
-         */
-		virtual void updateLinearJacobian(const robotlib::JointState &joints_positions,
-                                          robotlib::LegDataMap<robotlib::Jacobian> &robot_jacobian) const override;
-
-        /*!
-         * @brief Update the linear part of the foot jacobian.
-         * @details
-         * A reference to a Jacobian instance is passed as parameter and it is set to the foot jacobian values. This avoids returning a new Jacobian object that leads to dynamic memory allocation.
-         * @param[in] q angles of the joints.
-         * @param[in] leg leg corresponding to the foot.
-         * @param[out] footJac jacobian to be filled.
-         */
-        virtual void updateLinearFootJacobian(const robotlib::JointState &joints_positions,
-                                             const std::shared_ptr<robotlib::LimbBase> leg,
-                                            robotlib::Jacobian &footJac) const override;
-         
-        /*!
-         * @brief Update the angular part of the feet jacobian.
-         * @details
-         * A reference to a Jacobian instance is passed as parameter and it is set to the foot jacobian values. This avoids returning a new Jacobian object that leads to dynamic memory allocation.
-         * @param[in] q angles of the joints.
-         * @param[out] robot_jacobian jacobians associated to each foot.
-         */
-        virtual void updateAngularJacobian(const robotlib::JointState &joints_positions,
-                                          robotlib::LegDataMap<robotlib::Jacobian> &robot_jacobian) const override;
-
-        /*!
-         * @brief Update the angular part of the foot jacobian.
-         * @details
-         * A reference to a Jacobian instance is passed as parameter and it is set to the foot jacobian values. This avoids returning a new Jacobian object that leads to dynamic memory allocation.
-         * @param[in] q angles of the joints.
-         * @param[in] leg leg corresponding to the foot.
-         * @param[out] footJac jacobian to be filled.
-         */
-        virtual void updateAngularFootJacobian(const robotlib::JointState &q,
-                                     const std::shared_ptr<robotlib::LimbBase> leg,
-                                     robotlib::Jacobian &footJac) const override;
+        * @brief Get the geometric jacobian of the frame expressed in base frame, related to both robot base and joints. The order is linear_jacobian, angular_jacobian. For a jacobian considering only the joints, see getLimbsJacobian.
+        * @param[in] robot_pose pose of the robot base in world frame.
+        * @param[in] q angles of the joints.
+        * @param[in] frame_name name of the frame.
+        * @param[out] jacobian jacobian to be filled.
+        */
+        virtual void computeWholeBodyJacobian(  const Eigen::Matrix<double, 7, 1> &robot_pose,
+                                        const robotlib::JointState &q,
+                                        const std::string& frame_name,
+                                        Eigen::MatrixXd &jacobian) override;
 
         /*!
          * @brief Get total robot mass.
@@ -556,6 +503,9 @@ namespace aliengolib
         std::map<int,int> idx_map = {{3,6},{4,7},{5,8}};
 
         Eigen::VectorXd reorderJoints(const Eigen::VectorXd& data) const;
+        Eigen::MatrixXd reorderLimbsJacobian(const Eigen::MatrixXd& jacobian) const;
+        Eigen::MatrixXd reorderWholeBodyJacobian(const Eigen::MatrixXd& jacobian) const;
+
         Eigen::VectorXd fromRobotlibToPinocchioJointState(const robotlib::JointState &joint_position);
         Eigen::VectorXd fromRobotlibToPinocchioJointState(const Eigen::Matrix<double, 7, 1> &robot_pose, const robotlib::JointState &joint_position);
         Eigen::VectorXd fromRobotlibToPinocchioJointVelocity(const robotlib::JointState &joint_velocity);
