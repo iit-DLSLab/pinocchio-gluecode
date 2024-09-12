@@ -498,7 +498,8 @@ namespace aliengolib
         JJt_lin += J_lin*J_lin.transpose();
         Eigen::MatrixXd J_pseudo = J_lin.transpose()*(JJt_lin.inverse());
         // compute desired joint velocity
-        qd_des = J_pseudo * velocity_des;                       
+        Eigen::VectorXd qd_des_pin = J_pseudo * velocity_des;
+        qd_des = reorderJoints(qd_des_pin.tail(this->getNJOINTS()));                       
     }
 
     void Aliengo::inverseDynamics(const Eigen::Matrix<double, 7, 1> &robot_pose,    // robot base
