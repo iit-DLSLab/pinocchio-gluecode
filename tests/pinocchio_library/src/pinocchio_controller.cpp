@@ -142,7 +142,7 @@ namespace controllers
         robotlib::JointState q_init_guess_robotlib =  pRobot->makeJointState(0.0);
         q_init_guess_robotlib = reorderJoints(q_init_guess.tail(pRobot->getNJOINTS()));
         // std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-        pRobot->fixedBaseInveseKinematics(ee_name, q_init_guess_robotlib, pose_des.block<3,1>(0,3), q_des_robotlib);
+        pRobot->fixedBaseInverseKinematics(ee_name, q_init_guess_robotlib, pose_des.block<3,1>(0,3), q_des_robotlib);
         // std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
         // outFile << std::to_string(std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count()/1000.0) <<std::endl;
 
@@ -155,7 +155,7 @@ namespace controllers
         // q_des_robotlib = q_init_guess_robotlib;
         // std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
         // for (auto &[name, position_des] : position_des_map){
-        //     pRobot->fixedBaseInveseKinematics(name, q_des_robotlib, position_des, q_des_robotlib);
+        //     pRobot->fixedBaseInverseKinematics(name, q_des_robotlib, position_des, q_des_robotlib);
         // }
         // std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
         // outFile << std::to_string(std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count()/1000.0) <<std::endl;
