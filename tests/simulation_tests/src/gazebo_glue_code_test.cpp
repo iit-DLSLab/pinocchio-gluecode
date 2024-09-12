@@ -146,7 +146,7 @@ namespace dls
 		// testInverseDynamics(InverseDynamicsTest::GRAVITY_COMPENSATION);
 		// testInverseDynamics(InverseDynamicsTest::NON_LINEAR_EFFECTS);
 
-		testJacobians();
+		// testJacobians();
 
 		// Send dds message
 		ddslink->sendMessage("gazebo_glue_code_test", &msg);

@@ -29,7 +29,7 @@ namespace controllers
 
         AppStatus eStop() override { return getStatus(); }
         
-        bool deactivation(const std::chrono::system_clock::time_point& time);
+        virtual bool deactivation(const std::chrono::system_clock::time_point& time) override;
 
         void runController();
 
@@ -62,7 +62,9 @@ namespace controllers
 
         std::map<int,int> idx_map = {{3,6},{4,7},{5,8}};
 
-        void reoderJoints(Eigen::VectorXd& data) const;
+        Eigen::VectorXd reorderJoints(const Eigen::VectorXd& data) const;
+
+        // std::ofstream outFile;
     };
 } // namespace controllers
 

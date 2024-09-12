@@ -10,6 +10,7 @@
 #include "pinocchio/algorithm/frames.hpp"
 #include "pinocchio/parsers/urdf.hpp"
 
+#include <pinocchio/algorithm/rnea.hpp>
 namespace controllers
 {
     PinocchioController::PinocchioController (const std::string& ID, const std::shared_ptr<robotlib::RobotBase> robot)
@@ -20,13 +21,14 @@ namespace controllers
     , output_tau(robot) // instantiate output
     , output_traj_gen(robot) // instantiate output
     , pose_increment(Eigen::Vector<double,6>::Zero())
+    // , outFile ("")
     {
         // load pinocchio model from urdf
         const std::string urdf_name = "/usr/include/aliengo_description/urdfs/aliengo.urdf";
-        pinocchio::urdf::buildModel(urdf_name, robot_model);
+        pinocchio::urdf::buildModel(urdf_name, pinocchio::JointModelFreeFlyer(), robot_model);
         robot_data = pinocchio::Data(robot_model);
 
-        q_increment.resize(robot_model.nq);
+        q_increment.resize(pRobot->getNJOINTS());
 
         // Create dynamic debug message
         // debug_msg = createDynamicMessage(dls::topics::pinocchio_controller::debug.second);
@@ -46,12 +48,6 @@ namespace controllers
             &output_tau
         );
 
-        // this->buildOutput<dls::TrajectoryGenerator>(
-        //     dls::topics::trajectory_generator,
-        //     &output_traj_gen
-        // );
-        // create raw pinocchio writer
-        // dds_participant_->addWriter("pinocchio_writer", dls::topics::pinocchio_controller::debug);
         dds_participant_->addWriter("pinocchio_writer", dls::topics::pinocchio_controller::debug);
 
         // debug_msg.feet_position_robcogen() = std::vector<double>(pRobot->getNJOINTS(), 0.0);
@@ -65,7 +61,6 @@ namespace controllers
         command_manager.addCommand(  "set_pose_increment",
                                             "set_pose_increment",
                                             &PinocchioController::setPoseIncrement, this, {}, true);
-
     }
 
     PinocchioController::~PinocchioController()
@@ -87,12 +82,10 @@ namespace controllers
         // Run module
         runController();
 
-        Eigen::VectorXd q_pin = input_blind_state.joints_position_.vec_();
-        reoderJoints(q_pin);
-
         // compure desired joint configuration
         Eigen::Vector<double,12> q_home {0.0, 0.75, -1.5, 0.0, 0.75, -1.5, 0.0, 0.75, -1.5, 0.0, 0.75, -1.5};
-        auto q_gt = q_home + q_increment;
+        Eigen::VectorXd q_gt = pinocchio::neutral(robot_model);
+        q_gt.tail(pRobot->getNJOINTS()) = reorderJoints(q_home) + q_increment;
         pinocchio::framesForwardKinematics(robot_model, robot_data, q_gt);
 
         // get desired end effector pose
@@ -125,47 +118,63 @@ namespace controllers
         // auto oMides = oMiee_derived;
         auto oMides = oMee;
 
-        debug_msg.ee_pose_des()[0] = oMiee.translation()(0);
-        debug_msg.ee_pose_des()[1] = oMiee.translation()(1);
-        debug_msg.ee_pose_des()[2] = oMiee.translation()(2);
-        auto rpy_ee = dls::math::rotTorpy(oMiee.rotation().transpose());
+        debug_msg.ee_pose_des()[0] = oMee.translation()(0);
+        debug_msg.ee_pose_des()[1] = oMee.translation()(1);
+        debug_msg.ee_pose_des()[2] = oMee.translation()(2);
+        auto rpy_ee = dls::math::rotTorpy(oMee.rotation().transpose());
         debug_msg.ee_pose_des()[3] = rpy_ee(0);
         debug_msg.ee_pose_des()[4] = rpy_ee(1);
         debug_msg.ee_pose_des()[5] = rpy_ee(2);
-
-        debug_msg.ee_parent_joint_pose_des()[0] = oMiee_derived.translation()(0);
-        debug_msg.ee_parent_joint_pose_des()[1] = oMiee_derived.translation()(1);
-        debug_msg.ee_parent_joint_pose_des()[2] = oMiee_derived.translation()(2);
-        auto rpy_ee_parent_joint = dls::math::rotTorpy(oMiee_derived.rotation().transpose());
-        debug_msg.ee_parent_joint_pose_des()[3] = rpy_ee_parent_joint(0);
-        debug_msg.ee_parent_joint_pose_des()[4] = rpy_ee_parent_joint(1);
-        debug_msg.ee_parent_joint_pose_des()[5] = rpy_ee_parent_joint(2);
 
 		Eigen::Matrix4d pose_des = Eigen::Matrix4d::Zero();
 		pose_des.block<3,1>(0,3) = oMides.translation();
         pose_des.block<3,3>(0,0) = oMides.rotation();
         // ik
-        auto q_init_guess = q_pin;
+        Eigen::VectorXd q_pin = pinocchio::neutral(robot_model);
+        q_pin.tail(pRobot->getNJOINTS()) = reorderJoints(input_blind_state.joints_position_.vec_());
+        auto q_init_guess = q_gt;
         auto ee_parent_joint_name = robot_model.names[ee_joint_id];
-		// auto q_des = inverseKinematics(ee_parent_joint_name, q_init_guess, q_gt, pose_des);
-		auto q_des = inverseKinematicsFrame(ee_name, q_init_guess, q_gt, pose_des);
+		auto q_des = q_init_guess;
+        q_des = inverseKinematicsFrame(ee_name, q_init_guess, q_gt, pose_des);
+        
+        // ik using robotlib
+        robotlib::JointState q_des_robotlib = pRobot->makeJointState(0.0);
+        robotlib::JointState q_init_guess_robotlib =  pRobot->makeJointState(0.0);
+        q_init_guess_robotlib = reorderJoints(q_init_guess.tail(pRobot->getNJOINTS()));
+        // std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+        pRobot->fixedBaseInveseKinematics(ee_name, q_init_guess_robotlib, pose_des.block<3,1>(0,3), q_des_robotlib);
+        // std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+        // outFile << std::to_string(std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count()/1000.0) <<std::endl;
+
+        // std::map<std::string, Eigen::Vector3d> position_des_map = {
+        //     {"lf_foot", robot_data.oMf[robot_model.getFrameId("lf_foot")].translation()+ pose_increment.head(3)},
+        //     {"rf_foot", robot_data.oMf[robot_model.getFrameId("rf_foot")].translation()+ pose_increment.head(3)},
+        //     {"lh_foot", robot_data.oMf[robot_model.getFrameId("lh_foot")].translation()+ pose_increment.head(3)},
+        //     {"rh_foot", robot_data.oMf[robot_model.getFrameId("rh_foot")].translation()+ pose_increment.head(3)}
+        // };
+        // q_des_robotlib = q_init_guess_robotlib;
+        // std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+        // for (auto &[name, position_des] : position_des_map){
+        //     pRobot->fixedBaseInveseKinematics(name, q_des_robotlib, position_des, q_des_robotlib);
+        // }
+        // std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+        // outFile << std::to_string(std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count()/1000.0) <<std::endl;
 
         Eigen::Vector<double, Eigen::Dynamic>::Map(debug_msg.q_inv_kin_gt().data(), debug_msg.q_inv_kin_gt().size()) = q_gt;
 		Eigen::Vector<double, Eigen::Dynamic>::Map(debug_msg.q_inv_kin().data(), debug_msg.q_inv_kin().size()) = q_des;
-        Eigen::Vector<double, Eigen::Dynamic>::Map(debug_msg.q_init_guess().data(), debug_msg.q_init_guess().size()) = q_init_guess;
+        Eigen::Vector<double, Eigen::Dynamic>::Map(debug_msg.q_inv_kin_robotlib().data(), debug_msg.q_inv_kin_robotlib().size()) = q_des_robotlib.vec_();
 
+        // using robotlib solution as desired joint configuration
+        q_des.tail(pRobot->getNJOINTS()) = reorderJoints(q_des_robotlib.vec_().tail(pRobot->getNJOINTS()));
         //compute control action
-        Eigen::VectorXd err = q_des - q_pin;
-        reoderJoints(err);
+        Eigen::VectorXd err = q_des.tail(pRobot->getNJOINTS()) - q_pin.tail(pRobot->getNJOINTS());
+        err = reorderJoints(err);
         Eigen::VectorXd qd = input_blind_state.joints_velocity_.vec_();
-        output_tau.torques_ = 15*err + 3*(-1)*qd;
-
+        output_tau.torques_ = 8*err + 1*(-1)*qd;
 
         dds_participant_->sendMessage("pinocchio_writer", &debug_msg);
 
-
         write();
-
     }
 
     bool PinocchioController::setQIncrement(){
@@ -178,6 +187,7 @@ namespace controllers
         }
         return true;
     }
+
     bool PinocchioController::setPoseIncrement(){
         int idx = 0;
 
@@ -191,18 +201,21 @@ namespace controllers
     bool PinocchioController::deactivation(const std::chrono::system_clock::time_point& time){
         output_tau.torques_.setZero();
         write();
+
+        // outFile.close();
         return true;
     }
 
     void PinocchioController::runController(){}
 
-    void PinocchioController::reoderJoints(Eigen::VectorXd& data) const{
-        auto old_data = data;
+    Eigen::VectorXd PinocchioController::reorderJoints(const Eigen::VectorXd& data) const{
+        Eigen::VectorXd new_data = data;
         for(auto &[key, value] : idx_map)
         {
-            data[value] = old_data[key];
-            data[key] = old_data[value];
+            new_data[value] = data[key];
+            new_data[key] = data[value];
         }
+        return new_data;
     }
 
     Eigen::VectorXd PinocchioController::inverseKinematics(const std::string& ee_parent_joint_name, const Eigen::VectorXd& q_guess, const Eigen::VectorXd& q_gt, const Eigen::Matrix4d& pose_des)
@@ -320,30 +333,87 @@ namespace controllers
     Eigen::VectorXd PinocchioController::inverseKinematicsFrame(const std::string& ee_name, const Eigen::VectorXd& q_guess, const Eigen::VectorXd& q_gt, const Eigen::Matrix4d& pose_des)
 	{
 		const int frame_id = robot_model.getFrameId(ee_name);
+        pinocchio::FrameIndex base_frame_id = robot_model.getFrameId("base_link"); //base frame
 		const pinocchio::SE3 oMdes(pose_des.block<3,3>(0,0), pose_des.block<3,1>(0,3));
 
 		const double eps = 1e-4;
 		const int IT_MAX = 1000;
-		const double DT = 1e-1;
+		const double DT = 1e-2;
 		const double damp = 1e-6;
-        // const double alpha = 0.001;
 		pinocchio::Data::Matrix6x J(6, robot_model.nv);
 		J.setZero();
 
 		bool success = false;
 
-        Eigen::Matrix<double, 6, 1> err = Eigen::Matrix<double, 6, 1>::Zero();
+        Eigen::Vector3d err_task = Eigen::Vector3d::Zero();
+        Eigen::VectorXd err_task_aug = Eigen::VectorXd::Zero(6);
         auto q_des = q_guess;
 		for (int i = 0;; i++)
 		{
-            // Eigen::VectorXd v(robot_model.nv);
-            // v.setZero();
-			// pinocchio::framesForwardKinematics(robot_model, robot_data, q_des);
+
+            pinocchio::framesForwardKinematics(robot_model, robot_data, q_des);
+			const pinocchio::SE3 fMd = robot_data.oMf[frame_id].actInv(oMdes);
+            // auto err_pose = pinocchio::log6(fMd).toVector(); // in ee frame;
+
+
+            Eigen::Matrix3d b_R_o = robot_data.oMf[base_frame_id].inverse().rotation();
+            err_task = b_R_o*(oMdes.translation()) - b_R_o*(robot_data.oMf[frame_id].translation()-robot_data.oMf[base_frame_id].translation()); 
+            // if (err.head(3).norm() < eps)
+            if (err_task.norm() < eps)
+			{
+                success = true;
+                debug_msg.ee_pose()[0] = robot_data.oMf[frame_id].translation()(0);
+                debug_msg.ee_pose()[1] = robot_data.oMf[frame_id].translation()(1);
+                debug_msg.ee_pose()[2] = robot_data.oMf[frame_id].translation()(2);
+                auto rpy_ee_parent_joint = dls::math::rotTorpy(robot_data.oMf[frame_id].rotation().transpose());
+                debug_msg.ee_pose()[3] = rpy_ee_parent_joint(0);
+                debug_msg.ee_pose()[4] = rpy_ee_parent_joint(1);
+                debug_msg.ee_pose()[5] = rpy_ee_parent_joint(2);
+                break;
+			}
+			if (i >= IT_MAX)
+			{
+                success = false;
+                break;
+			}
+			pinocchio::computeFrameJacobian(robot_model, robot_data, q_des, frame_id, pinocchio::LOCAL_WORLD_ALIGNED, J);
+            Eigen::MatrixXd J_task = Eigen::MatrixXd::Zero(3,robot_model.nv);
+            J_task.block<3,18>(0,0) = J.block<3,18>(0,0); //x, y, z
+            J_task.block<3,6>(0,0).setZero(); //the derivative of the task is the derivative of the error w.r.t. base frame
+            // Newton method: q_k+1 = q_k + J_pseudo*err_task, where err_task = f_task(q_des)- f_task(q_k) on position only
+            Eigen::MatrixXd JJt_task = Eigen::MatrixXd::Zero(J_task.rows(), J_task.rows());
+            JJt_task = J_task*J_task.transpose() + Eigen::MatrixXd::Identity(JJt_task.rows(),JJt_task.cols())*damp;
+            auto J_task_pseudo = J_task.transpose()*(JJt_task.inverse());
+            // q_des.tail(pRobot->getNJOINTS()) = q_des.tail(pRobot->getNJOINTS()) + (J_task_pseudo *err_task).tail(pRobot->getNJOINTS()); 
+            // Eigen::VectorXd v = robot_data.oMf(J_task_pseudo * err_task);
+			// q_des = pinocchio::integrate(robot_model, q_des, J_task_pseudo * err_task);
+            Eigen::VectorXd qd_des = J_task_pseudo * err_task;
+            // CLIK + add manage redundancy, possibly with projected/reduced gradient to be far from joint limits
+            q_des.tail(pRobot->getNJOINTS()) = q_des.tail(pRobot->getNJOINTS()) + (qd_des).tail(pRobot->getNJOINTS())*DT; //CLIK
+
+            // pinocchio::framesForwardKinematics(robot_model, robot_data, q_des);
 			// const pinocchio::SE3 fMd = robot_data.oMf[frame_id].actInv(oMdes);
-			// err = pinocchio::log6(fMd).toVector(); // in base frame
-			// if (err.norm() < eps)
+            // auto err_pose = pinocchio::log6(fMd).toVector(); // in ee frame;
+            // // auto err_task = err_pose.tail(3);
+
+            // err_task_aug.head(3) = robot_data.oMf[frame_id].rotation() * err_pose.head(3);
+            // std::cout << q_des.head(3).transpose() << std::endl;
+            // err_task_aug.tail(3) = Eigen::Vector3d::Zero() - q_des.head(3);
+            // std::cout << "------------" << std::endl;
+            // std::cout << err_task_aug.transpose() << std::endl;
+
+            // // if (err.head(3).norm() < eps)
+            // if (err_task_aug.norm() < eps)
 			// {
 			// success = true;
+            // // std::cout << err_pose.transpose() << std::endl;
+            // debug_msg.ee_parent_joint_pose_des()[0] = robot_data.oMf[frame_id].translation()(0);
+            // debug_msg.ee_parent_joint_pose_des()[1] = robot_data.oMf[frame_id].translation()(1);
+            // debug_msg.ee_parent_joint_pose_des()[2] = robot_data.oMf[frame_id].translation()(2);
+            // auto rpy_ee_parent_joint = dls::math::rotTorpy(robot_data.oMf[frame_id].rotation().transpose());
+            // debug_msg.ee_parent_joint_pose_des()[3] = rpy_ee_parent_joint(0);
+            // debug_msg.ee_parent_joint_pose_des()[4] = rpy_ee_parent_joint(1);
+            // debug_msg.ee_parent_joint_pose_des()[5] = rpy_ee_parent_joint(2);
 			// break;
 			// }
 			// if (i >= IT_MAX)
@@ -351,46 +421,28 @@ namespace controllers
 			// success = false;
 			// break;
 			// }
-			// pinocchio::computeFrameJacobian(robot_model, robot_data, q_des, frame_id, pinocchio::LOCAL_WORLD_ALIGNED, J);
-			// pinocchio::Data::Matrix6 Jlog;
-			// pinocchio::Jlog6(fMd.inverse(), Jlog);
-			// J = -Jlog * J;
-            // pinocchio::Data::Matrix6 JJt;
-			// JJt.noalias() = J * J.transpose();
-			// JJt.diagonal().array() += damp;
-			// v.noalias() = -J.transpose() * JJt.ldlt().solve(err);
-			// q_des = pinocchio::integrate(robot_model, q_des, v * DT);
 
-            pinocchio::framesForwardKinematics(robot_model, robot_data, q_des);
-			const pinocchio::SE3 fMd = robot_data.oMf[frame_id].actInv(oMdes);
-            auto err_pose = pinocchio::log6(fMd).toVector(); // in ee frame;
-            // auto err_task = err_pose.tail(3);
-            Eigen::Vector3d err_task(err_pose(0), err_pose(2), err_pose(3));
-            // if (err.head(3).norm() < eps)
-            if (err_task.norm() < eps)
-			{
-			success = true;
-			break;
-			}
-			if (i >= IT_MAX)
-			{
-			success = false;
-			break;
-			}
-			pinocchio::computeFrameJacobian(robot_model, robot_data, q_des, frame_id, pinocchio::LOCAL, J);
-            // auto J_task = J.block<3,12>(0,0);
-            // auto J_task = J.block<3,12>(3,0);
-            Eigen::Matrix<double,3,12> J_task = Eigen::Matrix<double,3,12>::Zero();
-            J_task.block<1,12>(0,0) = J.block<1,12>(0,0); //x
-            J_task.block<1,12>(1,0) = J.block<1,12>(2,0); //z
-            J_task.block<1,12>(2,0) = J.block<1,12>(3,0); // roll
+			// pinocchio::computeJointJacobians(robot_model, robot_data, q_des);
+            // pinocchio::getFrameJacobian(robot_model,robot_data, frame_id, pinocchio::LOCAL_WORLD_ALIGNED, J); // foot position task
+            // Eigen::MatrixXd J_task1 =  J.block<3,18>(0,0);//x, y, z
 
-            // Newton method: q_k+1 = q_k + J_pseudo*err_task, where err_task = f_task(q_des)- f_task(q_k) on position only
-            Eigen::MatrixXd JJt_task = Eigen::MatrixXd::Zero(J_task.rows(), J_task.rows());
-            JJt_task = J_task*J_task.transpose() + Eigen::MatrixXd::Identity(JJt_task.rows(),JJt_task.cols())*damp;
-            auto J_task_pseudo = J_task.transpose()*(JJt_task.inverse());
-            q_des = q_des + J_task_pseudo *err_task;
+            // pinocchio::getFrameJacobian(robot_model,robot_data, base_frame_id, pinocchio::LOCAL_WORLD_ALIGNED, J);
+            // Eigen::MatrixXd J_task2 =  J.block<3,18>(0,0);//x, y, z
+            
+            // Eigen::MatrixXd J_task = Eigen::MatrixXd::Zero(6,robot_model.nv);
+            // J_task.block<3,18>(0,0) = J_task1; // foot position
+            // J_task.block<3,18>(3,0) = J_task2; // base position
+
+            // // // Newton method: q_k+1 = q_k + J_pseudo*err_task, where err_task = f_task(q_des)- f_task(q_k) on position only
+            // Eigen::MatrixXd JJt_task = Eigen::MatrixXd::Zero(J_task.rows(), J_task.rows());
+            // JJt_task = J_task*J_task.transpose() + Eigen::MatrixXd::Identity(JJt_task.rows(),JJt_task.cols())*damp;
+            // auto J_task_pseudo = J_task.transpose()*(JJt_task.inverse());
+            // // q_des.tail(pRobot->getNJOINTS()) = q_des.tail(pRobot->getNJOINTS()) + (J_task_pseudo *err_task).tail(pRobot->getNJOINTS());
+
+			// q_des = pinocchio::integrate(robot_model, q_des, J_task_pseudo * err_task_aug);
 		}
+        
+        // std::cout << "**********************" << std::endl;
 
 		if (success)
 		{
@@ -403,13 +455,13 @@ namespace controllers
 			<< std::endl;
 		}
 
-        Eigen::Matrix<double,6,1> err_base = Eigen::Matrix<double,6,1>::Zero();
+        debug_msg.err_inv_kin()[0] = err_task(0);
+        debug_msg.err_inv_kin()[1] = err_task(1);
+        debug_msg.err_inv_kin()[2] = err_task(2);
+        debug_msg.err_inv_kin()[3] = err_task(3);
+        debug_msg.err_inv_kin()[4] = err_task(4);
+        debug_msg.err_inv_kin()[5] = err_task(5);
 
-        err_base.head(3) = err.head(3);
-
-        for(int i=0; i<err.size();i++){
-            debug_msg.err_inv_kin()[i] = err_base(i);
-        }
         return q_des;
 	}
 
