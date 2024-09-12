@@ -154,7 +154,7 @@ namespace aliengolib
         * @param[in] position_des desired position of the frame expressed in base frame.
         * @param[out] q_des desired joint angles.
         */
-        virtual void fixedBaseInveseKinematics(const std::string &frame_name,
+        virtual void fixedBaseInverseKinematics(const std::string &frame_name,
                                                 const robotlib::JointState &q_init_guess,
                                                 const Eigen::Vector3d &position_des,
                                                 robotlib::JointState &q_des) override;

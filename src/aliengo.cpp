@@ -460,7 +460,7 @@ namespace aliengolib
 		}
     }
 
-    void Aliengo::fixedBaseInveseKinematics(
+    void Aliengo::fixedBaseInverseKinematics(
         const std::string &frame_name,
         const robotlib::JointState &q_init_guess,
         const Eigen::Vector3d &position_des,
