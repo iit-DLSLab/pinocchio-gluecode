@@ -399,9 +399,9 @@ namespace aliengolib
 
         // CLIK parameters
 		bool success = false;
-        const double err_threshold = 1e-4;
+        const double err_threshold = 1e-3;
 		const int max_iterations = 100;
-		const double dt = 0.2;
+		const double dt = 0.5;
 		const double damp = 1e-6;
 
 		for (int i = 0;i<max_iterations; i++)
@@ -444,7 +444,7 @@ namespace aliengolib
             
             // -- compute new joint position
             qd_des = J_task_pseudo * err_task;
-            // fixed base inverse kinematics
+            // -- fixed base inverse kinematics
             q_des.tail(this->getNJOINTS()) = q_des.tail(this->getNJOINTS()) + (qd_des).tail(this->getNJOINTS())*dt;
 		}
 
