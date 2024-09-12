@@ -48,6 +48,13 @@ namespace aliengolib
     //! Number of arms of the robot.
     const int NARMS = 0;
 
+    namespace IK{
+      enum TASK{
+        POSITION_TASK,
+        POSE_TASK
+      };
+    }
+
     /*!
      * @brief Aliengo class.
      * @details
@@ -140,6 +147,17 @@ namespace aliengolib
                                        const robotlib::LegDataMap<Eigen::Vector3d> &end_effector_velocity,
                                        robotlib::JointState &joint_position,
                                        robotlib::JointState &joint_velocity) override;
+        /*!
+        * @brief Inverse kinematics. Does not consider the floating base joint. It computes the joint angles from the desired frame position expressed in base frame.
+        * @param[in] frame_name name of the frame.
+        * @param[in] q_init_guess initial guess for the joint angles.
+        * @param[in] position_des desired position of the frame expressed in base frame.
+        * @param[out] q_des desired joint angles.
+        */
+        virtual void fixedBaseInveseKinematics(const std::string &frame_name,
+                                                const robotlib::JointState &q_init_guess,
+                                                const Eigen::Vector3d &position_des,
+                                                robotlib::JointState &q_des) override;
 
         /*!
          * @brief Inverse dynamics.
@@ -470,6 +488,25 @@ namespace aliengolib
 		 * @brief Set the joint limits from the urdf file.
 		 */
         void setJointLimitsFromUrdf();
+
+        /*!
+        * @brief Get the base ID. 
+        */
+        pinocchio::FrameIndex getBaseID() const;
+        /*!
+        * @brief Closed loop inverse kinematics.
+        * @details
+        * This function computes the joint angles using the CLIK algorithm as in Handbook of Robotics, eq. 10.29.
+        * Does not consider the floating base joint yet. It computes the joint angles from the desired frame position expressed in base frame.
+        * @param[in] frame_name name of the frame
+        * @param[in] q_init_guess initial guess of the joint angles
+        * @param[in] oMdes desired task pose in pinocchio world frame
+        * @param[in] task_type type of the task: IK::TASK::POSITION_TASK or IK::TASK::POSE_TASK
+        */
+        Eigen::VectorXd clik(const std::string &frame_name,
+                        const Eigen::VectorXd &q_init_guess,
+                        const pinocchio::SE3 &oMdes,
+                        const IK::TASK task_type);
 
         //! Robot model from the urdf file.
         urdf::Model robot_model_;

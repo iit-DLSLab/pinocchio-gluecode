@@ -8,11 +8,13 @@ struct DebugPinocchioMsg
     double q_inv_kin_gt[19]; // joints configuration
     double q_inv_kin[19]; // joints configuration
     double q_inv_kin_robcogen[19]; // joints configuration
+    double q_inv_kin_robotlib[12];
 
     double err_inv_kin[6];
     double q_init_guess[19]; // joints configuration
 
     double ee_pose_des[6]; //pos, rpy
+    double ee_pose[6]; //pos, rpy
     double ee_parent_joint_pose_des[6]; //pos, rpy
 
     double tau_gt[12]; 

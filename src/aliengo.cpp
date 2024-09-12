@@ -356,6 +356,128 @@ namespace aliengolib
         end_effector_velocity["RH"] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model_pin, robot_data_pin, robot_model_pin.getFrameId("rh_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
     }
 
+    pinocchio::FrameIndex Aliengo::getBaseID() const{
+        return robot_model_pin.getFrameId(robot_model_pin.frames[2].name);
+    }
+
+    Eigen::VectorXd Aliengo::clik(const std::string &frame_name,
+                        const Eigen::VectorXd &q_init_guess,
+                        const pinocchio::SE3 &oMdes,
+                        const IK::TASK task_type)
+    {
+        // task dimension
+        int task_dim = 0;
+        if (task_type == IK::POSITION_TASK)
+            task_dim = 3;
+        else if (task_type == IK::POSE_TASK)
+            task_dim = 6;
+        else
+        {
+            std::cout << "Error: task type not recognized." << std::endl;
+            return q_init_guess;
+        }
+
+        // IDs
+        pinocchio::FrameIndex frame_id = robot_model_pin.getFrameId(frame_name);
+        pinocchio::FrameIndex base_frame_id = getBaseID();
+
+        // jacobians
+		pinocchio::Data::Matrix6x J = Eigen::MatrixXd::Zero(6, robot_model_pin.nv);
+        Eigen::MatrixXd J_task= Eigen::MatrixXd::Zero(task_dim, robot_model_pin.nv);
+        Eigen::MatrixXd JJt_task = Eigen::MatrixXd::Zero(J_task.rows(), J_task.rows());
+        Eigen::MatrixXd J_task_pseudo = Eigen::MatrixXd::Zero(J_task.cols(), J_task.rows());
+		Eigen::VectorXd qd_des = Eigen::VectorXd::Zero(robot_model_pin.nv);
+
+        // task error and error related variables
+        Eigen::Vector<double, Eigen::Dynamic> err_task = Eigen::Vector<double, Eigen::Dynamic>::Zero(task_dim);
+        Eigen::Matrix3d b_R_o = Eigen::Matrix3d::Identity();
+        Eigen::Matrix3d b_R_f = Eigen::Matrix3d::Identity();
+        pinocchio::SE3 fMd = pinocchio::SE3::Identity();
+
+        // initial guess
+        Eigen::VectorXd q_des = q_init_guess;
+
+        // CLIK parameters
+		bool success = false;
+        const double err_threshold = 1e-4;
+		const int max_iterations = 100;
+		const double dt = 0.2;
+		const double damp = 1e-6;
+
+		for (int i = 0;i<max_iterations; i++)
+		{
+            // compute error in base frame
+            // -- compute frame placement
+            pinocchio::framesForwardKinematics(robot_model_pin, robot_data_pin, q_des);
+
+            b_R_o = robot_data_pin.oMf[base_frame_id].inverse().rotation();
+            // -- compute error
+            if (task_type == IK::TASK::POSITION_TASK){
+                err_task = b_R_o*(oMdes.translation()) - b_R_o*(robot_data_pin.oMf[frame_id].translation()-robot_data_pin.oMf[base_frame_id].translation());
+            }
+            else if (task_type == IK::TASK::POSE_TASK){
+			    fMd = robot_data_pin.oMf[frame_id].actInv(oMdes);
+                err_task = pinocchio::log6(fMd).toVector();
+                // -- rotate error in base frame
+                b_R_f = b_R_o*robot_data_pin.oMf[frame_id].rotation();
+                err_task.head(3) = b_R_f*err_task.head(3);
+                err_task.tail(3) = b_R_f*err_task.tail(3);
+            }
+
+            if (err_task.norm() < err_threshold)
+			{
+                success = true;
+                break;
+			}
+
+            // CLIK method (as in Handbook of Robotics eq. 10.29)
+
+            // -- define task jacobian
+			// --- compute frame jacobian in base frame
+            pinocchio::computeFrameJacobian(robot_model_pin, robot_data_pin, q_des, frame_id, pinocchio::LOCAL_WORLD_ALIGNED, J);
+            // --- compute task jacobian
+            J_task = J.block(0,0,task_dim,robot_model_pin.nv);
+            J_task.block(0,0,task_dim,6).setZero(); //the derivative of the task is the derivative of the error w.r.t. base frame, so the jbase jacobian is not needed
+            // --- compute pseudo-inverse
+            JJt_task = J_task*J_task.transpose() + Eigen::MatrixXd::Identity(JJt_task.rows(),JJt_task.cols())*damp;
+            J_task_pseudo = J_task.transpose()*(JJt_task.inverse());
+            
+            // -- compute new joint position
+            qd_des = J_task_pseudo * err_task;
+            // fixed base inverse kinematics
+            q_des.tail(this->getNJOINTS()) = q_des.tail(this->getNJOINTS()) + (qd_des).tail(this->getNJOINTS())*dt;
+		}
+
+		if (success)
+		{
+            return q_des;
+		}
+		else
+		{
+			std::cout
+			<< "\nError: CLIK method for IK did not converge after " << max_iterations << " iterations. Error norm: "<<err_task.norm()<<", error norm threshold: " << err_threshold<<". Returning initial guess."<<std::endl;
+            return q_init_guess;
+		}
+    }
+
+    void Aliengo::fixedBaseInveseKinematics(
+        const std::string &frame_name,
+        const robotlib::JointState &q_init_guess,
+        const Eigen::Vector3d &position_des,
+        robotlib::JointState &q_des)
+    {
+        // compute desired pose in pinocchio format
+		const pinocchio::SE3 oMdes(Eigen::Matrix3d::Identity(), position_des);
+        // map from robotlib to pinocchio
+        Eigen::VectorXd q_pin_init_guess = fromRobotlibToPinocchioJointState(q_init_guess);
+
+        // Closed Loop Inverse Kinematics (CLIK)
+        Eigen::VectorXd q_pin_des = clik(frame_name, q_pin_init_guess, oMdes, IK::TASK::POSITION_TASK);
+       
+        // Get IK solution
+        q_des = reorderJoints(q_pin_des.tail(this->getNJOINTS()));
+    }
+
     void Aliengo::inverseDynamics(const Eigen::Matrix<double, 7, 1> &robot_pose,    // robot base
                                 const Eigen::Matrix<double, 6, 1> &robot_velocity,    // robot base
                                 const Eigen::Matrix<double, 6, 1> &robot_acceleration,  // robot base
@@ -821,7 +943,7 @@ namespace aliengolib
 
     double Aliengo::getRobotMass() const
     {
-        return inertias_->getTotalMass();
+        return inertias_->getTotalMass(); // pinocchio::computeTotalMass(robot_model_pin, robot_data_pin);
     }
 
     Eigen::Vector3d Aliengo::getRobotCoM() const {
