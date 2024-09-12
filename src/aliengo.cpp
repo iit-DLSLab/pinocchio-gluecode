@@ -478,6 +478,29 @@ namespace aliengolib
         q_des = reorderJoints(q_pin_des.tail(this->getNJOINTS()));
     }
 
+    void Aliengo::fixedBaseInverseDiffKinematics(const std::string &frame_name,
+                                        const robotlib::JointState &q,
+                                        const Eigen::Vector3d &velocity_des,
+                                        robotlib::JointState &qd_des)
+    {    
+        // map from robotlib to pinocchio
+        Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(q);
+        // compute jacobian in base frame
+        pinocchio::FrameIndex frame_id = robot_model_pin.getFrameId(frame_name);
+		pinocchio::Data::Matrix6x J = Eigen::MatrixXd::Zero(6, robot_model_pin.nv);
+        pinocchio::framesForwardKinematics(robot_model_pin, robot_data_pin, q_pin);
+        pinocchio::computeFrameJacobian(robot_model_pin, robot_data_pin, q_pin, frame_id, pinocchio::LOCAL_WORLD_ALIGNED, J);
+
+        // compute pseudo-inverse using linear jacobian        
+        Eigen::MatrixXd J_lin = J.block(0,6,3,robot_model_pin.nv-6); // do not consider base
+		const double damp = 1e-6;
+        Eigen::MatrixXd JJt_lin = Eigen::MatrixXd::Identity(J_lin.rows(),J_lin.rows())*damp;
+        JJt_lin += J_lin*J_lin.transpose();
+        Eigen::MatrixXd J_pseudo = J_lin.transpose()*(JJt_lin.inverse());
+        // compute desired joint velocity
+        qd_des = J_pseudo * velocity_des;                       
+    }
+
     void Aliengo::inverseDynamics(const Eigen::Matrix<double, 7, 1> &robot_pose,    // robot base
                                 const Eigen::Matrix<double, 6, 1> &robot_velocity,    // robot base
                                 const Eigen::Matrix<double, 6, 1> &robot_acceleration,  // robot base

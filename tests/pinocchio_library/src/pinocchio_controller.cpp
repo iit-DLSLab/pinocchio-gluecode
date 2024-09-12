@@ -174,6 +174,19 @@ namespace controllers
 
         dds_participant_->sendMessage("pinocchio_writer", &debug_msg);
 
+        auto end_effector_position = pRobot->makeLegDataMap<Eigen::Vector3d>(Eigen::Vector3d::Zero());
+        auto end_effector_velocity = pRobot->makeLegDataMap<Eigen::Vector3d>(Eigen::Vector3d::Zero());
+        pRobot->forwardKinematics(  input_blind_state.joints_position_,
+                                    input_blind_state.joints_velocity_,
+                                    end_effector_position,
+                                    end_effector_velocity
+        );
+        auto qd_des_robotlib = pRobot->makeJointState(0.0);
+        pRobot->fixedBaseInverseDiffKinematics("lf_foot", input_blind_state.joints_position_, end_effector_velocity["LF"], qd_des_robotlib);
+        // comment the function write() to test this with another joint controller
+        Eigen::Vector<double, Eigen::Dynamic>::Map(debug_msg.qd_inv_diff_kin_robotlib().data(), debug_msg.qd_inv_diff_kin_robotlib().size()) = qd_des_robotlib.vec_();
+        Eigen::Vector<double, Eigen::Dynamic>::Map(debug_msg.qd_gt().data(), debug_msg.qd_gt().size()) = input_blind_state.joints_velocity_.vec_();
+
         write();
     }
 

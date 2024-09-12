@@ -20,4 +20,7 @@ struct DebugPinocchioMsg
     double tau_gt[12]; 
     double tau_est[12]; 
     double tau_robcogen[12]; 
+
+    double qd_inv_diff_kin_robotlib[12];
+    double qd_gt[12];
 };

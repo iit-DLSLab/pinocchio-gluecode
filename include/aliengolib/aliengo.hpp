@@ -148,7 +148,7 @@ namespace aliengolib
                                        robotlib::JointState &joint_position,
                                        robotlib::JointState &joint_velocity) override;
         /*!
-        * @brief Inverse kinematics. Does not consider the floating base joint. It computes the joint angles from the desired frame position expressed in base frame.
+        * @brief Inverse kinematics. Does not consider the floating base joint. It computes the joint angles from the desired frame position expressed in base frame. Redundancy is not handled yet.
         * @param[in] frame_name name of the frame.
         * @param[in] q_init_guess initial guess for the joint angles.
         * @param[in] position_des desired position of the frame expressed in base frame.
@@ -158,7 +158,17 @@ namespace aliengolib
                                                 const robotlib::JointState &q_init_guess,
                                                 const Eigen::Vector3d &position_des,
                                                 robotlib::JointState &q_des) override;
-
+        /*!
+        * @brief Inverse differential kinematics. Does not consider the floating base joint. It computes the joint velocities from the desired frame linear velocity expressed in base frame. Redundancy is not handled yet.
+        * @param[in] frame_name name of the frame
+        * @param[in] q joint angles
+        * @param[in] velocity_des desired frame linear velocity expressed in base frame
+        * @param[out] qd_des desired joint velocities
+        */
+        virtual void fixedBaseInverseDiffKinematics(const std::string &frame_name,
+                                                            const robotlib::JointState &q,
+                                                            const Eigen::Vector3d &velocity_des,
+                                                            robotlib::JointState &qd_des) override;
         /*!
          * @brief Inverse dynamics.
          * @details
@@ -497,7 +507,7 @@ namespace aliengolib
         * @brief Closed loop inverse kinematics.
         * @details
         * This function computes the joint angles using the CLIK algorithm as in Handbook of Robotics, eq. 10.29.
-        * Does not consider the floating base joint yet. It computes the joint angles from the desired frame position expressed in base frame.
+        * Does not consider the floating base joint yet. It computes the joint angles from the desired frame position expressed in base frame. Redundancy is not handled yet.
         * @param[in] frame_name name of the frame
         * @param[in] q_init_guess initial guess of the joint angles
         * @param[in] oMdes desired task pose in pinocchio world frame
