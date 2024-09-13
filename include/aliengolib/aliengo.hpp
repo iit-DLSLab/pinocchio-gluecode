@@ -106,48 +106,6 @@ namespace aliengolib
                                        robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity) override;
 
         /*!
-         * @brief Inverse kinematics.
-         * @details
-         * It computes the angle, velocity and acceleration of each joint from the position, velocity and acceleration of each end effector expressed in base frame.
-         * @param[in] end_effector_position position of each end effector (foot) in base frame.
-         * @param[in] end_effector_velocity velocity of each end effector (foot) in base frame.
-         * @param[in] end_effector_acceleration acceleration of each end effector (foot) in base frame.
-         * @param[out] joint_position angle of each joint.
-         * @param[out] joint_velocity velocity of each joint.
-         * @param[out] joint_acceleration acceleration of each joint.
-         */
-        virtual void inverseKinematics(const robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
-                                       const robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity,
-                                       const robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_acceleration,
-                                       robotlib::JointState &joint_position,
-                                       robotlib::JointState &joint_velocity,
-                                       robotlib::JointState &joint_acceleration) override;
-
-        /*!
-         * @brief Inverse kinematics.
-         * @details
-         * It computes the angle of each joint from the position of each end effector expressed in base frame.
-         * @param[in] end_effector_position position of each end effector (foot) in base frame.
-         * @param[out] joint_position angle of each joint.
-         */
-        virtual void inverseKinematics(const robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
-                                       robotlib::JointState &joint_position) override;
-
-        /*!
-         * @brief Inverse kinematics.
-         * @details
-         * It computes the angle and velocity of each joint from the position and velocity of each end effector expressed in base frame.
-        *
-         * @param[in] end_effector_position position of each end effector (foot) in base frame.
-         * @param[in] end_effector_velocity velocity of each end effector (foot) in base frame.
-         * @param[out] joint_position angle of each joint.
-         * @param[out] joint_velocity velocity of each joint.
-         */
-        virtual void inverseKinematics(const robotlib::LegDataMap<Eigen::Vector3d> &end_effector_position,
-                                       const robotlib::LegDataMap<Eigen::Vector3d> &end_effector_velocity,
-                                       robotlib::JointState &joint_position,
-                                       robotlib::JointState &joint_velocity) override;
-        /*!
         * @brief Inverse kinematics. Does not consider the floating base joint. It computes the joint angles from the desired frame position expressed in base frame. Redundancy is not handled yet.
         * @param[in] frame_name name of the frame.
         * @param[in] q_init_guess initial guess for the joint angles.
