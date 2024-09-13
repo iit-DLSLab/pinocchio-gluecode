@@ -158,6 +158,17 @@ namespace aliengolib
                                                 const robotlib::JointState &q_init_guess,
                                                 const Eigen::Vector3d &position_des,
                                                 robotlib::JointState &q_des) override;
+
+        /*!
+        * @brief Inverse kinematics considering all the legs. Does not consider the floating base joint. It computes the joint angles from the desired frame position expressed in base frame. Redundancy is not handled yet.
+        * @param[in] q_init_guess initial guess for the joint angles.
+        * @param[in] positions_des desired positions of all the legs expressed in base frame.
+        * @param[out] q_des desired joint angles.
+        */
+        virtual void fixedBaseInverseKinematics(const robotlib::JointState &q_init_guess,
+                                                const robotlib::LegDataMap<Eigen::Vector3d> &positions_des,
+                                                robotlib::JointState &q_des) override;
+        
         /*!
         * @brief Inverse differential kinematics. Does not consider the floating base joint. It computes the joint velocities from the desired frame linear velocity expressed in base frame. Redundancy is not handled yet.
         * @param[in] frame_name name of the frame
@@ -169,6 +180,16 @@ namespace aliengolib
                                                             const robotlib::JointState &q,
                                                             const Eigen::Vector3d &velocity_des,
                                                             robotlib::JointState &qd_des) override;
+        
+        /*!
+        * @brief Inverse differential kinematics for all the legs. Does not consider the floating base joint. It computes the joint velocities from the desired frame linear velocity expressed in base frame. Redundancy is not handled yet.
+        * @param[in] q joint angles
+        * @param[in] velocity_des desired linear velocities of all the legs expressed in base frame
+        * @param[out] qd_des desired joint velocities
+        */                                       
+        virtual void fixedBaseInverseDiffKinematics(const robotlib::JointState &q,
+                                                    const robotlib::LegDataMap<Eigen::Vector3d> &velocities_des,
+                                                    robotlib::JointState &qd_des) override;
         /*!
          * @brief Inverse dynamics.
          * @details

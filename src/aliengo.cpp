@@ -477,6 +477,21 @@ namespace aliengolib
         // Get IK solution
         q_des = reorderJoints(q_pin_des.tail(this->getNJOINTS()));
     }
+    
+    void Aliengo::fixedBaseInverseKinematics(
+        const robotlib::JointState &q_init_guess,
+        const robotlib::LegDataMap<Eigen::Vector3d> &positions_des,
+        robotlib::JointState &q_des)
+    {
+        auto q_des_temp = this->makeJointState(0.0);
+        for (auto leg : *legs_)
+        {
+            std::string foot_name = leg->getName() + "_foot";
+            foot_name = robotlib::utils::toLower(foot_name);
+            this->fixedBaseInverseKinematics(foot_name, q_init_guess, positions_des[leg], q_des_temp);
+            q_des[leg] = q_des_temp[leg];
+        }
+    }
 
     void Aliengo::fixedBaseInverseDiffKinematics(const std::string &frame_name,
                                         const robotlib::JointState &q,
@@ -500,6 +515,20 @@ namespace aliengolib
         // compute desired joint velocity
         Eigen::VectorXd qd_des_pin = J_pseudo * velocity_des;
         qd_des = reorderJoints(qd_des_pin.tail(this->getNJOINTS()));                       
+    }
+
+    void Aliengo::fixedBaseInverseDiffKinematics(const robotlib::JointState &q,
+                                        const robotlib::LegDataMap<Eigen::Vector3d> &velocities_des,
+                                        robotlib::JointState &qd_des)
+    {
+        auto qd_des_temp = this->makeJointState(0.0);
+        for (auto leg : *legs_)
+        {
+            std::string foot_name = leg->getName() + "_foot";
+            foot_name = robotlib::utils::toLower(foot_name);
+            this->fixedBaseInverseDiffKinematics(foot_name, q, velocities_des[leg], qd_des_temp);
+            qd_des[leg] = qd_des_temp[leg];
+        }
     }
 
     void Aliengo::inverseDynamics(const Eigen::Matrix<double, 7, 1> &robot_pose,    // robot base
