@@ -10,6 +10,7 @@
 #include "pinocchio/parsers/urdf.hpp"
 
 #include <pinocchio/algorithm/rnea.hpp>
+#include "pinocchio/algorithm/center-of-mass.hpp"
 
 #include "robotlib/utils/eigen_utils.hpp"
 namespace dls
@@ -147,6 +148,8 @@ namespace dls
 		// testInverseDynamics(InverseDynamicsTest::NON_LINEAR_EFFECTS);
 
 		// testJacobians();
+
+		testGetDynamicInfo();
 
 		// Send dds message
 		ddslink->sendMessage("gazebo_glue_code_test", &msg);
@@ -554,4 +557,16 @@ namespace dls
         }
         return new_data;
     }
+
+	void GazeboPluginGlueTest::testGetDynamicInfo(){
+		std::cout << "Robot total mass " << pRobot->getRobotMass() << std::endl;
+		std::cout << "Robot total com " << pRobot->getRobotCoM(*joints_positions).transpose() << std::endl;
+		// std::cout << "Robot total inertia " << pRobot->getRobotInertia() << std::endl;
+		std::string link_name = "rh_upperleg";
+		std::cout << "Mass of link " << link_name << " is " << pRobot->getLinkMass(link_name) << std::endl;
+
+        pinocchio::computeSubtreeMasses(robot_model, robot_data);
+		int joint_id = robot_model.getJointId("lf_haa_joint");
+		std::cout << "LF leg mass " << robot_data.mass[joint_id] << std::endl;
+	}
 }

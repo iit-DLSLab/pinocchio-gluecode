@@ -363,12 +363,21 @@ namespace aliengolib
          * @return trunk mass.
          */
         virtual double getTrunkMass() const override;
+        
+        /*!
+         * @brief Get link mass.
+         * @param[in] name name of the link.
+         * @return link mass.
+         */
+        virtual double getLinkMass(const std::string name) const override;
 
         /*!
-         * @brief Get robot CoM.
-         * @return robot CoM.
+         * @brief Compute whole body CoM in base frame.
+         * @param[in] joint_position angles of the joints.
+         * @param[in] q angles of the joints.
+         * @return whole body CoM in base frame.
          */
-        virtual Eigen::Vector3d getRobotCoM() const override;
+        virtual Eigen::Vector3d getRobotCoM(const robotlib::JointState q) override;
 
         /*!
          * @brief Get total legs' mass.
@@ -387,14 +396,14 @@ namespace aliengolib
          * @param[in] joint_position angles of the joints.
          * @return whole body CoM in base frame.
          */
-        virtual Eigen::Matrix<double, 3, 1> getWholeBodyCOM(const robotlib::JointState &joint_position) const override;
+        virtual Eigen::Matrix<double, 3, 1> getWholeBodyCOM(const robotlib::JointState &joint_position) override;
 
         /*!
          * @brief Compute CoM legs contribution in base frame.
          * @param[in] q angles of the joints.
          * @return CoM legs contribution in base frame.
          */
-        virtual Eigen::Vector3d getLegContribution(const robotlib::JointState &q) const override;
+        virtual Eigen::Vector3d getLegContribution(const robotlib::JointState &q) override;
 
         /*!
          * @brief Compute robot CoM position in world frame, from base pose in world frame.
@@ -405,7 +414,7 @@ namespace aliengolib
          */
         virtual Eigen::Vector3d getCoMFromBase(const robotlib::JointState &q,
                                                const Eigen::Vector3d &base_orient,
-                                               const Eigen::Vector3d &base_pos) const override;
+                                               const Eigen::Vector3d &base_pos)  override;
 
         /*!
          * @brief Compute robot base position in world frame, from CoM position in world frame.
@@ -416,7 +425,7 @@ namespace aliengolib
          */
         virtual Eigen::Vector3d getBaseFromCoM(const robotlib::JointState &q,
                                                const Eigen::Vector3d &base_orient,
-                                               const Eigen::Vector3d &com) const override;
+                                               const Eigen::Vector3d &com)  override;
 
         /*!
          * @brief Compute whole body CoM velocity in world frame.
@@ -427,7 +436,7 @@ namespace aliengolib
 		 */
         virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
                                                                 const Eigen::Matrix3d &R,
-                                                                const robotlib::JointState &q) const override;
+                                                                const robotlib::JointState &q)  override;
 
         /*!
          * @brief Compute whole body com velocity in world frame, without recomputing the CoM offset.
@@ -438,10 +447,10 @@ namespace aliengolib
          */
         virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
                                                                  const Eigen::Matrix3d &R,
-                                                                 const Eigen::Vector3d offset_com) const override;
+                                                                 const Eigen::Vector3d offset_com)  override;
                                                       
         virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVel(const robotlib::JointState &q,
-                                                               const robotlib::JointState &qd) const override;
+                                                               const robotlib::JointState &qd)  override;
 
         /*!
         *@brief Get the IMU pose in base frame.

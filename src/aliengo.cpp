@@ -21,6 +21,7 @@
 #include "aliengolib/robcogen/utils.h"
 #include "robotlib/utils/utils.hpp"
 
+#include "pinocchio/algorithm/center-of-mass.hpp"
 #include "pinocchio/algorithm/joint-configuration.hpp"
 #include "pinocchio/algorithm/frames.hpp"
 #include "pinocchio/parsers/urdf.hpp"
@@ -606,7 +607,7 @@ namespace aliengolib
         computeNonLinearEffects(robot_pose, Eigen::Matrix<double,6,1>::Zero(), joint_position, joint_velocity, nle_base, nle_joints);
     }
 
-    Eigen::Matrix<double, 3, 1> Aliengo::getWholeBodyCOM(const robotlib::JointState &joint_position) const
+    Eigen::Matrix<double, 3, 1> Aliengo::getWholeBodyCOM(const robotlib::JointState &joint_position)
     {
         Eigen::Matrix<double, NJOINTS_TOT, 1> joint_position_matrix = Eigen::Matrix<double, NJOINTS_TOT, 1>::Zero();
 
@@ -696,7 +697,7 @@ namespace aliengolib
 
     Eigen::Vector3d Aliengo::getCoMFromBase(const robotlib::JointState &q,
                                 const Eigen::Vector3d &base_orient,
-                                const Eigen::Vector3d &base_pos) const
+                                const Eigen::Vector3d &base_pos)
     {
         Eigen::Matrix3d R = iit::commons::rpyToRot(base_orient);
         Eigen::Vector3d offCoM = getWholeBodyCOM(q);
@@ -705,7 +706,7 @@ namespace aliengolib
 
     Eigen::Vector3d Aliengo::getBaseFromCoM(const robotlib::JointState &q,
                                 const Eigen::Vector3d &base_orient,
-                                const Eigen::Vector3d &CoM) const
+                                const Eigen::Vector3d &CoM)
     {
         Eigen::Matrix3d b_R_w = iit::commons::rpyToRot(base_orient);
         Eigen::Vector3d offCoM = getWholeBodyCOM(q);
@@ -714,7 +715,7 @@ namespace aliengolib
 
     //compute spatial velocity of the CoM (in base frame) (only joint influence)
     Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVel(const robotlib::JointState &q,
-                                                            const robotlib::JointState &qd) const
+                                                            const robotlib::JointState &qd)
     {
         q.size();   // TODO: Not used. Created to remove warning
         qd.size();   // TODO: Not used. Created to remove warning
@@ -731,7 +732,7 @@ namespace aliengolib
     
     Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
                                                                 const Eigen::Matrix3d &R,
-                                                                const robotlib::JointState &q) const
+                                                                const robotlib::JointState &q) 
     {
         Eigen::Matrix<double, 6, 1> CoMVel = Eigen::Matrix<double, 6, 1>::Zero();
 
@@ -742,7 +743,7 @@ namespace aliengolib
 
     Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
                                                             const Eigen::Matrix3d &R,
-                                                            const Eigen::Vector3d offset_com) const
+                                                            const Eigen::Vector3d offset_com)
     {
         Eigen::Matrix<double, 6, 1> CoMVel = Eigen::Matrix<double, 6, 1>::Zero();
 
@@ -751,7 +752,7 @@ namespace aliengolib
         return CoMVel;
     }
 
-    Eigen::Vector3d Aliengo::getLegContribution(const robotlib::JointState &q) const
+    Eigen::Vector3d Aliengo::getLegContribution(const robotlib::JointState &q)
     {
         Eigen::Matrix<double, NJOINTS_TOT, 1> joint_position_matrix = Eigen::Matrix<double, NJOINTS_TOT, 1>::Zero();
 
@@ -867,6 +868,12 @@ namespace aliengolib
     {
         return inertias_->getTrunkMass();
     }
+    
+    double Aliengo::getLinkMass(const std::string name) const
+    {
+        const int joint_id = robot_model_pin.frames[robot_model_pin.getFrameId(name)].parentJoint;
+        return robot_model_pin.inertias[joint_id].mass();
+    }
 
     double Aliengo::getLegsMass() const
     {
@@ -892,12 +899,13 @@ namespace aliengolib
 
     double Aliengo::getRobotMass() const
     {
-        return inertias_->getTotalMass(); // pinocchio::computeTotalMass(robot_model_pin, robot_data_pin);
+        return pinocchio::computeTotalMass(robot_model_pin);
     }
 
-    Eigen::Vector3d Aliengo::getRobotCoM() const {
-        std::cout << "TODO: getRobotCoM" << std::endl;
-        return Eigen::Vector3d().setZero();
+    Eigen::Vector3d Aliengo::getRobotCoM(const robotlib::JointState q) {
+        // set the robot base pose to pos=0, ori=0 --> centerOfMass gives the CoM in the base frame
+        Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(q); 
+        return pinocchio::centerOfMass(robot_model_pin, robot_data_pin, q_pin, false);//false: do not compute com of subtrees
     }
 
     Eigen::Matrix<double, 3, 1> Aliengo::getTrunkCOM() const
