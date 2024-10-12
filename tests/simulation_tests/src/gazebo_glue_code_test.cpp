@@ -150,7 +150,8 @@ namespace dls
 		// testJacobians();
 
 		// testGetDynamicInfo();
-		testJointLimits();
+		testKinematicInfo();
+		// testJointLimits();
 		// Send dds message
 		ddslink->sendMessage("gazebo_glue_code_test", &msg);
 	}
@@ -586,7 +587,10 @@ namespace dls
 			}
 			std::cout << "****************\n";
 		}
+		std::cout << "#############################\n";
+	}
 
-			std::cout << "#############################\n";
+	void GazeboPluginGlueTest::testKinematicInfo(){
+		std::cout << pRobot->getImuBaseOffset() << std::endl;
 	}
 }

@@ -573,29 +573,22 @@ namespace aliengolib
 
     Eigen::Matrix4d Aliengo::getImuBaseOffset(const std::string& imu_link_name, const std::string& base_link_name) const
     {
-        //Imu pose in base frame updated recursively
         Eigen::Matrix4d imu_pose {Eigen::Matrix4d::Zero()};
         imu_pose(3,3) = 1; //homogeneous definition
-        bool reached_base_frame{imu_link_name==base_link_name};
-        if(!reached_base_frame)
-        {
-            // Get parent joint of imu link
-            std::shared_ptr<urdf::Joint> current_joint = robot_model_.getLink(imu_link_name)->parent_joint;
-
-            // Initialize imu_pose before iterating
-            urdf::Pose current_urdf_pose (current_joint->parent_to_joint_origin_transform);
-            imu_pose = robotlib::utils::get_eigen_matrix4d_from_urdf_pose(current_urdf_pose);
-
-            // Backward recursion from link frame to which the IMU is attached (actually in the urdf the link frame is the frame of the parent joint of the link) to base frame
-            while(!reached_base_frame)
+        int frame_id = robot_model_pin.getFrameId(imu_link_name);
+        pinocchio::Frame frame = robot_model_pin.frames[frame_id];
+        imu_pose.block<3,3>(0,0) = frame.placement.rotation();
+        imu_pose.block<3,1>(0,3) = frame.placement.translation();
+        std::string parent_joint_name = robot_model_pin.names[frame.parentJoint];
+        bool reached_base_frame{parent_joint_name=="root_joint"};
+        while(!reached_base_frame)
             {
-                current_joint = robot_model_.getLink(current_joint->parent_link_name)->parent_joint;
-                urdf::Pose current_urdf_pose (current_joint->parent_to_joint_origin_transform);
-                Eigen::Matrix4d current_pose {robotlib::utils::get_eigen_matrix4d_from_urdf_pose(current_urdf_pose)};
-                imu_pose.block<3,3>(0,0) = current_pose.block<3,3>(0,0) * imu_pose.block<3,3>(0,0);
-                imu_pose.block<3,1>(0,3) = current_pose.block<3,1>(0,3) + current_pose.block<3,3>(0,0) * imu_pose.block<3,1>(0,3);
-                reached_base_frame = current_joint->parent_link_name == base_link_name;
-            }
+            frame_id = robot_model_pin.getFrameId(parent_joint_name);
+            frame = robot_model_pin.frames[frame_id];
+            imu_pose.block<3,3>(0,0) = frame.placement.rotation() * imu_pose.block<3,3>(0,0);
+            imu_pose.block<3,1>(0,3) = frame.placement.translation() + frame.placement.rotation() * imu_pose.block<3,1>(0,3);
+            parent_joint_name = robot_model_pin.names[frame.parentJoint];
+            reached_base_frame = parent_joint_name=="root_joint";
         }
         return imu_pose;
     }
