@@ -103,34 +103,4 @@ namespace iit{
 
         return X;
     }
-
-    int compute_stance_legs(const iit::dog::LegDataMap<bool> & stance_legs)
-    {
-        int cleg_count = 0;
-        for (int i = 0; i<iit::dog::_LEGS_COUNT; i++){
-            if (stance_legs[iit::dog::LegID(i)])
-                cleg_count++;
-        }
-        return cleg_count;
-    }
-
-    Eigen::Vector3d getCoMFromBase(const iit::dog::JointState & q,
-                                   const Eigen::Vector3d & base_orient,
-                                   const Eigen::Vector3d & base_pos,
-                                   iit::dog::InertiaPropertiesBase& in)
-    {
-        Eigen::Matrix3d R = iit::commons::rpyToRot(base_orient);
-        Eigen::Vector3d offCoM = in.getWholeBodyCOM(q);
-        return base_pos + R.transpose()*offCoM; //base_pos is in the world frame. offCoM is in base frame
-    }
-
-    Eigen::Vector3d getBaseFromCoM(const iit::dog::JointState & q,
-                                   const Eigen::Vector3d & base_orient,
-                                   const Eigen::Vector3d & CoM,
-                                   iit::dog::InertiaPropertiesBase &in)
-    {
-        Eigen::Matrix3d b_R_w = iit::commons::rpyToRot(base_orient);
-        Eigen::Vector3d offCoM = in.getWholeBodyCOM(q);
-        return CoM - b_R_w.transpose()*offCoM; //CoM is in the world frame. offCoM is in base frame
-    }
 } // namespace iit

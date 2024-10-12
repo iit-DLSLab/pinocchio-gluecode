@@ -607,234 +607,6 @@ namespace aliengolib
         computeNonLinearEffects(robot_pose, Eigen::Matrix<double,6,1>::Zero(), joint_position, joint_velocity, nle_base, nle_joints);
     }
 
-    Eigen::Matrix<double, 3, 1> Aliengo::getWholeBodyCOM(const robotlib::JointState &joint_position)
-    {
-        Eigen::Matrix<double, NJOINTS_TOT, 1> joint_position_matrix = Eigen::Matrix<double, NJOINTS_TOT, 1>::Zero();
-
-        for(auto joint : auxiliar_joints_variable_)
-        {
-            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-            joint_position_matrix[joint_id] = joint_position[joint];
-        }
-        // First updates the coordinate transforms that will be used by the routine
-        
-        homogeneous_transforms_->fr_trunk_X_fr_LF_hipassembly(joint_position_matrix);
-        homogeneous_transforms_->fr_trunk_X_fr_RF_hipassembly(joint_position_matrix);
-        homogeneous_transforms_->fr_trunk_X_fr_LH_hipassembly(joint_position_matrix);
-        homogeneous_transforms_->fr_trunk_X_fr_RH_hipassembly(joint_position_matrix);
-        homogeneous_transforms_->fr_LF_hipassembly_X_fr_LF_upperleg(joint_position_matrix);
-        homogeneous_transforms_->fr_LF_upperleg_X_fr_LF_lowerleg(joint_position_matrix);
-        homogeneous_transforms_->fr_RF_hipassembly_X_fr_RF_upperleg(joint_position_matrix);
-        homogeneous_transforms_->fr_RF_upperleg_X_fr_RF_lowerleg(joint_position_matrix);
-        homogeneous_transforms_->fr_LH_hipassembly_X_fr_LH_upperleg(joint_position_matrix);
-        homogeneous_transforms_->fr_LH_upperleg_X_fr_LH_lowerleg(joint_position_matrix);
-        homogeneous_transforms_->fr_RH_hipassembly_X_fr_RH_upperleg(joint_position_matrix);
-        homogeneous_transforms_->fr_RH_upperleg_X_fr_RH_lowerleg(joint_position_matrix);
-
-        // The actual calculus
-        Eigen::Matrix<double, 3, 1> tmpSum = Eigen::Matrix<double, 3, 1>::Zero();
-
-        tmpSum += inertias_->getCOM_trunk() * inertias_->getMass_trunk();
-
-        iit::Aliengo::HomogeneousTransforms::MatrixType tmpX(iit::Aliengo::HomogeneousTransforms::MatrixType::Identity());
-        iit::Aliengo::HomogeneousTransforms::MatrixType base_X_lf_haa_chain;
-        iit::Aliengo::HomogeneousTransforms::MatrixType base_X_rf_haa_chain;
-        iit::Aliengo::HomogeneousTransforms::MatrixType base_X_lh_haa_chain;
-        iit::Aliengo::HomogeneousTransforms::MatrixType base_X_rh_haa_chain;
-        iit::Aliengo::HomogeneousTransforms::MatrixType base_X_lc_haa_chain;
-        iit::Aliengo::HomogeneousTransforms::MatrixType base_X_rc_haa_chain;
-
-        base_X_lf_haa_chain = tmpX * homogeneous_transforms_->fr_trunk_X_fr_LF_hipassembly;
-        tmpSum += inertias_->getMass_LF_hipassembly() *
-                  (iit::rbd::Utils::transform(base_X_lf_haa_chain, inertias_->getCOM_LF_hipassembly()));
-
-        base_X_lf_haa_chain = base_X_lf_haa_chain * homogeneous_transforms_->fr_LF_hipassembly_X_fr_LF_upperleg;
-        tmpSum += inertias_->getMass_LF_upperleg() *
-                  (iit::rbd::Utils::transform(base_X_lf_haa_chain, inertias_->getCOM_LF_upperleg()));
-
-        base_X_lf_haa_chain = base_X_lf_haa_chain * homogeneous_transforms_->fr_LF_upperleg_X_fr_LF_lowerleg;
-        tmpSum += inertias_->getMass_LF_lowerleg() *
-                  (iit::rbd::Utils::transform(base_X_lf_haa_chain, inertias_->getCOM_LF_lowerleg()));
-
-        base_X_rf_haa_chain = tmpX * homogeneous_transforms_->fr_trunk_X_fr_RF_hipassembly;
-        tmpSum += inertias_->getMass_RF_hipassembly() *
-                  (iit::rbd::Utils::transform(base_X_rf_haa_chain, inertias_->getCOM_RF_hipassembly()));
-
-        base_X_rf_haa_chain = base_X_rf_haa_chain * homogeneous_transforms_->fr_RF_hipassembly_X_fr_RF_upperleg;
-        tmpSum += inertias_->getMass_RF_upperleg() *
-                  (iit::rbd::Utils::transform(base_X_rf_haa_chain, inertias_->getCOM_RF_upperleg()));
-
-        base_X_rf_haa_chain = base_X_rf_haa_chain * homogeneous_transforms_->fr_RF_upperleg_X_fr_RF_lowerleg;
-        tmpSum += inertias_->getMass_RF_lowerleg() *
-                  (iit::rbd::Utils::transform(base_X_rf_haa_chain, inertias_->getCOM_RF_lowerleg()));
-
-        base_X_lh_haa_chain = tmpX * homogeneous_transforms_->fr_trunk_X_fr_LH_hipassembly;
-        tmpSum += inertias_->getMass_LH_hipassembly() *
-                  (iit::rbd::Utils::transform(base_X_lh_haa_chain, inertias_->getCOM_LH_hipassembly()));
-
-        base_X_lh_haa_chain = base_X_lh_haa_chain * homogeneous_transforms_->fr_LH_hipassembly_X_fr_LH_upperleg;
-        tmpSum += inertias_->getMass_LH_upperleg() *
-                  (iit::rbd::Utils::transform(base_X_lh_haa_chain, inertias_->getCOM_LH_upperleg()));
-
-        base_X_lh_haa_chain = base_X_lh_haa_chain * homogeneous_transforms_->fr_LH_upperleg_X_fr_LH_lowerleg;
-        tmpSum += inertias_->getMass_LH_lowerleg() *
-                  (iit::rbd::Utils::transform(base_X_lh_haa_chain, inertias_->getCOM_LH_lowerleg()));
-
-        base_X_rh_haa_chain = tmpX * homogeneous_transforms_->fr_trunk_X_fr_RH_hipassembly;
-        tmpSum += inertias_->getMass_RH_hipassembly() *
-                  (iit::rbd::Utils::transform(base_X_rh_haa_chain, inertias_->getCOM_RH_hipassembly()));
-
-        base_X_rh_haa_chain = base_X_rh_haa_chain * homogeneous_transforms_->fr_RH_hipassembly_X_fr_RH_upperleg;
-        tmpSum += inertias_->getMass_RH_upperleg() *
-                  (iit::rbd::Utils::transform(base_X_rh_haa_chain, inertias_->getCOM_RH_upperleg()));
-
-        base_X_rh_haa_chain = base_X_rh_haa_chain * homogeneous_transforms_->fr_RH_upperleg_X_fr_RH_lowerleg;
-        tmpSum += inertias_->getMass_RH_lowerleg() *
-                  (iit::rbd::Utils::transform(base_X_rh_haa_chain, inertias_->getCOM_RH_lowerleg()));
-
-        return tmpSum / inertias_->getTotalMass();
-    }
-
-    Eigen::Vector3d Aliengo::getCoMFromBase(const robotlib::JointState &q,
-                                const Eigen::Vector3d &base_orient,
-                                const Eigen::Vector3d &base_pos)
-    {
-        Eigen::Matrix3d R = iit::commons::rpyToRot(base_orient);
-        Eigen::Vector3d offCoM = getWholeBodyCOM(q);
-        return base_pos + R.transpose() * offCoM;         //CoM is in the world frame off CoM is in base frame
-    }
-
-    Eigen::Vector3d Aliengo::getBaseFromCoM(const robotlib::JointState &q,
-                                const Eigen::Vector3d &base_orient,
-                                const Eigen::Vector3d &CoM)
-    {
-        Eigen::Matrix3d b_R_w = iit::commons::rpyToRot(base_orient);
-        Eigen::Vector3d offCoM = getWholeBodyCOM(q);
-        return CoM - b_R_w.transpose() * offCoM;          //CoM is in the world frame off CoM is in base frame
-    }
-
-    //compute spatial velocity of the CoM (in base frame) (only joint influence)
-    Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVel(const robotlib::JointState &q,
-                                                            const robotlib::JointState &qd)
-    {
-        q.size();   // TODO: Not used. Created to remove warning
-        qd.size();   // TODO: Not used. Created to remove warning
-
-        Eigen::Matrix<double, 6, 1> CoMvel = Eigen::Matrix<double, 6, 1>::Zero();
-        
-        std::cout << "TODO: getWholeBodyCOMVel\n";
-
-        // The actual calculus
-        //TODO1
-        //CoMvel = Crex::rcg::getWholeBodyCOMJacobian(q, inertiaProps, ht)*qd;
-        return CoMvel;
-    }
-    
-    Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
-                                                                const Eigen::Matrix3d &R,
-                                                                const robotlib::JointState &q) 
-    {
-        Eigen::Matrix<double, 6, 1> CoMVel = Eigen::Matrix<double, 6, 1>::Zero();
-
-        CoMVel = iit::motionVectorTransform(getWholeBodyCOM(q), R) * baseVel;
-
-        return CoMVel;
-    }
-
-    Eigen::Matrix<double, 6, 1> Aliengo::getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
-                                                            const Eigen::Matrix3d &R,
-                                                            const Eigen::Vector3d offset_com)
-    {
-        Eigen::Matrix<double, 6, 1> CoMVel = Eigen::Matrix<double, 6, 1>::Zero();
-
-        CoMVel = iit::motionVectorTransform(offset_com, R) * baseVel;
-
-        return CoMVel;
-    }
-
-    Eigen::Vector3d Aliengo::getLegContribution(const robotlib::JointState &q)
-    {
-        Eigen::Matrix<double, NJOINTS_TOT, 1> joint_position_matrix = Eigen::Matrix<double, NJOINTS_TOT, 1>::Zero();
-
-        for(auto joint : auxiliar_joints_variable_)
-        {
-            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-            joint_position_matrix[joint_id] = q[joint];
-        }
-
-        // First updates the coordinate transforms that will be used by the routine
-        homogeneous_transforms_->fr_trunk_X_fr_LF_hipassembly(joint_position_matrix);
-        homogeneous_transforms_->fr_trunk_X_fr_RF_hipassembly(joint_position_matrix);
-        homogeneous_transforms_->fr_trunk_X_fr_LH_hipassembly(joint_position_matrix);
-        homogeneous_transforms_->fr_trunk_X_fr_RH_hipassembly(joint_position_matrix);
-        homogeneous_transforms_->fr_LF_hipassembly_X_fr_LF_upperleg(joint_position_matrix);
-        homogeneous_transforms_->fr_LF_upperleg_X_fr_LF_lowerleg(joint_position_matrix);
-        homogeneous_transforms_->fr_RF_hipassembly_X_fr_RF_upperleg(joint_position_matrix);
-        homogeneous_transforms_->fr_RF_upperleg_X_fr_RF_lowerleg(joint_position_matrix);
-        homogeneous_transforms_->fr_LH_hipassembly_X_fr_LH_upperleg(joint_position_matrix);
-        homogeneous_transforms_->fr_LH_upperleg_X_fr_LH_lowerleg(joint_position_matrix);
-        homogeneous_transforms_->fr_RH_hipassembly_X_fr_RH_upperleg(joint_position_matrix);
-        homogeneous_transforms_->fr_RH_upperleg_X_fr_RH_lowerleg(joint_position_matrix);
-
-         Eigen::Vector3d tmpSum = Eigen::Vector3d::Zero();
-
-        iit::Aliengo::HomogeneousTransforms::MatrixType tmpX(iit::Aliengo::HomogeneousTransforms::MatrixType::Identity());
-        iit::Aliengo::HomogeneousTransforms::MatrixType base_X_LF_haa_chain;
-        iit::Aliengo::HomogeneousTransforms::MatrixType base_X_RF_haa_chain;
-        iit::Aliengo::HomogeneousTransforms::MatrixType base_X_LH_haa_chain;
-        iit::Aliengo::HomogeneousTransforms::MatrixType base_X_RH_haa_chain;
-
-        base_X_LF_haa_chain = tmpX * homogeneous_transforms_->fr_trunk_X_fr_LF_hipassembly;
-        tmpSum += inertias_->getMass_LF_hipassembly() *
-                (iit::rbd::Utils::transform(base_X_LF_haa_chain, inertias_->getCOM_LF_hipassembly()));
-
-        base_X_LF_haa_chain = base_X_LF_haa_chain * homogeneous_transforms_->fr_LF_hipassembly_X_fr_LF_upperleg;
-        tmpSum += inertias_->getMass_LF_upperleg() *
-                (iit::rbd::Utils::transform(base_X_LF_haa_chain, inertias_->getCOM_LF_upperleg()));
-
-        base_X_LF_haa_chain = base_X_LF_haa_chain * homogeneous_transforms_->fr_LF_upperleg_X_fr_LF_lowerleg;
-        tmpSum += inertias_->getMass_LF_lowerleg() *
-                (iit::rbd::Utils::transform(base_X_LF_haa_chain, inertias_->getCOM_LF_lowerleg()));
-
-        base_X_RF_haa_chain = tmpX * homogeneous_transforms_->fr_trunk_X_fr_RF_hipassembly;
-        tmpSum += inertias_->getMass_RF_hipassembly() *
-                (iit::rbd::Utils::transform(base_X_RF_haa_chain, inertias_->getCOM_RF_hipassembly()));
-
-        base_X_RF_haa_chain = base_X_RF_haa_chain * homogeneous_transforms_->fr_RF_hipassembly_X_fr_RF_upperleg;
-        tmpSum += inertias_->getMass_RF_upperleg() *
-                (iit::rbd::Utils::transform(base_X_RF_haa_chain, inertias_->getCOM_RF_upperleg()));
-
-        base_X_RF_haa_chain = base_X_RF_haa_chain * homogeneous_transforms_->fr_RF_upperleg_X_fr_RF_lowerleg;
-        tmpSum += inertias_->getMass_RF_lowerleg() *
-                (iit::rbd::Utils::transform(base_X_RF_haa_chain, inertias_->getCOM_RF_lowerleg()));
-
-        base_X_LH_haa_chain = tmpX * homogeneous_transforms_->fr_trunk_X_fr_LH_hipassembly;
-        tmpSum += inertias_->getMass_LH_hipassembly() *
-                (iit::rbd::Utils::transform(base_X_LH_haa_chain, inertias_->getCOM_LH_hipassembly()));
-
-        base_X_LH_haa_chain = base_X_LH_haa_chain * homogeneous_transforms_->fr_LH_hipassembly_X_fr_LH_upperleg;
-        tmpSum += inertias_->getMass_LH_upperleg() *
-                (iit::rbd::Utils::transform(base_X_LH_haa_chain, inertias_->getCOM_LH_upperleg()));
-
-        base_X_LH_haa_chain = base_X_LH_haa_chain * homogeneous_transforms_->fr_LH_upperleg_X_fr_LH_lowerleg;
-        tmpSum += inertias_->getMass_LH_lowerleg() *
-                (iit::rbd::Utils::transform(base_X_LH_haa_chain, inertias_->getCOM_LH_lowerleg()));
-
-        base_X_RH_haa_chain = tmpX * homogeneous_transforms_->fr_trunk_X_fr_RH_hipassembly;
-        tmpSum += inertias_->getMass_RH_hipassembly() *
-                (iit::rbd::Utils::transform(base_X_RH_haa_chain, inertias_->getCOM_RH_hipassembly()));
-
-        base_X_RH_haa_chain = base_X_RH_haa_chain * homogeneous_transforms_->fr_RH_hipassembly_X_fr_RH_upperleg;
-        tmpSum += inertias_->getMass_RH_upperleg() *
-                (iit::rbd::Utils::transform(base_X_RH_haa_chain, inertias_->getCOM_RH_upperleg()));
-
-        base_X_RH_haa_chain = base_X_RH_haa_chain * homogeneous_transforms_->fr_RH_upperleg_X_fr_RH_lowerleg;
-        tmpSum += inertias_->getMass_RH_lowerleg() *
-                (iit::rbd::Utils::transform(base_X_RH_haa_chain, inertias_->getCOM_RH_lowerleg()));
-
-        return tmpSum / (getRobotMass() - getTrunkMass());
-    }
-
     Eigen::Matrix4d Aliengo::getImuBaseOffset(const std::string& imu_link_name, const std::string& base_link_name) const
     {
         //Imu pose in base frame updated recursively
@@ -864,37 +636,10 @@ namespace aliengolib
         return imu_pose;
     }
     
-    double Aliengo::getTrunkMass() const
-    {
-        return inertias_->getTrunkMass();
-    }
-    
-    double Aliengo::getLinkMass(const std::string name) const
+    double Aliengo::getLinkMass(const std::string& name) const
     {
         const int joint_id = robot_model_pin.frames[robot_model_pin.getFrameId(name)].parentJoint;
         return robot_model_pin.inertias[joint_id].mass();
-    }
-
-    double Aliengo::getLegsMass() const
-    {
-        return inertias_->getLegMass();
-    }
-    
-    void Aliengo::setInvKinTimePeriod(const double period)
-    {
-        inverse_kinematics_->setTimePeriod(period);
-    } 
-
-    void Aliengo::setTrunkCom(const Eigen::Vector3d &trunk_com)
-    {
-        robot_params_->setValue_trunk_com_x(trunk_com(0));
-        robot_params_->setValue_trunk_com_y(trunk_com(1));
-        robot_params_->setValue_trunk_com_z(trunk_com(2));
-    }
-
-    void Aliengo::setTrunkMass(const double trunk_mass)
-    {
-        robot_params_->setValue_trunk_mass(trunk_mass);   
     }
 
     double Aliengo::getRobotMass() const
@@ -902,15 +647,22 @@ namespace aliengolib
         return pinocchio::computeTotalMass(robot_model_pin);
     }
 
-    Eigen::Vector3d Aliengo::getRobotCoM(const robotlib::JointState q) {
+    Eigen::Vector3d Aliengo::getWholeBodyCoM(const robotlib::JointState q) {
         // set the robot base pose to pos=0, ori=0 --> centerOfMass gives the CoM in the base frame
         Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(q); 
         return pinocchio::centerOfMass(robot_model_pin, robot_data_pin, q_pin, false);//false: do not compute com of subtrees
     }
 
-    Eigen::Matrix<double, 3, 1> Aliengo::getTrunkCOM() const
+    Eigen::Vector3d Aliengo::getLinkCOM(const std::string& name) const
     {
-        return inertias_->getCOM_trunk();
+        const int joint_id = robot_model_pin.frames[robot_model_pin.getFrameId(name)].parentJoint;
+        return robot_model_pin.inertias[joint_id].lever();
+    }
+
+    Eigen::Matrix3d Aliengo::getLinkInertia(const std::string& name) const
+    {
+        const int joint_id = robot_model_pin.frames[robot_model_pin.getFrameId(name)].parentJoint;
+        return robot_model_pin.inertias[joint_id].inertia().matrix();
     }
 
     Eigen::VectorXd Aliengo::reorderJoints(const Eigen::VectorXd& data) const{

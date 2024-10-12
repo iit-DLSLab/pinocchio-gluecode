@@ -560,13 +560,16 @@ namespace dls
 
 	void GazeboPluginGlueTest::testGetDynamicInfo(){
 		std::cout << "Robot total mass " << pRobot->getRobotMass() << std::endl;
-		std::cout << "Robot total com " << pRobot->getRobotCoM(*joints_positions).transpose() << std::endl;
+		std::cout << "Robot total com " << pRobot->getWholeBodyCoM(*joints_positions).transpose() << std::endl;
 		// std::cout << "Robot total inertia " << pRobot->getRobotInertia() << std::endl;
 		std::string link_name = "rh_upperleg";
 		std::cout << "Mass of link " << link_name << " is " << pRobot->getLinkMass(link_name) << std::endl;
-
         pinocchio::computeSubtreeMasses(robot_model, robot_data);
 		int joint_id = robot_model.getJointId("lf_haa_joint");
 		std::cout << "LF leg mass " << robot_data.mass[joint_id] << std::endl;
+        std::cout <<"Get Link intertia (lf_lowerleg): " <<  pRobot->getLinkInertia("lf_lowerleg") << std::endl;
+		std::cout << "Get Link CoM (lf_lowerleg): " << pRobot->getLinkCOM("lf_lowerleg") << std::endl;
+		std::cout << "getCoMFromBase: " << pRobot->getCoMFromBase(*joints_positions, q.head(7)).transpose();
+		std::cout << "getBaseFromCoM: " << pRobot->getBaseFromCoM(*joints_positions, q.block<4,1>(3,0), pRobot->getCoMFromBase(*joints_positions, q.head(7))).transpose() << ", base position: " << q.head(3).transpose()<< std::endl;
 	}
 }

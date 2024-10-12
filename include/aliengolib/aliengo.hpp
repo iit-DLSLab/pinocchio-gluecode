@@ -357,19 +357,27 @@ namespace aliengolib
          * @return total robot mass.
          */
         virtual double getRobotMass() const override;
-
-        /*!
-         * @brief Get trunk mass.
-         * @return trunk mass.
-         */
-        virtual double getTrunkMass() const override;
         
         /*!
          * @brief Get link mass.
          * @param[in] name name of the link.
          * @return link mass.
          */
-        virtual double getLinkMass(const std::string name) const override;
+        virtual double getLinkMass(const std::string& name) const override;
+
+        /*!
+         * @brief Get link inertia about the CoM.
+         * @param[in] name name of the link.
+         * @return link inertia.
+        */
+        virtual Eigen::Matrix3d getLinkInertia(const std::string& name) const override;
+
+        /*!
+         * @brief Get link CoM in the joint frame(see https://wiki.ros.org/urdf/Tutorials/Create%20your%20own%20urdf%20file).
+         * @param[in] name name of the link.
+         * @return link CoM.
+        */
+        virtual Eigen::Vector3d getLinkCOM(const std::string& name) const override;
 
         /*!
          * @brief Compute whole body CoM in base frame.
@@ -377,80 +385,7 @@ namespace aliengolib
          * @param[in] q angles of the joints.
          * @return whole body CoM in base frame.
          */
-        virtual Eigen::Vector3d getRobotCoM(const robotlib::JointState q) override;
-
-        /*!
-         * @brief Get total legs' mass.
-         * @return total legs' mass.
-         */
-        virtual double getLegsMass() const override;
-
-        /*!
-         * @brief Get the CoM of the trunk.
-         * @return trunk's CoM.
-         */
-        virtual Eigen::Matrix<double, 3, 1> getTrunkCOM() const override;
-
-        /*!
-         * @brief Compute whole body CoM in base frame.
-         * @param[in] joint_position angles of the joints.
-         * @return whole body CoM in base frame.
-         */
-        virtual Eigen::Matrix<double, 3, 1> getWholeBodyCOM(const robotlib::JointState &joint_position) override;
-
-        /*!
-         * @brief Compute CoM legs contribution in base frame.
-         * @param[in] q angles of the joints.
-         * @return CoM legs contribution in base frame.
-         */
-        virtual Eigen::Vector3d getLegContribution(const robotlib::JointState &q) override;
-
-        /*!
-         * @brief Compute robot CoM position in world frame, from base pose in world frame.
-         * @param[in] q angles of the joints.
-         * @param[in] base_orient base orientation in world frame.
-         * @param[in] base_pos base position in world frame.
-         * @return CoM position in world frame.
-         */
-        virtual Eigen::Vector3d getCoMFromBase(const robotlib::JointState &q,
-                                               const Eigen::Vector3d &base_orient,
-                                               const Eigen::Vector3d &base_pos)  override;
-
-        /*!
-         * @brief Compute robot base position in world frame, from CoM position in world frame.
-         * @param[in] q angles of the joints.
-         * @param[in] base_orient base orientation in world frame.
-         * @param[in] com robot CoM postion in world frame.
-         * @return base position in world frame.
-         */
-        virtual Eigen::Vector3d getBaseFromCoM(const robotlib::JointState &q,
-                                               const Eigen::Vector3d &base_orient,
-                                               const Eigen::Vector3d &com)  override;
-
-        /*!
-         * @brief Compute whole body CoM velocity in world frame.
-         * @param[in] baseVel base velocity in base frame.
-         * @param[in] R rotation matrix of base frame expressed in world frame.
-         * @param[in] q angles of the joints.
-         * @return CoM velocity in world frame.
-		 */
-        virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
-                                                                const Eigen::Matrix3d &R,
-                                                                const robotlib::JointState &q)  override;
-
-        /*!
-         * @brief Compute whole body com velocity in world frame, without recomputing the CoM offset.
-         * @param[in] baseVel base velocity in base frame.
-         * @param[in] R rotation matrix of base frame expressed in world frame.
-         * @param[in] offset_com CoM offset in base frame.
-         * @return CoM velocity in world frame.
-         */
-        virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVelFB(const Eigen::Matrix<double, 6, 1> &baseVel,
-                                                                 const Eigen::Matrix3d &R,
-                                                                 const Eigen::Vector3d offset_com)  override;
-                                                      
-        virtual Eigen::Matrix<double, 6, 1> getWholeBodyCOMVel(const robotlib::JointState &q,
-                                                               const robotlib::JointState &qd)  override;
+        virtual Eigen::Vector3d getWholeBodyCoM(const robotlib::JointState q) override;
 
         /*!
         *@brief Get the IMU pose in base frame.
@@ -462,25 +397,6 @@ namespace aliengolib
 
         // ** SET FUNCTIONS **
 
-        /*!
-         * @brief Set trunk's CoM.
-         * @param[in] trunk_com CoM of trunk to be set.
-         */
-        virtual void setTrunkCom(const Eigen::Vector3d &trunk_com) override;
-
-        /*!
-         * @brief Set trunk's mass.
-         * @param[in] trunk_mass mass of trunk to be set.
-         */
-        virtual void setTrunkMass(const double trunk_mass) override;
-
-		/*!
-		 * @brief Set inverse kinematics time period.
-         * @details
-         * This time period is the controller's loop time period. The time period needs to be set before calling the inverse kinematics.
-         * @param[in] period period of the controller.
-		 */
-        virtual void setInvKinTimePeriod(const double period) override;
     private: 
 		/*!
 		 * @brief Set the joint limits from the urdf file.

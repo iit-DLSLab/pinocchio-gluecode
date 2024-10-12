@@ -202,39 +202,6 @@ namespace iit{
      * @return Eigen::Matrix<double, 6, 6>
      */
     iit::rbd::Matrix66d forceVectorTransform(const iit::rbd::Vector3d & position, const Eigen::Matrix3d & rotationMx);
-    /*!
-     * @brief Return the number of legs that are in stance phase
-     * 
-     * @param[in] stance_legs Boolean values associated to each leg, that indicate if these are in stance or not
-     * @return int
-     */
-    int compute_stance_legs(const iit::dog::LegDataMap<bool> & stance_legs);
-    /*!
-     * @brief Get the robot center of mass (CoM) with respect to the base
-     * 
-     * @param[in] q robot joints state
-     * @param[in] base_orient robot base orientation expressed in the world frame
-     * @param[in] base_pos robot base position expressed in the world frame
-     * @param[in] in parameter used to get the COM offset expressed in the base frame
-     * @return Eigen::Vector3d
-     */
-    Eigen::Vector3d getCoMFromBase(const iit::dog::JointState & q,
-                                   const Eigen::Vector3d & base_orient,
-                                   const Eigen::Vector3d & base_pos,
-                                   iit::dog::InertiaPropertiesBase& in);
-    /*!
-     * @brief Get the robot base with respect to the center of mass (CoM)
-     * 
-     * @param[in] q robot joints state
-     * @param[in] base_orient robot base orientation expressed in the world frame
-     * @param[in] CoM robot center of mass expressed in the world frame
-     * @param[in] in parameter used to get the COM offset expressed in the base frame
-     * @return Eigen::Vector3d
-     */
-    Eigen::Vector3d getBaseFromCoM(const iit::dog::JointState & q,
-                                   const Eigen::Vector3d & base_orient,
-                                   const Eigen::Vector3d & CoM,
-                                   iit::dog::InertiaPropertiesBase &in);
 
     // ******************** ___FROM dls_commons/liblocomotionutils/computeJacobians.cpp___ ********************
 
