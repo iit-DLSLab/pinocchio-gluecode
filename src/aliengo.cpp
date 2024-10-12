@@ -129,67 +129,31 @@ namespace aliengolib
 
     void Aliengo::setJointLimitsFromUrdf()
     {
-        
-        //Get limits from URDF for position, velocity and effort:
-        for(std::pair<std::string, std::shared_ptr<urdf::Joint> > jointPair : robot_model_.joints_)
+        for(auto joint : auxiliar_joints_variable_)
         {
-            if (jointPair.second->type == urdf::Joint::REVOLUTE)
-            {
-                // for (auto leg : *legs_)
-                // {
-                //     for (auto joint : *leg->getJoints())
-                //     {
-                //         // **Transform robotlib joint name to urdf one**
-                //         std::string urdf_joint_name{joint->getName()};
-                //         std::transform(urdf_joint_name.begin(), urdf_joint_name.end(), urdf_joint_name.begin(), ::tolower);
-                //         urdf_joint_name.append("_joint");
+            // **Transform robotlib joint name to urdf one**
+            std::string urdf_joint_name{joint->getName()};
+            std::transform(urdf_joint_name.begin(), urdf_joint_name.end(), urdf_joint_name.begin(), ::tolower);
+            urdf_joint_name.append("_joint");
 
-                //         if(urdf_joint_name == std::get<0>(jointPair))
-                //         {
-                //             const double q_min = jointPair.second->limits->lower;
-                //             const double q_max = jointPair.second->limits->upper;
-                //             const double qd_max = jointPair.second->limits->velocity;
-                //             const double tau_max = jointPair.second->limits->effort;
-
-                //             setJointLimits(joint, q_min, q_max, qd_max, tau_max);
-                            
-                //             std::cout << "Set limits for joint " << urdf_joint_name << ":" << std::endl;
-                //             std::cout << "q_min = " << q_min << std::endl;
-                //             std::cout << "q_max = " << q_max << std::endl;
-                //             std::cout << "qd_max = " << qd_max << std::endl; 
-                //             std::cout << "tau_max = " << tau_max << std::endl;
-                //             std::cout << "\n";
-                //         }
-                //     }
-                    
-                // }
-                for(auto joint : auxiliar_joints_variable_)
-                {
-                    // **Transform robotlib joint name to urdf one**
-                    std::string urdf_joint_name{joint->getName()};
-                    std::transform(urdf_joint_name.begin(), urdf_joint_name.end(), urdf_joint_name.begin(), ::tolower);
-                    urdf_joint_name.append("_joint");
-
-                    if(urdf_joint_name == std::get<0>(jointPair))
-                    {
-                        const double q_min = jointPair.second->limits->lower;
-                        const double q_max = jointPair.second->limits->upper;
-                        const double qd_max = jointPair.second->limits->velocity;
-                        const double tau_max = jointPair.second->limits->effort;
-
-                        setJointLimits(joint, q_min, q_max, qd_max, tau_max);
-                        
-                        // std::cout << "Set limits for joint " << urdf_joint_name << ":" << std::endl;
-                        // std::cout << "q_min = " << q_min << std::endl;
-                        // std::cout << "q_max = " << q_max << std::endl;
-                        // std::cout << "qd_max = " << qd_max << std::endl; 
-                        // std::cout << "tau_max = " << tau_max << std::endl;
-                        // std::cout << "\n";
-                    }
-                }
-
-            }
+            const int joint_id_nq = getJointIdForNq(urdf_joint_name);
+            const int joint_id_nv = getJointIdForNv(urdf_joint_name);
+            const double q_min = robot_model_pin.lowerPositionLimit[joint_id_nq];
+            const double q_max = robot_model_pin.upperPositionLimit[joint_id_nq];
+            const double qd_max = robot_model_pin.velocityLimit[joint_id_nv];
+            const double tau_max = robot_model_pin.effortLimit[joint_id_nv];
+            setJointLimits(joint, q_min, q_max, qd_max, tau_max);
         }
+    }
+
+    int Aliengo::getJointIdForNq(const std::string &joint_name) const
+    {
+        return robot_model_pin.getJointId(joint_name)+5;//5: in any variable of dimension nq, with a model having a JointModelFreeFlyer as root_joint, the first 7 values corresponds to the floating base joint (pos,quaternion). But the number of joints are universe+root_joint+robot_joints. So the index of the first robot joint is 2, which corresponds to 7 in any variable of dimension nq. So we use the joint_id offset=5.
+    }
+
+    int Aliengo::getJointIdForNv(const std::string &joint_name) const
+    {
+        return robot_model_pin.getJointId(joint_name)+4;//4: in any variable of dimension nv, with a model having a JointModelFreeFlyer as root_joint, the first 6 values corresponds to the floating base joint (pos,quaternion). But the number of joints are universe+root_joint+robot_joints. So the index of the first robot joint is 2, which corresponds to 6 in any variable of dimension nq. So we use the joint_id offset=4.
     }
 
     Eigen::Vector3d Aliengo::getFramePosition(const robotlib::JointState &q,
@@ -258,7 +222,7 @@ namespace aliengolib
             pinocchio::computeFrameJacobian(robot_model_pin, robot_data_pin, q_pin, frame_id, pinocchio::LOCAL_WORLD_ALIGNED, J);
 
             // set output
-            const int jacobian_cols = robot_model_pin.nv;-6; // -6 because we are not considering the floating base joint
+            const int jacobian_cols = robot_model_pin.nv-6; // -6 because we are not considering the floating base joint
             jacobian = J.block(0,6,6, jacobian_cols); //6 because it is a geometric jacobian (lin, ang)
 
             jacobian = reorderLimbsJacobian(jacobian);

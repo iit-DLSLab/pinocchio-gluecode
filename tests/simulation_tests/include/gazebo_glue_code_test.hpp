@@ -93,6 +93,7 @@ namespace dls
         void testJacobians();
 	    Eigen::VectorXd reorderJoints(const Eigen::VectorXd& data) const;
         void testGetDynamicInfo();
+        void testJointLimits();
 
         pinocchio::Model robot_model;
         pinocchio::Data robot_data;

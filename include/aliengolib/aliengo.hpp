@@ -404,6 +404,20 @@ namespace aliengolib
         void setJointLimitsFromUrdf();
 
         /*!
+         * @brief Get the joint id to access to any variable of dimension nq, when the root_joint is JointModelFreeFlyer.
+          * @param[in] joint_name name of the joint.
+          * @return joint id.
+         */    
+        int getJointIdForNq(const std::string &joint_name) const;
+
+        /*!
+         * @brief Get the joint id to access to any variable of dimension nv, when the root_joint is JointModelFreeFlyer.
+          * @param[in] joint_name name of the joint.
+          * @return joint id.
+         */    
+        int getJointIdForNv(const std::string &joint_name) const;
+
+        /*!
         * @brief Get the base ID. 
         */
         pinocchio::FrameIndex getBaseID() const;

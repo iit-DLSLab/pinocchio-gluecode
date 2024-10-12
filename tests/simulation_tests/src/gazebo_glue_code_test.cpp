@@ -149,8 +149,8 @@ namespace dls
 
 		// testJacobians();
 
-		testGetDynamicInfo();
-
+		// testGetDynamicInfo();
+		testJointLimits();
 		// Send dds message
 		ddslink->sendMessage("gazebo_glue_code_test", &msg);
 	}
@@ -571,5 +571,22 @@ namespace dls
 		std::cout << "Get Link CoM (lf_lowerleg): " << pRobot->getLinkCOM("lf_lowerleg") << std::endl;
 		std::cout << "getCoMFromBase: " << pRobot->getCoMFromBase(*joints_positions, q.head(7)).transpose();
 		std::cout << "getBaseFromCoM: " << pRobot->getBaseFromCoM(*joints_positions, q.block<4,1>(3,0), pRobot->getCoMFromBase(*joints_positions, q.head(7))).transpose() << ", base position: " << q.head(3).transpose()<< std::endl;
+	}
+
+	void GazeboPluginGlueTest::testJointLimits(){
+		for(auto leg: *this->pRobot->getLegs())
+		{
+			for(auto joint : *leg->getJoints())
+			{
+				const std::string joint_name = joint->getName();
+				std::cout << "q_min for "<< joint_name << ": "<<pRobot->getMinJointAngle(joint) << std::endl;
+				std::cout << "q_max for "<< joint_name << ": "<<pRobot->getMaxJointAngle(joint) << std::endl;
+				std::cout << "qd_max for "<< joint_name << ": "<<pRobot->getMaxJointVelocity(joint) << std::endl;
+				std::cout << "tau_max for "<< joint_name << ": "<<pRobot->getMaxJointEffort(joint) << std::endl;
+			}
+			std::cout << "****************\n";
+		}
+
+			std::cout << "#############################\n";
 	}
 }
