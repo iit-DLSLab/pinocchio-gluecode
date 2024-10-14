@@ -21,21 +21,8 @@
 #include <robotlib/limb.hpp>
 #include "aliengo_leg.hpp"
 
-#include "utils.hpp"
-// #include "robcogen/jacobians.h"
-
 #include "pinocchio/multibody/data.hpp"
 #include "pinocchio/multibody/fwd.hpp"
-
-// ROBCOGEN INCLUDES
-#include "robcogen/inverse_kinematics.h"
-#include "robcogen/transforms.h"
-#include "robcogen/inverse_dynamics.h"
-#include "robcogen/inertia_properties.h"
-
-#include "robcogen/feet_jacobians.h"
-
-#include <urdf/model.h>
 
 namespace aliengolib
 {
@@ -436,29 +423,8 @@ namespace aliengolib
                         const pinocchio::SE3 &oMdes,
                         const IK::TASK task_type);
 
-        //! Robot model from the urdf file.
-        urdf::Model robot_model_;
-
         //! Auxiliar variable storing the joints of the robot. This variable can help to avoid unnecessary loops.
         std::array<std::shared_ptr<robotlib::Joint>,NJOINTS_TOT> auxiliar_joints_variable_;
-
-        //**********  RobCoGen variables  **********
-        //! Homogeneous transforms.
-		std::shared_ptr<iit::Aliengo::HomogeneousTransforms> homogeneous_transforms_;
-		//! Robot parameters.
-        std::shared_ptr<iit::dog::KinDynParams> robot_params_;
-        //! Inverse kinematics.
-        std::shared_ptr<iit::Aliengo::InverseKinematics> inverse_kinematics_;
-		//! Robot inertias.
-        std::shared_ptr<iit::Aliengo::dyn::InertiaProperties> inertias_;
-        //! Inverse dynamics.
-        std::shared_ptr<iit::Aliengo::dyn::InverseDynamics> inverse_dynamics_;
-        //! Motion transforms.
-        std::shared_ptr<iit::Aliengo::MotionTransforms> motion_transforms_;
-        //! Jacobians.
-        std::shared_ptr<iit::Aliengo::Jacobians> jacobians_;
-        //! Feet Jacobians.
-        std::shared_ptr<iit::Aliengo::FeetJacobians> feet_jacobians_;
 
         pinocchio::Model robot_model_pin;
         pinocchio::Data robot_data_pin;

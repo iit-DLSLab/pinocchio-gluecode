@@ -16,9 +16,7 @@
 
 #include "aliengolib/aliengo.hpp"
 #include "aliengolib/aliengo_leg.hpp"
-#include "aliengolib/urdf_params_getter.h"
 
-#include "aliengolib/robcogen/utils.h"
 #include "robotlib/utils/utils.hpp"
 
 #include "pinocchio/algorithm/center-of-mass.hpp"
@@ -84,65 +82,29 @@ namespace aliengolib
             }
         }
 
-        for (auto leg : *legs_)
-        {
-            for (auto joint : *(leg->getJoints()))
-            {
-                const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-                auxiliar_joints_variable_[joint_id] = joint;
-            }
-        }
-        if (!robot_model_.initString(robot_urdf))
-            std::cout << "Failed to parse urdf file" << std::endl;
-
-        // Getting joint limits from urdf
-
-        robot_params_.reset(new iit::dog::UrdfParamsGetter(robot_model_));
-        homogeneous_transforms_.reset(new iit::Aliengo::HomogeneousTransforms(*robot_params_));
-        inverse_kinematics_.reset(new iit::Aliengo::InverseKinematics(*robot_params_));
-
         setJointLimitsFromUrdf();
-        // Coverting joint kinematic limits to robcogen joint state
-        iit::dog::JointState robcogen_q_min{};
-        iit::dog::JointState robcogen_q_max{};
-
-        for(auto joint : auxiliar_joints_variable_)
-        {
-            const int joint_id{glue_joint_names_to_ids.at(joint->getName())};
-            robcogen_q_min[joint_id] = RobotBase::getMinJointAngle(joint);
-            robcogen_q_max[joint_id] = RobotBase::getMaxJointAngle(joint);
-        }
-
-        inverse_kinematics_->setKinematicLimits(robcogen_q_min, robcogen_q_max);
-        inertias_.reset(new iit::Aliengo::dyn::InertiaProperties(*robot_params_));
-
-        motion_transforms_.reset(new iit::Aliengo::MotionTransforms(*robot_params_));
-        
-        jacobians_.reset(new iit::Aliengo::Jacobians(*robot_params_));
-
-        feet_jacobians_.reset(new iit::Aliengo::FeetJacobians(*jacobians_));
-
-        inverse_dynamics_.reset(new iit::Aliengo::dyn::InverseDynamics(*inertias_, *motion_transforms_));
     }
 
     Aliengo::~Aliengo(){}
 
     void Aliengo::setJointLimitsFromUrdf()
     {
-        for(auto joint : auxiliar_joints_variable_)
+        for(auto leg : *this->legs_)
         {
-            // **Transform robotlib joint name to urdf one**
-            std::string urdf_joint_name{joint->getName()};
-            std::transform(urdf_joint_name.begin(), urdf_joint_name.end(), urdf_joint_name.begin(), ::tolower);
-            urdf_joint_name.append("_joint");
+            for(auto joint: *leg->getJoints()){
+                // **Transform robotlib joint name to urdf one**
+                std::string urdf_joint_name{joint->getName()};
+                std::transform(urdf_joint_name.begin(), urdf_joint_name.end(), urdf_joint_name.begin(), ::tolower);
+                urdf_joint_name.append("_joint");
 
-            const int joint_id_nq = getJointIdForNq(urdf_joint_name);
-            const int joint_id_nv = getJointIdForNv(urdf_joint_name);
-            const double q_min = robot_model_pin.lowerPositionLimit[joint_id_nq];
-            const double q_max = robot_model_pin.upperPositionLimit[joint_id_nq];
-            const double qd_max = robot_model_pin.velocityLimit[joint_id_nv];
-            const double tau_max = robot_model_pin.effortLimit[joint_id_nv];
-            setJointLimits(joint, q_min, q_max, qd_max, tau_max);
+                const int joint_id_nq = getJointIdForNq(urdf_joint_name);
+                const int joint_id_nv = getJointIdForNv(urdf_joint_name);
+                const double q_min = robot_model_pin.lowerPositionLimit[joint_id_nq];
+                const double q_max = robot_model_pin.upperPositionLimit[joint_id_nq];
+                const double qd_max = robot_model_pin.velocityLimit[joint_id_nv];
+                const double tau_max = robot_model_pin.effortLimit[joint_id_nv];
+                setJointLimits(joint, q_min, q_max, qd_max, tau_max);
+            }
         }
     }
 
@@ -582,7 +544,7 @@ namespace aliengolib
         std::string parent_joint_name = robot_model_pin.names[frame.parentJoint];
         bool reached_base_frame{parent_joint_name=="root_joint"};
         while(!reached_base_frame)
-            {
+        {
             frame_id = robot_model_pin.getFrameId(parent_joint_name);
             frame = robot_model_pin.frames[frame_id];
             imu_pose.block<3,3>(0,0) = frame.placement.rotation() * imu_pose.block<3,3>(0,0);

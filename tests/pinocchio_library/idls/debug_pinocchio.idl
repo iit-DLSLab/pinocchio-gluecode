@@ -1,13 +1,7 @@
 struct DebugPinocchioMsg
 {
-    //sequence<double> feet_position_robcogen;
-    // sequence<double> feet_position_pin;
-    //sequence<double> feet_velocity_robcogen;
-    //sequence<double> feet_velocity_pin;
-    
     double q_inv_kin_gt[19]; // joints configuration
     double q_inv_kin[19]; // joints configuration
-    double q_inv_kin_robcogen[19]; // joints configuration
     double q_inv_kin_robotlib[12];
 
     double err_inv_kin[6];
@@ -19,7 +13,6 @@ struct DebugPinocchioMsg
 
     double tau_gt[12]; 
     double tau_est[12]; 
-    double tau_robcogen[12]; 
 
     double qd_inv_diff_kin_robotlib[12];
     double qd_gt[12];

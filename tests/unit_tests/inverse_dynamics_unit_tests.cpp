@@ -10,9 +10,6 @@
 #include "robotlib/robot_base.hpp"
 #include "aliengolib/aliengo.hpp"
 
-//Robcogen
-#include "aliengolib/robcogen/rbd.h"
-
 ///! Robot urdf in string format.
 std::string robot_urdf{aliengolib::readURDFifstream(aliengolib::aliengo_urdf_path)};
 

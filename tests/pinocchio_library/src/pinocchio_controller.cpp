@@ -50,8 +50,6 @@ namespace controllers
 
         dds_participant_->addWriter("pinocchio_writer", dls::topics::pinocchio_controller::debug);
 
-        // debug_msg.feet_position_robcogen() = std::vector<double>(pRobot->getNJOINTS(), 0.0);
-        // debug_msg.feet_velocity_robcogen() = std::vector<double>(pRobot->getNJOINTS(), 0.0);
         // debug_msg.feet_position_pin() = std::vector<double>(pRobot->getNJOINTS(), 0.0);
         // debug_msg.feet_velocity_pin() = std::vector<double>(pRobot->getNJOINTS(), 0.0);
 

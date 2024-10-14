@@ -12,7 +12,6 @@ struct GazeboGlueCodeTestMsg{
 
     double q_inv_kin_gt[12]; // joints configuration
     double q_inv_kin[12]; // joints configuration
-    double q_inv_kin_robcogen[12]; // joints configuration
 
     double feet_forces_gt[12];
     double feet_forces[12];
