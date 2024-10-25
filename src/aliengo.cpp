@@ -296,8 +296,8 @@ namespace aliengolib
         int task_dim = 0;
         if (task_type == IK::POSITION_TASK)
             task_dim = 3;
-        else if (task_type == IK::POSE_TASK)
-            task_dim = 6;
+        // else if (task_type == IK::POSE_TASK)
+        //     task_dim = 6;
         else
         {
             std::cout << "Error: task type not recognized." << std::endl;
@@ -342,14 +342,14 @@ namespace aliengolib
             if (task_type == IK::TASK::POSITION_TASK){
                 err_task = b_R_o*(oMdes.translation()) - b_R_o*(robot_data_pin.oMf[frame_id].translation()-robot_data_pin.oMf[base_frame_id].translation());
             }
-            else if (task_type == IK::TASK::POSE_TASK){
-			    fMd = robot_data_pin.oMf[frame_id].actInv(oMdes);
-                err_task = pinocchio::log6(fMd).toVector();
-                // -- rotate error in base frame
-                b_R_f = b_R_o*robot_data_pin.oMf[frame_id].rotation();
-                err_task.head(3) = b_R_f*err_task.head(3);
-                err_task.tail(3) = b_R_f*err_task.tail(3);
-            }
+            // else if (task_type == IK::TASK::POSE_TASK){
+			//     fMd = robot_data_pin.oMf[frame_id].actInv(oMdes);
+            //     err_task = pinocchio::log6(fMd).toVector();
+            //     // -- rotate error in base frame
+            //     b_R_f = b_R_o*robot_data_pin.oMf[frame_id].rotation();
+            //     err_task.head(3) = b_R_f*err_task.head(3);
+            //     err_task.tail(3) = b_R_f*err_task.tail(3);
+            // }
 
             if (err_task.norm() < err_threshold)
 			{
