@@ -1,19 +1,3 @@
-/*!
- * @file aliengo.hpp
- *
- * @brief Aliengo class definition and functions prototypes.
- *
- * @authors Authors in alphabetical order:
- *
- *     Gianluca Cerilli (IIT DLS Lab) - Contact: gianluca.cerilli@iit.it
- *
- *     Geoff Fink (IIT DLS Lab) - Contact: geoff.fink@iit.it
- *
- *     Marco Marchitto (IIT DLS Lab) - Contact: marco.marchitto@iit.it
- *
- * @bug No known bugs.
- */
-
 #ifndef _ALIENGOLIB_ALIENGO_HPP_
 #define _ALIENGOLIB_ALIENGO_HPP_
 
@@ -391,24 +375,6 @@ namespace aliengolib
         void setJointLimitsFromUrdf();
 
         /*!
-         * @brief Get the joint id to access to any variable of dimension nq, when the root_joint is JointModelFreeFlyer.
-          * @param[in] joint_name name of the joint.
-          * @return joint id.
-         */    
-        int getJointIdForNq(const std::string &joint_name) const;
-
-        /*!
-         * @brief Get the joint id to access to any variable of dimension nv, when the root_joint is JointModelFreeFlyer.
-          * @param[in] joint_name name of the joint.
-          * @return joint id.
-         */    
-        int getJointIdForNv(const std::string &joint_name) const;
-
-        /*!
-        * @brief Get the base ID. 
-        */
-        pinocchio::FrameIndex getBaseID() const;
-        /*!
         * @brief Closed loop inverse kinematics.
         * @details
         * This function computes the joint angles using the CLIK algorithm as in Handbook of Robotics, eq. 10.29.
@@ -426,8 +392,29 @@ namespace aliengolib
         //! Auxiliar variable storing the joints of the robot. This variable can help to avoid unnecessary loops.
         std::array<std::shared_ptr<robotlib::Joint>,NJOINTS_TOT> auxiliar_joints_variable_;
 
-        pinocchio::Model robot_model_pin;
-        pinocchio::Data robot_data_pin;
+        // ** PINOCCHIO **
+        pinocchio::Model robot_model;
+        pinocchio::Data robot_data;
+
+        /*!
+         * @brief Get the joint id to access to any variable of dimension nq, when the root_joint is JointModelFreeFlyer.
+          * @param[in] joint_name name of the joint.
+          * @return joint id.
+         */    
+        int getJointIdForNq(const std::string &joint_name) const;
+
+        /*!
+         * @brief Get the joint id to access to any variable of dimension nv, when the root_joint is JointModelFreeFlyer.
+          * @param[in] joint_name name of the joint.
+          * @return joint id.
+         */    
+        int getJointIdForNv(const std::string &joint_name) const;
+
+        /*!
+        * @brief Get the base ID. 
+        */
+        pinocchio::FrameIndex getBaseID() const;
+
         // Pinocchio order the joints following an alphanumeric order, so we need to map our order to the pinocchio one and viceversa
         // our convention: lf rf lh rh
         // pinocchio one: lf lh rf rh
@@ -441,8 +428,6 @@ namespace aliengolib
         Eigen::VectorXd fromRobotlibToPinocchioJointState(const Eigen::Matrix<double, 7, 1> &robot_pose, const robotlib::JointState &joint_position);
         Eigen::VectorXd fromRobotlibToPinocchioJointVelocity(const robotlib::JointState &joint_velocity);
         Eigen::VectorXd fromRobotlibToPinocchioJointVelocity(const Eigen::Matrix<double, 6, 1> &robot_velocity, const robotlib::JointState &joint_velocity);
-
-
     };
 } //namespace aliengolib
 

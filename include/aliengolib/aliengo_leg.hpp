@@ -1,19 +1,3 @@
-/*!
- * @file aliengo_leg.hpp
- *
- * @brief Aliengo leg class definition and functions prototypes.
- *
- * @authors Authors in alphabetical order:
- *
- *     Gianluca Cerilli (IIT DLS Lab) - Contact: gianluca.cerilli@iit.it
- *
- *     Geoff Fink (IIT DLS Lab) - Contact: geoff.fink@iit.it
- *
- *     Marco Marchitto (IIT DLS Lab) - Contact: marco.marchitto@iit.it
- *
- * @bug No known bugs.
- */
-
 #ifndef _ALIENGOLIB_ALIENGO_LEG_HPP_
 #define _ALIENGOLIB_ALIENGO_LEG_HPP_
 
