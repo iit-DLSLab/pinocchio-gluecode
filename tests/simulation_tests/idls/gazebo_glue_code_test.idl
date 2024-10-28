@@ -1,0 +1,24 @@
+struct GazeboGlueCodeTestMsg{
+
+    double feet_pos_gt[12];
+    double feet_vel_gt[12];
+    double feet_pos[12];
+    double feet_vel[12];
+    double relative_pos_gt[3]; // ground truth
+    double relative_pos[3]; // computed using robotlib
+    double relative_ori_gt[3]; // ground truth
+    double relative_ori[3]; // computed using robotlib
+    double relative_pose[6]; // computed using robotlib (position, rpy)
+
+    double q_inv_kin_gt[12]; // joints configuration
+    double q_inv_kin[12]; // joints configuration
+
+    double feet_forces_gt[12];
+    double feet_forces[12];
+
+    double tau_gt[18];
+    double tau[18];
+
+    double nle[18];
+    double nle_no_base_info[18];
+};

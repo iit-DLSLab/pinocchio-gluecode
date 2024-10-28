@@ -53,16 +53,12 @@ if(NOT DEFINED DLS_INSTALL_MODEL_DIR)
     include(dls_options)
 endif()
 
+find_package(pinocchio REQUIRED)
+
 add_library(${PROJECT_NAME}
     SHARED
         src/aliengo.cpp
         src/aliengo_leg.cpp
-        src/utils.cpp
-        src/robcogen/transforms.cpp
-        src/robcogen/jacobians.cpp
-        src/robcogen/inverse_dynamics.cpp
-        src/robcogen/inverse_kinematics.cpp
-        src/robcogen/inertia_properties.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -83,7 +79,9 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC
         robotlib
         roscpp
-        urdf    
+        urdf
+        ${pinocchio_LIBRARIES}
+        pinocchio_parsers    
 )
 
 # set the output name of the library
