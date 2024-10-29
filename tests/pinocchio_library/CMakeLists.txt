@@ -21,6 +21,7 @@ target_include_directories(${PINOCCHIO_CONTROLLER}
 	PUBLIC
         include
         ${CMAKE_CURRENT_BINARY_DIR}/include
+		/usr/include/eigen3
 )
 
 target_link_libraries(${PINOCCHIO_CONTROLLER}
