@@ -1,7 +1,7 @@
 #include "gazebo_glue_code_test.hpp"
 #include <gazebo/sensors/sensors.hh>
 
-#include <dls_messages/dds/gazebo_glue_code_testPubSubTypes.h>
+#include <dls_messages/dds/gazebo_glue_code_testPubSubTypes.hpp>
 #include <sstream>
 #include <iostream>
 

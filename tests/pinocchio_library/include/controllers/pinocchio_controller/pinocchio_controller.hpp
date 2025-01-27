@@ -11,7 +11,7 @@
 #include "pinocchio/multibody/data.hpp"
 #include "pinocchio/multibody/fwd.hpp"
 
-#include "dls_messages/dds/debug_pinocchio.h"
+#include "dls_messages/dds/debug_pinocchio.hpp"
 namespace controllers
 {
     class PinocchioController : public dls::PeriodicAppPlugin

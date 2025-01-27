@@ -22,7 +22,7 @@
 #include "dls2/math/algebra.hpp"
 #include "dls2/math/rotations.hpp"
 
-#include "dls_messages/dds/gazebo_glue_code_test.h"
+#include "dls_messages/dds/gazebo_glue_code_test.hpp"
 
 
 #include "pinocchio/multibody/data.hpp"

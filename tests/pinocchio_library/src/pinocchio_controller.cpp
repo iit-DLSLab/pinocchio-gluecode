@@ -31,7 +31,6 @@ namespace controllers
         q_increment.resize(pRobot->getNJOINTS());
 
         // Create dynamic debug message
-        // debug_msg = createDynamicMessage(dls::topics::pinocchio_controller::debug.second);
         // debug_msg->set_string_value("pinocchio_debug", debug_msg->get_member_id_by_name("frame_id"));
 
         this->buildInput<dls::BaseState>(

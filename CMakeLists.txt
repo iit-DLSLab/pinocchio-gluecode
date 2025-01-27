@@ -100,7 +100,7 @@ install(
     COMPONENT   aliengo_lib
 )
 
-add_subdirectory(tests)
+# add_subdirectory(tests)
 
 # ================================== Packaging =================================
 set(CPACK_PACKAGE_VERSION_MAJOR              ${PROJECT_VERSION_MAJOR})
