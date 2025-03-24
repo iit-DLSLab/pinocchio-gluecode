@@ -10,13 +10,13 @@ namespace dls
     namespace topics
     {
         namespace pinocchio_controller{
-            dls::topicType tau = dls::topicType("pinocchio_controller", new ControlSignalMsgPubSubType());
+            dls::topicType tau = dls::topicType("pinocchio_controller", new ControlSignalPubSubType());
             // define dynamic topic for debug message
             // -- read xml message profile
             #ifndef DEBUG_MSG_PATH
             #define DEBUG_MSG_PATH "path_to_debug_msg_path"
             #endif
-            dls::topicType debug = dls::topicType("pinocchio_controller_debug", new DebugPinocchioMsgPubSubType());
+            dls::topicType debug = dls::topicType("pinocchio_controller_debug", new DebugPinocchioPubSubType());
         }
     }
 }

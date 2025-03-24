@@ -1,4 +1,4 @@
-struct DebugPinocchioMsg
+struct DebugPinocchio
 {
     double q_inv_kin_gt[19]; // joints configuration
     double q_inv_kin[19]; // joints configuration

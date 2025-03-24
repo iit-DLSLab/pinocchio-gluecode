@@ -11,13 +11,11 @@
 namespace aliengolib
 {
     //! Number of joints of the robot.
-    const int NJOINTS_TOT = 12;
+    const int NJOINTS = 12;
     //! Number of links of the robot.
-    const int NLINKS_TOT = 12;
-    //! Number of legs of the robot.
-    const int NLEGS = 4;
-    //! Number of arms of the robot.
-    const int NARMS = 0;
+    const int NLINKS = 12;
+    //! Number of limbs of the robot.
+    const int NLIMBS = 4;
 
     namespace IK{
       enum TASK{
@@ -29,13 +27,12 @@ namespace aliengolib
     /*!
      * @brief Aliengo class.
      * @details
-     * This class represents the Aliengo robot with a specific number of joints, links, legs and arms. It inherits from the Robot class.
-     * @tparam NJOINTS_TOT number of joints of the robot.
-     * @tparam NLINKS_TOT number of links of the robot.
-     * @tparam NLEGS number of legs of the robot.
-     * @tparam NARMS number of arms of the robot.
+     * This class represents the Aliengo robot with a specific number of limbs, joints and links.
+     * @tparam NJOINTS number of joints of the robot.
+     * @tparam NLINKS number of links of the robot.
+     * @tparam NLIMBS number of limbs of the robot.
     */
-    class Aliengo : public robotlib::Robot<NJOINTS_TOT, NLINKS_TOT, NLEGS, NARMS>
+    class Aliengo : public robotlib::Robot<NLIMBS, NJOINTS, NLINKS>
     {
     public:
        /*!
@@ -45,9 +42,10 @@ namespace aliengolib
          * @param[in] arms shared pointer pointing to the robot's arms.
          * @param[in] robot_urdf urdf of the robot.
        */
-        Aliengo(const std::shared_ptr<robotlib::Trunk> trunk,
-                const std::array<std::shared_ptr<robotlib::LimbBase>, NLEGS> legs,
-                const std::array<std::shared_ptr<robotlib::LimbBase>, NARMS> arms, const std::string& robot_urdf);
+        Aliengo(const robotlib::DynParams& dynamic_parameters,
+                robotlib::Container<robotlib::LimbBase, NLIMBS>& limbs,
+                const std::string& robot_urdf
+);
  		/*!
          * @brief Destructor.
          */
@@ -60,7 +58,7 @@ namespace aliengolib
           * @param[out] end_effector_position position of each end effector (foot) in base frame.
           */
         virtual void forwardKinematics(const robotlib::JointState &joint_position,
-                                       robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position) override;
+                                       robotlib::LimbDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position) override;
 
         /*!
          * @brief Forward kinematics.
@@ -73,8 +71,8 @@ namespace aliengolib
          */
         virtual void forwardKinematics(const robotlib::JointState &joint_position,
                                        const robotlib::JointState &joint_velocity,
-                                       robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
-                                       robotlib::LegDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity) override;
+                                       robotlib::LimbDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
+                                       robotlib::LimbDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity) override;
 
         /*!
         * @brief Inverse kinematics. Does not consider the floating base joint. It computes the joint angles from the desired frame position expressed in base frame. Redundancy is not handled yet.
@@ -95,7 +93,7 @@ namespace aliengolib
         * @param[out] q_des desired joint angles.
         */
         virtual void fixedBaseInverseKinematics(const robotlib::JointState &q_init_guess,
-                                                const robotlib::LegDataMap<Eigen::Vector3d> &positions_des,
+                                                const robotlib::LimbDataMap<Eigen::Vector3d> &positions_des,
                                                 robotlib::JointState &q_des) override;
         
         /*!
@@ -117,7 +115,7 @@ namespace aliengolib
         * @param[out] qd_des desired joint velocities
         */                                       
         virtual void fixedBaseInverseDiffKinematics(const robotlib::JointState &q,
-                                                    const robotlib::LegDataMap<Eigen::Vector3d> &velocities_des,
+                                                    const robotlib::LimbDataMap<Eigen::Vector3d> &velocities_des,
                                                     robotlib::JointState &qd_des) override;
         /*!
          * @brief Inverse dynamics.
@@ -213,114 +211,55 @@ namespace aliengolib
          * @param[in] q angles of the joints.
          * @param[in] origin origin frame.
          * @param[in] destination destination frame.
-         * @return destination frame position expressed in origin one.
+         * @return origin frame orientation expressed in destination one.
          */
-        virtual Eigen::Vector3d getFramePosition(const robotlib::JointState &q,
-                                                 const std::string origin,
-                                                 const std::string destination) override;
+        virtual Eigen::Vector3d computeFramePosition(const robotlib::JointState& q,
+                                                const robotlib::Frame& origin,
+                                                const robotlib::Frame& destination) override;
 
         /*!
          * @brief Get orientation of the origin frame expressed in the destination one.
          * @param[in] q angles of the joints.
          * @param[in] origin origin frame.
          * @param[in] destination destination frame.
-         * @return destination frame orientation expressed in origin one.
+         * @return origin frame orientation expressed in destination one.
          */
-        virtual Eigen::Matrix3d getFrameOrientation(const robotlib::JointState &q,
-                                                    const std::string origin,
-                                                    const std::string destination) override;
+        virtual Eigen::Matrix3d computeFrameOrientation(const robotlib::JointState& q,
+                                                const robotlib::Frame& origin,
+                                                const robotlib::Frame& destination) override;
+
         /*!
-         * @brief Get pose (in homogeneous coordinates) of the origin frame expressed in the destination one.
+         * @brief Get pose of the origin frame expressed in the destination one.
          * @param[in] q angles of the joints.
          * @param[in] origin origin frame.
          * @param[in] destination destination frame.
-         * @return destination frame pose expressed in origin one.
+         * @return origin frame orientation expressed in destination one.
          */
-        virtual Eigen::Matrix4d getFramePose(const robotlib::JointState &q,
-                                             const std::string origin,
-                                             const std::string destination) override;
-                                     
-		// /*!
-    //      * @brief Get foot position with respect to the trunk frame, expressed in trunk frame.
-    //      * @param[in] q angles of the joints.
-    //      * @param[in] foot foot frame.
-    //      * @return foot position expressed in trunk frame.
-    //      */
-    //     virtual Eigen::Vector3d getFootPosition(const robotlib::JointState &q,
-    //                                             const std::shared_ptr<robotlib::Frame> foot) override;
-
-		// /*!
-    //      * @brief Get foot position with respect to the trunk frame, expressed in trunk frame.
-    //      * @details
-    //      * This function gets the foot corresponding to the leg in input and then it computes the foot position.
-    //      * @param[in] q angles of the joints.
-    //      * @param[in] leg leg corresponding to the foot.
-    //      * @return foot position expressed in trunk frame.
-    //      */
-    //     virtual Eigen::Vector3d getFootPosition(const robotlib::JointState &q,
-    //                                  const std::shared_ptr<robotlib::LimbBase> leg) override;
-
-    //     /*!
-    //      * @brief Get foot orientation expressed in trunk frame.
-    //      * @param[in] q angles of the joints.
-    //      * @param[in] foot foot frame.
-    //      * @return foot orientation expressed in trunk frame.
-    //      */
-    //     virtual Eigen::Matrix3d getFootOrientation(const robotlib::JointState &q,
-    //                                                const std::shared_ptr<robotlib::Frame> foot) override;
-
-    //     /*!
-    //      * @brief Get foot orientation with respect to the trunk frame, expressed in trunk frame.
-    //      * @details
-    //      * This function gets the foot corresponding to the leg in input and then it computes the foot orientation.
-    //      * @param[in] q angles of the joints.
-    //      * @param[in] leg leg corresponding to the foot.
-    //      * @return foot orientation expressed in trunk frame.
-    //      */
-    //     virtual Eigen::Matrix3d getFootOrientation(const robotlib::JointState &q,
-    //                                                const std::shared_ptr<robotlib::LimbBase> leg) override;
-
-    //     /*!
-    //      * @brief Get foot pose expressed in trunk frame.
-    //      * @param[in] q angles of the joints.
-    //      * @param[in] foot foot frame.
-    //      * @return foot pose expressed in trunk frame.
-    //      */
-    //     virtual Eigen::Matrix4d getFootPose(const robotlib::JointState &q,
-    //                                         const std::shared_ptr<robotlib::Frame> foot) override;
-
-    //     /*!
-    //      * @brief Get foot pose with respect to the trunk frame, expressed in trunk frame.
-    //      * @details
-    //      * This function gets the foot corresponding to the leg in input and then it computes the foot pose.
-    //      * @param[in] q angles of the joints.
-    //      * @param[in] leg leg corresponding to the foot.
-    //      * @return foot pose expressed in trunk frame.
-    //      */
-    //     virtual Eigen::Matrix4d getFootPose(const robotlib::JointState &q,
-    //                                         const std::shared_ptr<robotlib::LimbBase> leg) override;
+        virtual Eigen::Matrix4d computeFramePose(const robotlib::JointState& q,
+                                                const robotlib::Frame& origin,
+                                                const robotlib::Frame& destination) override;
 
         
         /*!
-          * @brief Get the geometric jacobian of the frame expressed in base frame, related to the limbs only (so considering the actuated joints). The order is linear_jacobian, angular_jacobian. For a complete jacobian, see getFrameWholeBodyJacobian.
-          * @param[in] q angles of the joints.
-          * @param[in] frame_name name of the frame.
-          * @param[out] jacobian jacobian to be filled.
-          */
+        * @brief Get the geometric jacobian of the frame expressed in base frame, related to the limbs only (so considering the actuated joints). The order is linear_jacobian, angular_jacobian. For a complete jacobian, see computeWholeBodyJacobian.
+        * @param[in] q angles of the joints.
+        * @param[in] frame frame used to compute the jacobian.
+        * @param[out] jacobian jacobian to be filled.
+        */
         virtual void computeLimbsJacobian( const robotlib::JointState &q,
-                                    const std::string& frame_name,
+                                    const robotlib::Frame& frame,
                                     Eigen::MatrixXd &jacobian) override;
 
         /*!
-        * @brief Get the geometric jacobian of the frame expressed in base frame, related to both robot base and joints. The order is linear_jacobian, angular_jacobian. For a jacobian considering only the joints, see getLimbsJacobian.
+        * @brief Get the geometric jacobian of the frame expressed in base frame. The order is linear_jacobian, angular_jacobian. For a jacobian considering only the joints, see getLimbsJacobian.
         * @param[in] robot_pose pose of the robot base in world frame.
         * @param[in] q angles of the joints.
-        * @param[in] frame_name name of the frame.
+        * @param[in] frame frame used to compute the jacobian.
         * @param[out] jacobian jacobian to be filled.
         */
         virtual void computeWholeBodyJacobian(  const Eigen::Matrix<double, 7, 1> &robot_pose,
                                         const robotlib::JointState &q,
-                                        const std::string& frame_name,
+                                        const robotlib::Frame& frame,
                                         Eigen::MatrixXd &jacobian) override;
 
         /*!
@@ -331,32 +270,31 @@ namespace aliengolib
         
         /*!
          * @brief Get link mass.
-         * @param[in] name name of the link.
+         * @param[in] link the link
          * @return link mass.
          */
-        virtual double getLinkMass(const std::string& name) const override;
+        virtual double getLinkMass(const robotlib::Link& link) const override;
 
         /*!
          * @brief Get link inertia about the CoM.
-         * @param[in] name name of the link.
+         * @param[in] link the link
          * @return link inertia.
         */
-        virtual Eigen::Matrix3d getLinkInertia(const std::string& name) const override;
+        virtual Eigen::Matrix3d getLinkInertia(const robotlib::Link& link) const override;
 
         /*!
          * @brief Get link CoM in the joint frame(see https://wiki.ros.org/urdf/Tutorials/Create%20your%20own%20urdf%20file).
-         * @param[in] name name of the link.
+         * @param[in] link the link 
          * @return link CoM.
         */
-        virtual Eigen::Vector3d getLinkCOM(const std::string& name) const override;
+        virtual Eigen::Vector3d getLinkCoM(const robotlib::Link& link) const override;
 
         /*!
          * @brief Compute whole body CoM in base frame.
          * @param[in] joint_position angles of the joints.
-         * @param[in] q angles of the joints.
          * @return whole body CoM in base frame.
          */
-        virtual Eigen::Vector3d getWholeBodyCoM(const robotlib::JointState q) override;
+        virtual Eigen::Vector3d computeWholeBodyCoM(const robotlib::JointState& q) override;
 
         /*!
         *@brief Get the IMU pose in base frame.
@@ -390,7 +328,7 @@ namespace aliengolib
                         const IK::TASK task_type);
 
         //! Auxiliar variable storing the joints of the robot. This variable can help to avoid unnecessary loops.
-        std::array<std::shared_ptr<robotlib::Joint>,NJOINTS_TOT> auxiliar_joints_variable_;
+        std::array<std::shared_ptr<robotlib::Joint>,NJOINTS> auxiliar_joints_variable_;
 
         // ** PINOCCHIO **
         pinocchio::Model robot_model;

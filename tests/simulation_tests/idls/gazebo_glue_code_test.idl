@@ -1,4 +1,4 @@
-struct GazeboGlueCodeTestMsg{
+struct GazeboGlueCodeTest{
 
     double feet_pos_gt[12];
     double feet_vel_gt[12];

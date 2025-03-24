@@ -3,9 +3,9 @@
 namespace aliengolib
 {
     AliengoLeg::AliengoLeg(const std::string &name,
-                        const std::array<std::shared_ptr<robotlib::Joint>, NJOINTS> &joints,
-                        const std::array<std::shared_ptr<robotlib::Link>, NLINKS> &links)
-        : Leg<NJOINTS, NLINKS>(name, joints, links),
+                const robotlib::Container<robotlib::Joint, NJOINTS_LEG> &joints,
+                const robotlib::Container<robotlib::Link, NLINKS_LEG> &links)
+        : Leg<NJOINTS_LEG, NLINKS_LEG>(name, links, joints),
             joints_map_({//joint name, parent name, child name
                     {"LF_HAA", std::make_pair("TRUNK", "LF_ASSEMBLY")},
                     {"LF_HFE", std::make_pair("LF_ASSEMBLY", "LF_UPPERLEG")},

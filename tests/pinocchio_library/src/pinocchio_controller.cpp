@@ -33,16 +33,16 @@ namespace controllers
         // Create dynamic debug message
         // debug_msg->set_string_value("pinocchio_debug", debug_msg->get_member_id_by_name("frame_id"));
 
-        this->buildInput<dls::BaseState>(
+        this->buildInput<dls::BaseStateWrapper>(
             dls::topics::high_level_estimation::base_state,
             &input_base_state
         );
-        this->buildInput<dls::BlindState>(
+        this->buildInput<dls::BlindStateWrapper>(
             dls::topics::low_level_estimation::blind_state,
             &input_blind_state
         );
         // Define outputs
-        this->buildOutput<dls::ControlSignal>(
+        this->buildOutput<dls::ControlSignalWrapper>(
             dls::topics::pinocchio_controller::tau,
             &output_tau
         );
@@ -128,7 +128,7 @@ namespace controllers
         pose_des.block<3,3>(0,0) = oMides.rotation();
         // ik
         Eigen::VectorXd q_pin = pinocchio::neutral(robot_model);
-        q_pin.tail(pRobot->getNJOINTS()) = reorderJoints(input_blind_state.joints_position_.vec_());
+        q_pin.tail(pRobot->getNJOINTS()) = reorderJoints(input_blind_state.joints_position.toeig_());
         auto q_init_guess = q_gt;
         auto ee_parent_joint_name = robot_model.names[ee_joint_id];
 		auto q_des = q_init_guess;
@@ -159,30 +159,30 @@ namespace controllers
 
         Eigen::Vector<double, Eigen::Dynamic>::Map(debug_msg.q_inv_kin_gt().data(), debug_msg.q_inv_kin_gt().size()) = q_gt;
 		Eigen::Vector<double, Eigen::Dynamic>::Map(debug_msg.q_inv_kin().data(), debug_msg.q_inv_kin().size()) = q_des;
-        Eigen::Vector<double, Eigen::Dynamic>::Map(debug_msg.q_inv_kin_robotlib().data(), debug_msg.q_inv_kin_robotlib().size()) = q_des_robotlib.vec_();
+        Eigen::Vector<double, Eigen::Dynamic>::Map(debug_msg.q_inv_kin_robotlib().data(), debug_msg.q_inv_kin_robotlib().size()) = q_des_robotlib.toeig_();
 
         // using robotlib solution as desired joint configuration
-        q_des.tail(pRobot->getNJOINTS()) = reorderJoints(q_des_robotlib.vec_().tail(pRobot->getNJOINTS()));
+        q_des.tail(pRobot->getNJOINTS()) = reorderJoints(q_des_robotlib.toeig_().tail(pRobot->getNJOINTS()));
         //compute control action
         Eigen::VectorXd err = q_des.tail(pRobot->getNJOINTS()) - q_pin.tail(pRobot->getNJOINTS());
         err = reorderJoints(err);
-        Eigen::VectorXd qd = input_blind_state.joints_velocity_.vec_();
-        output_tau.torques_ = 8*err + 1*(-1)*qd;
+        Eigen::VectorXd qd = input_blind_state.joints_velocity_.toeig_();
+        output_tau.torques = 8*err + 1*(-1)*qd;
 
         dds_participant_->sendMessage("pinocchio_writer", &debug_msg);
 
-        auto end_effector_position = pRobot->makeLegDataMap<Eigen::Vector3d>(Eigen::Vector3d::Zero());
-        auto end_effector_velocity = pRobot->makeLegDataMap<Eigen::Vector3d>(Eigen::Vector3d::Zero());
-        pRobot->forwardKinematics(  input_blind_state.joints_position_,
+        auto end_effector_position = pRobot->makeLimbDataMap<Eigen::Vector3d>(Eigen::Vector3d::Zero());
+        auto end_effector_velocity = pRobot->makeLimbDataMap<Eigen::Vector3d>(Eigen::Vector3d::Zero());
+        pRobot->forwardKinematics(  input_blind_state.joints_position,
                                     input_blind_state.joints_velocity_,
                                     end_effector_position,
                                     end_effector_velocity
         );
         auto qd_des_robotlib = pRobot->makeJointState(0.0);
-        pRobot->fixedBaseInverseDiffKinematics("lf_foot", input_blind_state.joints_position_, end_effector_velocity["LF"], qd_des_robotlib);
+        pRobot->fixedBaseInverseDiffKinematics("lf_foot", input_blind_state.joints_position, end_effector_velocity["LF"], qd_des_robotlib);
         // comment the function write() to test this with another joint controller
-        Eigen::Vector<double, Eigen::Dynamic>::Map(debug_msg.qd_inv_diff_kin_robotlib().data(), debug_msg.qd_inv_diff_kin_robotlib().size()) = qd_des_robotlib.vec_();
-        Eigen::Vector<double, Eigen::Dynamic>::Map(debug_msg.qd_gt().data(), debug_msg.qd_gt().size()) = input_blind_state.joints_velocity_.vec_();
+        Eigen::Vector<double, Eigen::Dynamic>::Map(debug_msg.qd_inv_diff_kin_robotlib().data(), debug_msg.qd_inv_diff_kin_robotlib().size()) = qd_des_robotlib.toeig_();
+        Eigen::Vector<double, Eigen::Dynamic>::Map(debug_msg.qd_gt().data(), debug_msg.qd_gt().size()) = input_blind_state.joints_velocity_.toeig_();
 
         write();
     }
@@ -209,7 +209,7 @@ namespace controllers
         return true;
     }
     bool PinocchioController::deactivation(const std::chrono::system_clock::time_point& time){
-        output_tau.torques_.setZero();
+        output_tau.torques.setZero();
         write();
 
         // outFile.close();

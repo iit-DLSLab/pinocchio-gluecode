@@ -26,7 +26,7 @@ namespace dls
         pinocchio::urdf::buildModel(urdf_name, pinocchio::JointModelFreeFlyer(), robot_model);
         robot_data = pinocchio::Data(robot_model);
 
-		ddslink->addWriter("gazebo_glue_code_test", dls::topicType("gazebo_glue_code_test", new GazeboGlueCodeTestMsgPubSubType()));
+		ddslink->addWriter("gazebo_glue_code_test", dls::topicType("gazebo_glue_code_test", new GazeboGlueCodeTestPubSubType()));
 	 }
 
 	void GazeboPluginGlueTest::Load
@@ -170,8 +170,8 @@ namespace dls
 			auto frame_vel = this->sim_model->GetLink(frame)->WorldLinearVel();
 			auto b_frame_pose = base_pose.Inverse() * frame_pose;
 			auto b_frame_vel = base_pose.Inverse().Rot() * frame_vel;
-			auto ee_position = pRobot->makeLegDataMap<Eigen::Vector3d>(Eigen::Vector3d::Zero());
-			auto ee_velocity = pRobot->makeLegDataMap<Eigen::Vector3d>(Eigen::Vector3d::Zero());
+			auto ee_position = pRobot->makeLimbDataMap<Eigen::Vector3d>(Eigen::Vector3d::Zero());
+			auto ee_velocity = pRobot->makeLimbDataMap<Eigen::Vector3d>(Eigen::Vector3d::Zero());
 			pRobot->forwardKinematics(*joints_positions, *joints_velocity, ee_position, ee_velocity);
 			// -- fill dds message field
 			// --- position and velocity
@@ -214,7 +214,7 @@ namespace dls
 		// compute relative pose using robotlib
 
 		// -- call robotlib getFramePosition and getFrameOrientation
-		robotlib::LegDataMap<Eigen::Vector3d> end_effector_position =  pRobot->makeLegDataMap<Eigen::Vector3d>();
+		robotlib::LimbDataMap<Eigen::Vector3d> end_effector_position =  pRobot->makeLimbDataMap<Eigen::Vector3d>();
 
 		auto relative_pos = pRobot->getFramePosition(*joints_positions, from_frame, to_frame);
 		auto relative_rot = pRobot->getFrameOrientation(*joints_positions, from_frame, to_frame);
@@ -322,7 +322,7 @@ namespace dls
 		Eigen::MatrixXd contact_f_des = J_linear_contacts_base_pseudo * g_base;
 		// compute desired tau
 		Eigen::MatrixXd J_linear_contacts_joints_T = J_linear_contacts_joints.transpose();
-		Eigen::VectorXd tau = g_joints.vec_() - J_linear_contacts_joints_T*contact_f_des;
+		Eigen::VectorXd tau = g_joints.toeig_() - J_linear_contacts_joints_T*contact_f_des;
 		
 		// ********************** Compute torques using rnea ********************** 
 		pinocchio::framesForwardKinematics(robot_model, robot_data, q);
@@ -348,7 +348,7 @@ namespace dls
 		Eigen::VectorXd tau_rnea = robot_data.tau;
 		// method 3: use robotlib
 		robotlib::JointState tau_joints = pRobot->makeJointState(0.0);
-		robotlib::LegDataMap<Eigen::Vector3d> ee_position = pRobot->makeLegDataMap<Eigen::Vector3d>(Eigen::Vector3d::Zero());
+		robotlib::LimbDataMap<Eigen::Vector3d> ee_position = pRobot->makeLimbDataMap<Eigen::Vector3d>(Eigen::Vector3d::Zero());
 		pRobot->forwardKinematics(*joints_positions, ee_position);
 		robotlib::eigen::aligned_map<std::string, Eigen::Vector3d> f_ext;
 		for(int i=0; i<n_contacts; i++)
@@ -389,7 +389,7 @@ namespace dls
 		// }
 		for(int i=0; i<n_joints; i++)
 		{
-			msg.tau()[i+6] = tau_joints.vec_()(i); // robotlib
+			msg.tau()[i+6] = tau_joints.toeig_()(i); // robotlib
 		}
 		for(int i = 0; i< n_joints; i++){
 			msg.tau_gt()[i+6] = joints_torques->vec_()(i);
@@ -435,7 +435,7 @@ namespace dls
 		Eigen::Matrix<double, 6, 1> base_vel = qd.head(6);
 		pRobot->computeNonLinearEffects(q.block<7,1>(0,0), base_vel, *joints_positions, *joints_velocity, nle_base, nle_joints);
 		nle.head(6) = nle_base;
-		nle.tail(pRobot->getNJOINTS()) = nle_joints.vec_();
+		nle.tail(pRobot->getNJOINTS()) = nle_joints.toeig_();
 		
 		// non linear effects without base velocity
 		// method 1: using pinocchio
@@ -448,7 +448,7 @@ namespace dls
 		Eigen::VectorXd nle_no_base_info = Eigen::VectorXd::Zero(robot_model.nv);
 		pRobot->computeNonLinearEffects(q.block<7,1>(0,0), Eigen::Matrix<double, 6, 1>::Zero(), *joints_positions, *joints_velocity, nle_base, nle_joints);
 		nle_no_base_info.head(6) = nle_base;
-		nle_no_base_info.tail(pRobot->getNJOINTS()) = nle_joints.vec_();
+		nle_no_base_info.tail(pRobot->getNJOINTS()) = nle_joints.toeig_();
 
 		// Compute non linear effect without considering base velocity and getting only the nle acting on the joints
 		// pRobot->computeNonLinearEffects(q.block<7,1>(0,0), *joints_positions, *joints_velocity, nle_joints);
@@ -561,7 +561,7 @@ namespace dls
 
 	void GazeboPluginGlueTest::testGetDynamicInfo(){
 		std::cout << "Robot total mass " << pRobot->getRobotMass() << std::endl;
-		std::cout << "Robot total com " << pRobot->getWholeBodyCoM(*joints_positions).transpose() << std::endl;
+		std::cout << "Robot total com " << pRobot->computeWholeBodyCoM(*joints_positions).transpose() << std::endl;
 		// std::cout << "Robot total inertia " << pRobot->getRobotInertia() << std::endl;
 		std::string link_name = "rh_upperleg";
 		std::cout << "Mass of link " << link_name << " is " << pRobot->getLinkMass(link_name) << std::endl;
@@ -570,8 +570,8 @@ namespace dls
 		std::cout << "LF leg mass " << robot_data.mass[joint_id] << std::endl;
         std::cout <<"Get Link intertia (lf_lowerleg): " <<  pRobot->getLinkInertia("lf_lowerleg") << std::endl;
 		std::cout << "Get Link CoM (lf_lowerleg): " << pRobot->getLinkCOM("lf_lowerleg") << std::endl;
-		std::cout << "getCoMFromBase: " << pRobot->getCoMFromBase(*joints_positions, q.head(7)).transpose();
-		std::cout << "getBaseFromCoM: " << pRobot->getBaseFromCoM(*joints_positions, q.block<4,1>(3,0), pRobot->getCoMFromBase(*joints_positions, q.head(7))).transpose() << ", base position: " << q.head(3).transpose()<< std::endl;
+		std::cout << "computeCoMFromBase: " << pRobot->computeCoMFromBase(*joints_positions, q.head(7)).transpose();
+		std::cout << "computeBaseFromCoM: " << pRobot->computeBaseFromCoM(*joints_positions, q.block<4,1>(3,0), pRobot->getCoMFromBase(*joints_positions, q.head(7))).transpose() << ", base position: " << q.head(3).transpose()<< std::endl;
 	}
 
 	void GazeboPluginGlueTest::testJointLimits(){

@@ -4,10 +4,10 @@
 // periodic plugin header
 #include <dls2/plugin/periodic_app_plugin.hpp>
 // wrappers
-#include <dls2/msg_wrappers/blind_state.hpp> //  off-the-shelf wrapper
-#include <dls2/msg_wrappers/base_state.hpp> //  off-the-shelf wrapper
-#include <dls2/msg_wrappers/control_signal.hpp> //  off-the-shelf wrapper
-#include <dls2/msg_wrappers/trajectory_generator.hpp> //  off-the-shelf wrapper
+#include <dls_messages/dds/blind_stateWrapper.hpp> //  off-the-shelf wrapper
+#include <dls_messages/dds/base_stateWrapper.hpp> //  off-the-shelf wrapper
+#include <dls_messages/dds/control_signalWrapper.hpp> //  off-the-shelf wrapper
+#include <dls_messages/dds/trajectory_generatorWrapper.hpp> //  off-the-shelf wrapper
 #include "pinocchio/multibody/data.hpp"
 #include "pinocchio/multibody/fwd.hpp"
 
