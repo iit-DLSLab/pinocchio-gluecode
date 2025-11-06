@@ -44,12 +44,12 @@ namespace controllers
     private:
         std::shared_ptr<robotlib::RobotBase> pRobot;
         //! Input signals
-		BaseState input_base_state;
-		BlindState input_blind_state;
+		dls2_interface::msg::BaseState input_base_state;
+		dls2_interface::msg::BlindState input_blind_state;
 
 		//! Output signals
-		ControlSignal output_tau;
-        TrajectoryGenerator output_traj_gen;
+		dls2_interface::msg::ControlSignal output_tau;
+        dls2_interface::msg::TrajectoryGenerator output_traj_gen;
 
         pinocchio::Model robot_model;
         pinocchio::Data robot_data;
