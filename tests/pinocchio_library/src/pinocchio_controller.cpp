@@ -33,16 +33,16 @@ namespace controllers
         // Create dynamic debug message
         // debug_msg->set_string_value("pinocchio_debug", debug_msg->get_member_id_by_name("frame_id"));
 
-        this->buildInput<dls::BaseStateWrapper>(
+        this->buildInput<dls::BaseState>(
             dls::topics::high_level_estimation::base_state,
             &input_base_state
         );
-        this->buildInput<dls::BlindStateWrapper>(
+        this->buildInput<dls::BlindState>(
             dls::topics::low_level_estimation::blind_state,
             &input_blind_state
         );
         // Define outputs
-        this->buildOutput<dls::ControlSignalWrapper>(
+        this->buildOutput<dls::ControlSignal>(
             dls::topics::pinocchio_controller::tau,
             &output_tau
         );
