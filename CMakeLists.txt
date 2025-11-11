@@ -58,7 +58,7 @@ find_package(pinocchio REQUIRED)
 add_library(${PROJECT_NAME}
     SHARED
         src/aliengo.cpp
-        src/aliengo_leg.cpp
+        # src/aliengo_leg.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

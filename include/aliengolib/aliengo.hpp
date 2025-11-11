@@ -3,20 +3,12 @@
 
 #include <robotlib/robot.hpp>
 #include <robotlib/limb.hpp>
-#include "aliengo_leg.hpp"
 
 #include "pinocchio/multibody/data.hpp"
 #include "pinocchio/multibody/fwd.hpp"
 
 namespace aliengolib
 {
-    //! Number of joints of the robot.
-    const int NJOINTS = 12;
-    //! Number of links of the robot.
-    const int NLINKS = 12;
-    //! Number of limbs of the robot.
-    const int NLIMBS = 4;
-
     namespace IK{
       enum TASK{
         POSITION_TASK,
@@ -28,11 +20,8 @@ namespace aliengolib
      * @brief Aliengo class.
      * @details
      * This class represents the Aliengo robot with a specific number of limbs, joints and links.
-     * @tparam NJOINTS number of joints of the robot.
-     * @tparam NLINKS number of links of the robot.
-     * @tparam NLIMBS number of limbs of the robot.
     */
-    class Aliengo : public robotlib::Robot<NLIMBS, NJOINTS, NLINKS>
+    class Aliengo : public robotlib::Robot
     {
     public:
        /*!
@@ -42,10 +31,10 @@ namespace aliengolib
          * @param[in] arms shared pointer pointing to the robot's arms.
          * @param[in] robot_urdf urdf of the robot.
        */
-        Aliengo(const robotlib::DynParams& dynamic_parameters,
-                robotlib::Container<robotlib::LimbBase, NLIMBS>& limbs,
-                const std::string& robot_urdf
-);
+        Aliengo(  const std::string& name,
+                  const robotlib::DynParams& dynamic_parameters,
+                  const std::vector<robotlib::LimbPtr>& limbs,
+                  const std::string& robot_urdf);
  		/*!
          * @brief Destructor.
          */
@@ -214,8 +203,8 @@ namespace aliengolib
          * @return origin frame orientation expressed in destination one.
          */
         virtual Eigen::Vector3d computeFramePosition(const robotlib::JointState& q,
-                                                const robotlib::Frame& origin,
-                                                const robotlib::Frame& destination) override;
+                                                const robotlib::FramePtr origin,
+                                                const robotlib::FramePtr destination) override;
 
         /*!
          * @brief Get orientation of the origin frame expressed in the destination one.
@@ -225,8 +214,8 @@ namespace aliengolib
          * @return origin frame orientation expressed in destination one.
          */
         virtual Eigen::Matrix3d computeFrameOrientation(const robotlib::JointState& q,
-                                                const robotlib::Frame& origin,
-                                                const robotlib::Frame& destination) override;
+                                                const robotlib::FramePtr origin,
+                                                const robotlib::FramePtr destination) override;
 
         /*!
          * @brief Get pose of the origin frame expressed in the destination one.
@@ -236,8 +225,8 @@ namespace aliengolib
          * @return origin frame orientation expressed in destination one.
          */
         virtual Eigen::Matrix4d computeFramePose(const robotlib::JointState& q,
-                                                const robotlib::Frame& origin,
-                                                const robotlib::Frame& destination) override;
+                                                const robotlib::FramePtr origin,
+                                                const robotlib::FramePtr destination) override;
 
         
         /*!
@@ -247,9 +236,12 @@ namespace aliengolib
         * @param[out] jacobian jacobian to be filled.
         */
         virtual void computeLimbsJacobian( const robotlib::JointState &q,
-                                    const robotlib::Frame& frame,
+                                    const robotlib::FramePtr frame,
                                     Eigen::MatrixXd &jacobian) override;
 
+        void computeLimbsJacobian(const robotlib::JointState &q,
+                                        const std::string& frame_name,
+                                        Eigen::MatrixXd &jacobian) override;
         /*!
         * @brief Get the geometric jacobian of the frame expressed in base frame. The order is linear_jacobian, angular_jacobian. For a jacobian considering only the joints, see getLimbsJacobian.
         * @param[in] robot_pose pose of the robot base in world frame.
@@ -259,7 +251,7 @@ namespace aliengolib
         */
         virtual void computeWholeBodyJacobian(  const Eigen::Matrix<double, 7, 1> &robot_pose,
                                         const robotlib::JointState &q,
-                                        const robotlib::Frame& frame,
+                                        const robotlib::FramePtr frame,
                                         Eigen::MatrixXd &jacobian) override;
 
         /*!
@@ -273,21 +265,21 @@ namespace aliengolib
          * @param[in] link the link
          * @return link mass.
          */
-        virtual double getLinkMass(const robotlib::Link& link) const override;
+        virtual double getLinkMass(const robotlib::LinkPtr link) const override;
 
         /*!
          * @brief Get link inertia about the CoM.
          * @param[in] link the link
          * @return link inertia.
         */
-        virtual Eigen::Matrix3d getLinkInertia(const robotlib::Link& link) const override;
+        virtual Eigen::Matrix3d getLinkInertia(const robotlib::LinkPtr link) const override;
 
         /*!
          * @brief Get link CoM in the joint frame(see https://wiki.ros.org/urdf/Tutorials/Create%20your%20own%20urdf%20file).
          * @param[in] link the link 
          * @return link CoM.
         */
-        virtual Eigen::Vector3d getLinkCoM(const robotlib::Link& link) const override;
+        virtual Eigen::Vector3d getLinkCoM(const robotlib::LinkPtr link) const override;
 
         /*!
          * @brief Compute whole body CoM in base frame.
@@ -328,7 +320,7 @@ namespace aliengolib
                         const IK::TASK task_type);
 
         //! Auxiliar variable storing the joints of the robot. This variable can help to avoid unnecessary loops.
-        std::array<std::shared_ptr<robotlib::Joint>,NJOINTS> auxiliar_joints_variable_;
+        std::vector<robotlib::JointPtr> auxiliar_joints_variable_;
 
         // ** PINOCCHIO **
         pinocchio::Model robot_model;

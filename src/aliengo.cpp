@@ -1,5 +1,4 @@
 #include "aliengolib/aliengo.hpp"
-#include "aliengolib/aliengo_leg.hpp"
 
 #include "robotlib/utils/utils.hpp"
 
@@ -16,13 +15,13 @@
 
 namespace aliengolib
 {
-
-    Aliengo::Aliengo(const robotlib::DynParams& dynamic_parameters,
-                        robotlib::Container<robotlib::LimbBase, NLIMBS>& limbs,
+    Aliengo::Aliengo(   const std::string& name,
+                        const robotlib::DynParams& dynamic_parameters,
+                        const std::vector<robotlib::LimbPtr>& limbs,
                         const std::string& robot_urdf
                     )
-        : Robot<NLIMBS, NLINKS, NJOINTS>(
-                std::string("aliengo"),
+        : Robot(
+                std::string(name),
                 dynamic_parameters,
                 limbs)
                 
@@ -39,9 +38,9 @@ namespace aliengolib
 
     void Aliengo::setJointLimitsFromUrdf()
     {
-        for(auto& joint : this->getJoints()){
+        for(auto& joint : this->joints_){
                 // **Transform robotlib joint name to urdf one**
-                std::string urdf_joint_name{joint.getName()};
+                std::string urdf_joint_name{joint->getName()};
                 std::transform(urdf_joint_name.begin(), urdf_joint_name.end(), urdf_joint_name.begin(), ::tolower);
                 urdf_joint_name.append("_joint");
 
@@ -51,7 +50,7 @@ namespace aliengolib
                 const double q_max = robot_model.upperPositionLimit[joint_id_nq];
                 const double qd_max = robot_model.velocityLimit[joint_id_nv];
                 const double tau_max = robot_model.effortLimit[joint_id_nv];
-                joint.setJointLimits(q_min, q_max, qd_max, tau_max);
+                joint->setJointLimits(q_min, q_max, qd_max, tau_max);
             }
     }
 
@@ -66,8 +65,8 @@ namespace aliengolib
     }
 
     Eigen::Vector3d Aliengo::computeFramePosition(  const robotlib::JointState &q,
-                                                const robotlib::Frame& origin,
-                                                const robotlib::Frame& destination)
+                                                const robotlib::FramePtr origin,
+                                                const robotlib::FramePtr destination)
     {
         Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(q);
         pinocchio::framesForwardKinematics(robot_model, robot_data, q_pin);
@@ -77,8 +76,8 @@ namespace aliengolib
         // transform(origin_name.begin(), origin_name.end(), origin_name.begin(), ::tolower);
         // transform(destination_name.begin(), destination_name.end(), destination_name.begin(), ::tolower);
         
-        auto origin_frame_idx = robot_model.getFrameId(origin.getName());
-        auto dest_frame_idx = robot_model.getFrameId(destination.getName());
+        auto origin_frame_idx = robot_model.getFrameId(origin->getName());
+        auto dest_frame_idx = robot_model.getFrameId(destination->getName());
         auto oMorigin = robot_data.oMf[origin_frame_idx];
         auto oMdest = robot_data.oMf[dest_frame_idx];
 
@@ -86,8 +85,8 @@ namespace aliengolib
     }
     
     Eigen::Matrix3d Aliengo::computeFrameOrientation( const robotlib::JointState &q,
-                                                const robotlib::Frame& origin,
-                                                const robotlib::Frame& destination)
+                                                const robotlib::FramePtr origin,
+                                                const robotlib::FramePtr destination)
     {
         Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(q);
         pinocchio::framesForwardKinematics(robot_model, robot_data, q_pin);
@@ -97,8 +96,8 @@ namespace aliengolib
         // transform(origin_name.begin(), origin_name.end(), origin_name.begin(), ::tolower);
         // transform(destination_name.begin(), destination_name.end(), destination_name.begin(), ::tolower);
         
-        auto origin_frame_idx = robot_model.getFrameId(origin.getName());
-        auto dest_frame_idx = robot_model.getFrameId(destination.getName());
+        auto origin_frame_idx = robot_model.getFrameId(origin->getName());
+        auto dest_frame_idx = robot_model.getFrameId(destination->getName());
         auto oMorigin = robot_data.oMf[origin_frame_idx];
         auto oMdest = robot_data.oMf[dest_frame_idx];
 
@@ -106,8 +105,8 @@ namespace aliengolib
     }
 
     Eigen::Matrix4d Aliengo::computeFramePose(const robotlib::JointState &q,
-                                            const robotlib::Frame& origin,
-                                            const robotlib::Frame& destination)
+                                            const robotlib::FramePtr origin,
+                                            const robotlib::FramePtr destination)
     {
         Eigen::Matrix4d frame_pose{};
         frame_pose.setZero();
@@ -120,13 +119,19 @@ namespace aliengolib
     }
     
     void Aliengo::computeLimbsJacobian(const robotlib::JointState &q,
-                                        const robotlib::Frame& frame,
+                                        const robotlib::FramePtr frame,
+                                        Eigen::MatrixXd &jacobian){
+        computeLimbsJacobian(q, frame->getName(), jacobian);
+    }
+
+    void Aliengo::computeLimbsJacobian(const robotlib::JointState &q,
+                                        const std::string& frame_name,
                                         Eigen::MatrixXd &jacobian){
             // map robotlib to pinocchio
             Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(q);
 
             // compute jacobian in base frame: since we are setting the robot pose to Identity (using fromRobotlibToPinocchioJointState(q)) the jacobian computed in LOCAL_WORLD_ALIGNED is the jacobian in the base frame
-            const int frame_id = robot_model.getFrameId(frame.getName());
+            const int frame_id = robot_model.getFrameId(frame_name);
             Eigen::MatrixXd J = Eigen::MatrixXd::Zero(6, robot_model.nv);
             pinocchio::computeFrameJacobian(robot_model, robot_data, q_pin, frame_id, pinocchio::LOCAL_WORLD_ALIGNED, J);
 
@@ -136,16 +141,15 @@ namespace aliengolib
 
             jacobian = reorderLimbsJacobian(jacobian);
     }
-
     void Aliengo::computeWholeBodyJacobian(const Eigen::Matrix<double, 7, 1> &robot_pose,
                                             const robotlib::JointState &q,
-                                            const robotlib::Frame& frame,
+                                            const robotlib::FramePtr frame,
                                             Eigen::MatrixXd &jacobian){
         // map robotlib to pinocchio
         Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(robot_pose, q);
 
         // compute jacobian in world frame        
-        const int frame_id = robot_model.getFrameId(frame.getName());
+        const int frame_id = robot_model.getFrameId(frame->getName());
         Eigen::MatrixXd J = Eigen::MatrixXd::Zero(6, robot_model.nv);
         pinocchio::computeFrameJacobian(robot_model, robot_data, q_pin, frame_id, pinocchio::LOCAL_WORLD_ALIGNED, J);
 
@@ -160,26 +164,26 @@ namespace aliengolib
 
     Eigen::VectorXd Aliengo::fromRobotlibToPinocchioJointState(const robotlib::JointState &joint_position){
         Eigen::VectorXd q = pinocchio::neutral(robot_model);        
-        q.tail(this->getNJOINTS()) = reorderJoints(joint_position.toeig_());
+        q.tail(this->getNJOINTS()) = reorderJoints(joint_position);
         return q;
     }
     
     Eigen::VectorXd Aliengo::fromRobotlibToPinocchioJointState(const Eigen::Matrix<double, 7, 1> &robot_pose, const robotlib::JointState &joint_position){
         Eigen::VectorXd q = pinocchio::neutral(robot_model);
-        q.tail(this->getNJOINTS()) = reorderJoints(joint_position.toeig_());
+        q.tail(this->getNJOINTS()) = reorderJoints(joint_position);
         q.head(7) = robot_pose;
         return q;
     }
 
     Eigen::VectorXd Aliengo::fromRobotlibToPinocchioJointVelocity(const robotlib::JointState &joint_velocity){
         Eigen::VectorXd qd = Eigen::VectorXd::Zero(robot_model.nv);
-        qd.tail(this->getNJOINTS()) = reorderJoints(joint_velocity.toeig_());
+        qd.tail(this->getNJOINTS()) = reorderJoints(joint_velocity);
         return qd;
     }
     
     Eigen::VectorXd Aliengo::fromRobotlibToPinocchioJointVelocity(const Eigen::Matrix<double, 6, 1> &robot_velocity, const robotlib::JointState &joint_velocity){
         Eigen::VectorXd qd = Eigen::VectorXd::Zero(robot_model.nv);
-        qd.tail(this->getNJOINTS()) = reorderJoints(joint_velocity.toeig_());
+        qd.tail(this->getNJOINTS()) = reorderJoints(joint_velocity);
         qd.head(6) = robot_velocity;
         return qd;
     }
@@ -196,10 +200,10 @@ namespace aliengolib
         pinocchio::SE3 baseMo = robot_data.oMf[base_frame_id].inverse();
 
         // feet positions
-        end_effector_position["LF"] = (baseMo*robot_data.oMf[robot_model.getFrameId("lf_foot")]).translation();
-        end_effector_position["RF"] = (baseMo*robot_data.oMf[robot_model.getFrameId("rf_foot")]).translation();
-        end_effector_position["LH"] = (baseMo*robot_data.oMf[robot_model.getFrameId("lh_foot")]).translation();
-        end_effector_position["RH"] = (baseMo*robot_data.oMf[robot_model.getFrameId("rh_foot")]).translation();
+        end_effector_position[this->getLimb("LF")] = (baseMo*robot_data.oMf[robot_model.getFrameId("lf_foot")]).translation();
+        end_effector_position[this->getLimb("RF")] = (baseMo*robot_data.oMf[robot_model.getFrameId("rf_foot")]).translation();
+        end_effector_position[this->getLimb("LH")] = (baseMo*robot_data.oMf[robot_model.getFrameId("lh_foot")]).translation();
+        end_effector_position[this->getLimb("RH")] = (baseMo*robot_data.oMf[robot_model.getFrameId("rh_foot")]).translation();
     }
 
     void Aliengo::forwardKinematics(const robotlib::JointState &joint_position,
@@ -217,16 +221,16 @@ namespace aliengolib
         pinocchio::SE3 baseMo = robot_data.oMf[base_frame_id].inverse();
 
         // feet positions
-        end_effector_position["LF"] = (baseMo*robot_data.oMf[robot_model.getFrameId("lf_foot")]).translation();
-        end_effector_position["RF"] = (baseMo*robot_data.oMf[robot_model.getFrameId("rf_foot")]).translation();
-        end_effector_position["LH"] = (baseMo*robot_data.oMf[robot_model.getFrameId("lh_foot")]).translation();
-        end_effector_position["RH"] = (baseMo*robot_data.oMf[robot_model.getFrameId("rh_foot")]).translation();
+        end_effector_position[this->getLimb("LF")] = (baseMo*robot_data.oMf[robot_model.getFrameId("lf_foot")]).translation();
+        end_effector_position[this->getLimb("RF")] = (baseMo*robot_data.oMf[robot_model.getFrameId("rf_foot")]).translation();
+        end_effector_position[this->getLimb("LH")] = (baseMo*robot_data.oMf[robot_model.getFrameId("lh_foot")]).translation();
+        end_effector_position[this->getLimb("RH")] = (baseMo*robot_data.oMf[robot_model.getFrameId("rh_foot")]).translation();
 
         // feet velocities
-        end_effector_velocity["LF"] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model, robot_data, robot_model.getFrameId("lf_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
-        end_effector_velocity["RF"] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model, robot_data, robot_model.getFrameId("rf_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
-        end_effector_velocity["LH"] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model, robot_data, robot_model.getFrameId("lh_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
-        end_effector_velocity["RH"] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model, robot_data, robot_model.getFrameId("rh_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
+        end_effector_velocity[this->getLimb("LF")] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model, robot_data, robot_model.getFrameId("lf_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
+        end_effector_velocity[this->getLimb("RF")] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model, robot_data, robot_model.getFrameId("rf_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
+        end_effector_velocity[this->getLimb("LH")] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model, robot_data, robot_model.getFrameId("lh_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
+        end_effector_velocity[this->getLimb("RH")] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model, robot_data, robot_model.getFrameId("rh_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
     }
 
     pinocchio::FrameIndex Aliengo::getBaseID() const{
@@ -359,10 +363,10 @@ namespace aliengolib
         auto q_des_temp = this->makeJointState(0.0);
         for (auto &leg : limbs_)
         {
-            std::string foot_name = leg.getName() + "_foot";
+            std::string foot_name = leg->getName() + "_foot";
             foot_name = robotlib::utils::toLower(foot_name);
-            this->fixedBaseInverseKinematics(foot_name, q_init_guess, positions_des[leg], q_des_temp);
-            q_des[leg] = q_des_temp[leg];
+            this->fixedBaseInverseKinematics(foot_name, q_init_guess, positions_des.at(leg), q_des_temp);
+            q_des[leg->id] = q_des_temp[leg->id];
         }
     }
 
@@ -397,10 +401,10 @@ namespace aliengolib
         auto qd_des_temp = this->makeJointState(0.0);
         for (auto &leg : limbs_)
         {
-            std::string foot_name = leg.getName() + "_foot";
+            std::string foot_name = leg->getName() + "_foot";
             foot_name = robotlib::utils::toLower(foot_name);
-            this->fixedBaseInverseDiffKinematics(foot_name, q, velocities_des[leg], qd_des_temp);
-            qd_des[leg] = qd_des_temp[leg];
+            this->fixedBaseInverseDiffKinematics(foot_name, q, velocities_des.at(leg), qd_des_temp);
+            qd_des[leg->id] = qd_des_temp[leg->id];
         }
     }
 
@@ -501,9 +505,9 @@ namespace aliengolib
         return imu_pose;
     }
     
-    double Aliengo::getLinkMass(const robotlib::Link& link) const
+    double Aliengo::getLinkMass(const robotlib::LinkPtr link) const
     {
-        const int joint_id = robot_model.frames[robot_model.getFrameId(link.getName())].parentJoint;
+        const int joint_id = robot_model.frames[robot_model.getFrameId(link->getName())].parentJoint;
         return robot_model.inertias[joint_id].mass();
     }
 
@@ -518,15 +522,15 @@ namespace aliengolib
         return pinocchio::centerOfMass(robot_model, robot_data, q_pin, false);//false: do not compute com of subtrees
     }
 
-    Eigen::Vector3d Aliengo::getLinkCoM(const robotlib::Link& link) const
+    Eigen::Vector3d Aliengo::getLinkCoM(const robotlib::LinkPtr link) const
     {
-        const int joint_id = robot_model.frames[robot_model.getFrameId(link.getName())].parentJoint;
+        const int joint_id = robot_model.frames[robot_model.getFrameId(link->getName())].parentJoint;
         return robot_model.inertias[joint_id].lever();
     }
 
-    Eigen::Matrix3d Aliengo::getLinkInertia(const robotlib::Link& link) const
+    Eigen::Matrix3d Aliengo::getLinkInertia(const robotlib::LinkPtr link) const
     {
-        const int joint_id = robot_model.frames[robot_model.getFrameId(link.getName())].parentJoint;
+        const int joint_id = robot_model.frames[robot_model.getFrameId(link->getName())].parentJoint;
         return robot_model.inertias[joint_id].inertia().matrix();
     }
 
@@ -560,35 +564,45 @@ namespace aliengolib
         return new_jac;
     }
 
-    std::shared_ptr<AliengoLeg> makeLeg(const std::string &legName, robotlib::Trunk* trunk) // function used to generate a leg inside the create_function
-    {
-        std::shared_ptr<robotlib::Joint> haa = std::make_shared<robotlib::Joint>(legName + "_HAA", trunk);
-        std::shared_ptr<robotlib::Link> assembly = std::make_shared<robotlib::Link>(legName + "_ASSEMBLY", &(*haa));
-        std::shared_ptr<robotlib::Joint> hfe = std::make_shared<robotlib::Joint>(legName + "_HFE",&(*assembly));
-
-        std::shared_ptr<robotlib::Link> upperleg = std::make_shared<robotlib::Link>(legName + "_UPPERLEG", &(*hfe));
-        std::shared_ptr<robotlib::Joint> kfe = std::make_shared<robotlib::Joint>(legName + "_KFE", &(*upperleg));
-        std::shared_ptr<robotlib::Link> lowerleg = std::make_shared<robotlib::Link>(legName + "_LOWERLEG", &(*kfe));
-
-        const robotlib::Container<robotlib::Link, NLINKS_LEG> links({assembly, upperleg, lowerleg});
-        const robotlib::Container<robotlib::Joint, NJOINTS_LEG> joints({haa, hfe, kfe});
-
-        return std::make_shared<AliengoLeg>(legName,joints,links);
-    }
-
     extern "C" std::shared_ptr<robotlib::RobotBase> createRobotWithUrdf_t(const std::string& robot_urdf)
     {
-        robotlib::Trunk* trunk;
-        //const std::shared_ptr<robotlib::Trunk> trunk = std::make_shared<robotlib::Trunk>("TRUNK");
+        // read hierarchy from urdf-yaml file
+        std::vector<std::map<std::string,std::vector<std::string>>> limbs_definition {
+            {
+                {"name", {"LF"}},
+                {"joints", {"LF_HAA", "LF_HFE", "LF_KFE"}},
+                {"links",  {"LF_ASSEMBLY", "LF_UPPERLEG", "LF_LOWERLEG"}},
+                {"type", {"leg"}}
+            },
+            {
+                {"name", {"RF"}},
+                {"joints", {"RF_HAA", "RF_HFE", "RF_KFE"}},
+                {"links",  {"RF_ASSEMBLY", "RF_UPPERLEG", "RF_LOWERLEG"}},
+                {"type", {"leg"}}
+            },
+            {
+                {"name", {"LH"}},
+                {"joints", {"LH_HAA", "LH_HFE", "LH_KFE"}},
+                {"links",  {"LH_ASSEMBLY", "LH_UPPERLEG", "LH_LOWERLEG"}},
+                {"type", {"leg"}}
+            },
+            {
+                {"name", {"RH"}},
+                {"joints", {"RH_HAA", "RH_HFE", "RH_KFE"}},
+                {"links",  {"RH_ASSEMBLY", "RH_UPPERLEG", "RH_LOWERLEG"}},
+                {"type", {"leg"}}
+            }
+        };
+
+        const std::string robot_name{"aliengo"};
         const robotlib::DynParams trunk_dyn_params{Eigen::Vector3d::Zero(), 5, Eigen::Matrix3d::Zero()}; //dummy com, mass, inertia
+        std::vector<robotlib::LimbPtr> limbs;
+        for (auto const& limb : limbs_definition)
+        {
+            limbs.push_back(std::make_shared<robotlib::Limb>(limb.at("name")[0], limb.at("links"), limb.at("joints"), limb.at("type")[0]));
+        }     
 
-        robotlib::Container<robotlib::LimbBase, NLIMBS> limbs(
-            {makeLeg("LF",trunk),
-             makeLeg("RF",trunk),
-             makeLeg("LH",trunk),
-             makeLeg("RH",trunk)});
-
-        return std::make_shared<Aliengo>(trunk_dyn_params, limbs, robot_urdf);
+        return std::make_shared<Aliengo>(robot_name, trunk_dyn_params, limbs, robot_urdf);
     }
     
     extern "C" std::shared_ptr<robotlib::RobotBase> createRobot_t()

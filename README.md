@@ -50,9 +50,11 @@ To build Aliengolib, clone the latest version of this repository and compile the
 
     cd build
 
-    cmake .. -DCMAKE_BUILD_TYPE=Release
+    cmake .. -DCMAKE_BUILD_TYPE=Release -DDLS_INSTALL_MODEL_DIR=/usr/lib/dls2/robots -DDLS_INSTALL_MODEL_HEADER_DIR=/usr/lib/dls2/robots
 
-    make install
+    make
+
+    sudo make install
 
 If you get the error *CMAKE_MAKE_PROGRAM is not set.* when executing the `cmake` command, you might need to do
 
