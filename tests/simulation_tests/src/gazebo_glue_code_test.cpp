@@ -26,7 +26,7 @@ namespace dls
         pinocchio::urdf::buildModel(urdf_name, pinocchio::JointModelFreeFlyer(), robot_model);
         robot_data = pinocchio::Data(robot_model);
 
-		ddslink->addWriter("gazebo_glue_code_test", dls::topicType("gazebo_glue_code_test", new GazeboGlueCodeTestPubSubType()));
+		ddslink->addWriter("gazebo_glue_code_test", dls::topicType("rt/gazebo_glue_code_test", new dls2_interface::msg::GazeboGlueCodeTestPubSubType()));
 	 }
 
 	void GazeboPluginGlueTest::Load
