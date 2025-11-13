@@ -20,8 +20,7 @@ namespace aliengolib
                         const std::vector<robotlib::LimbPtr>& limbs,
                         const std::string& robot_urdf
                     )
-        : Robot(
-                std::string(name),
+        : Robot(name,
                 dynamic_parameters,
                 limbs)
                 
