@@ -160,7 +160,7 @@ namespace aliengolib
 
         // compute jacobian in base frame
         Eigen::Matrix3d b_R_w = robotlib::utils::quatToRotMat(Eigen::Quaterniond(q_pin.block<4,1>(3,0))); // orientation of the world frame expressed in base frame
-        // jacobian.resize(6, robot_model.nv);
+        jacobian.resize(6, robot_model.nv);
         jacobian.block(0,0,3, robot_model.nv) = b_R_w * J.block(0,0,3, robot_model.nv);
         jacobian.block(3,0,3, robot_model.nv) = b_R_w * J.block(3,0,3, robot_model.nv);
 

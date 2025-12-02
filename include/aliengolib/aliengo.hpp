@@ -209,7 +209,7 @@ namespace aliengolib
         * @param[in] joint_position angle of each joint.
         * @param[out] jsInertia joint-space inertia matrix.
         */
-        virtual void Aliengo::computeJSInertiaMatrix(
+        virtual void computeJSInertiaMatrix(
                                         const Eigen::Matrix<double, 7, 1> &robot_pose,
                                         const robotlib::JointState &joint_position,
                                         Eigen::MatrixXd &jsInertia) override;
