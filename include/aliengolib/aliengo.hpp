@@ -62,6 +62,26 @@ namespace aliengolib
                                        const robotlib::JointState &joint_velocity,
                                        robotlib::LimbDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_position,
                                        robotlib::LimbDataMap<Eigen::Matrix<double, 3, 1>> &end_effector_velocity) override;
+        
+        /*!
+        * @brief Forward kinematics.
+        * @details
+        * It computes the position, orientation, velocity and acceleration of each end effector (foot) expressed in base frame.
+        * @param[in] joint_position angle of each joint.
+        * @param[in] joint_velocity velocity of each joint.
+        * @param[in] joint_acceleration acceleration of each joint.
+        * @param[out] end_effector_position position of each end effector (foot) in base frame.
+        * @param[out] end_effector_orientation orientation of each end effector (foot) in base frame.
+        * @param[out] end_effector_velocity velocity of each end effector (foot) in base frame.
+        * @param[out] end_effector_acceleration acceleration of each end effector (foot) in base frame.
+        */
+        virtual void forwardKinematics(const robotlib::JointState &joint_position,
+                                    const robotlib::JointState &joint_velocity,
+                                    const robotlib::JointState &joint_acceleration,
+                                    robotlib::LimbDataMap<Eigen::Vector3d> &end_effector_position,
+                                    robotlib::LimbDataMap<Eigen::Matrix3d> &end_effector_orientation,
+                                    robotlib::LimbDataMap<robotlib::Vec6d> &end_effector_velocity,
+                                    robotlib::LimbDataMap<robotlib::Vec6d> &end_effector_acceleration) override;
 
         /*!
         * @brief Inverse kinematics. Does not consider the floating base joint. It computes the joint angles from the desired frame position expressed in base frame. Redundancy is not handled yet.
@@ -171,6 +191,17 @@ namespace aliengolib
                                         const robotlib::JointState &joint_position,
                                         const robotlib::JointState &joint_velocity,
                                         robotlib::JointState &nle_joints) override;
+        /*!
+        * @brief Compute the joint-space inertia matrix.
+        * @details
+        * @param[in] robot_pose pose of the robot base in world frame.
+        * @param[in] joint_position angle of each joint.
+        * @param[out] jsInertia joint-space inertia matrix.
+        */
+        virtual void computeJSInertiaMatrix(
+                                        const Eigen::Matrix<double, 7, 1> &robot_pose,
+                                        const robotlib::JointState &joint_position,
+                                        Eigen::MatrixXd &jsInertia) override;
         /*!
           * @brief Compute gravity terms.
           * @details

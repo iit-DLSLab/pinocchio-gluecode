@@ -2,16 +2,25 @@
 
 #include "robotlib/utils/utils.hpp"
 
+// #include "pinocchio/algorithm/aba.hpp"
 #include "pinocchio/algorithm/center-of-mass.hpp"
+#include "pinocchio/algorithm/crba.hpp"
 #include "pinocchio/algorithm/joint-configuration.hpp"
 #include "pinocchio/algorithm/frames.hpp"
 #include "pinocchio/parsers/urdf.hpp"
+// #include <algorithm>
+// #include <cctype>
+// #include <cmath>
+// #include <iterator>
+// #include <memory>
+// #include <numeric>
 #include <pinocchio/algorithm/rnea.hpp>
 
 #include "robotlib/utils/eigen_utils.hpp"
 
 #include <filesystem>
 #include <fstream>
+#include <vector>
 
 namespace aliengolib
 {
@@ -23,7 +32,7 @@ namespace aliengolib
         : Robot(name,
                 dynamic_parameters,
                 limbs)
-                
+
     {
         // load pinocchio model from urdf
         const std::string urdf_name = "/usr/include/aliengo_description/urdfs/aliengo.urdf";
@@ -71,10 +80,10 @@ namespace aliengolib
         pinocchio::framesForwardKinematics(robot_model, robot_data, q_pin);
         // std::string origin_name = origin->getName();
         // std::string destination_name = destination->getName();
-        
+
         // transform(origin_name.begin(), origin_name.end(), origin_name.begin(), ::tolower);
         // transform(destination_name.begin(), destination_name.end(), destination_name.begin(), ::tolower);
-        
+
         auto origin_frame_idx = robot_model.getFrameId(origin->getName());
         auto dest_frame_idx = robot_model.getFrameId(destination->getName());
         auto oMorigin = robot_data.oMf[origin_frame_idx];
@@ -82,7 +91,7 @@ namespace aliengolib
 
         return (oMdest.inverse() * oMorigin).translation();
     }
-    
+
     Eigen::Matrix3d Aliengo::computeFrameOrientation( const robotlib::JointState &q,
                                                 const robotlib::FramePtr origin,
                                                 const robotlib::FramePtr destination)
@@ -91,10 +100,10 @@ namespace aliengolib
         pinocchio::framesForwardKinematics(robot_model, robot_data, q_pin);
         // std::string origin_name = origin->getName();
         // std::string destination_name = destination->getName();
-        
+
         // transform(origin_name.begin(), origin_name.end(), origin_name.begin(), ::tolower);
         // transform(destination_name.begin(), destination_name.end(), destination_name.begin(), ::tolower);
-        
+
         auto origin_frame_idx = robot_model.getFrameId(origin->getName());
         auto dest_frame_idx = robot_model.getFrameId(destination->getName());
         auto oMorigin = robot_data.oMf[origin_frame_idx];
@@ -116,7 +125,7 @@ namespace aliengolib
 
         return frame_pose;
     }
-    
+
     void Aliengo::computeLimbsJacobian(const robotlib::JointState &q,
                                         const robotlib::FramePtr frame,
                                         Eigen::MatrixXd &jacobian){
@@ -126,19 +135,19 @@ namespace aliengolib
     void Aliengo::computeLimbsJacobian(const robotlib::JointState &q,
                                         const std::string& frame_name,
                                         Eigen::MatrixXd &jacobian){
-            // map robotlib to pinocchio
-            Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(q);
+        // map robotlib to pinocchio
+        Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(q);
 
-            // compute jacobian in base frame: since we are setting the robot pose to Identity (using fromRobotlibToPinocchioJointState(q)) the jacobian computed in LOCAL_WORLD_ALIGNED is the jacobian in the base frame
-            const int frame_id = robot_model.getFrameId(frame_name);
-            Eigen::MatrixXd J = Eigen::MatrixXd::Zero(6, robot_model.nv);
-            pinocchio::computeFrameJacobian(robot_model, robot_data, q_pin, frame_id, pinocchio::LOCAL_WORLD_ALIGNED, J);
+        // compute jacobian in base frame: since we are setting the robot pose to Identity (using fromRobotlibToPinocchioJointState(q)) the jacobian computed in LOCAL_WORLD_ALIGNED is the jacobian in the base frame
+        const int frame_id = robot_model.getFrameId(frame_name);
+        Eigen::MatrixXd J = Eigen::MatrixXd::Zero(6, robot_model.nv);
+        pinocchio::computeFrameJacobian(robot_model, robot_data, q_pin, frame_id, pinocchio::LOCAL_WORLD_ALIGNED, J);
 
-            // set output
-            const int jacobian_cols = robot_model.nv-6; // -6 because we are not considering the floating base joint
-            jacobian = J.block(0,6,6, jacobian_cols); //6 because it is a geometric jacobian (lin, ang)
+        // set output
+        const int jacobian_cols = robot_model.nv-6; // -6 because we are not considering the floating base joint
+        jacobian = J.block(0,6,6, jacobian_cols); //6 because it is a geometric jacobian (lin, ang)
 
-            jacobian = reorderLimbsJacobian(jacobian);
+        jacobian = reorderLimbsJacobian(jacobian);
     }
     void Aliengo::computeWholeBodyJacobian(const Eigen::Matrix<double, 7, 1> &robot_pose,
                                             const robotlib::JointState &q,
@@ -147,13 +156,14 @@ namespace aliengolib
         // map robotlib to pinocchio
         Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(robot_pose, q);
 
-        // compute jacobian in world frame        
+        // compute jacobian in world frame
         const int frame_id = robot_model.getFrameId(frame->getName());
         Eigen::MatrixXd J = Eigen::MatrixXd::Zero(6, robot_model.nv);
         pinocchio::computeFrameJacobian(robot_model, robot_data, q_pin, frame_id, pinocchio::LOCAL_WORLD_ALIGNED, J);
 
         // compute jacobian in base frame
         Eigen::Matrix3d b_R_w = robotlib::utils::quatToRotMat(Eigen::Quaterniond(q_pin.block<4,1>(3,0))); // orientation of the world frame expressed in base frame
+        jacobian.resize(6, robot_model.nv);
         jacobian.block(0,0,3, robot_model.nv) = b_R_w * J.block(0,0,3, robot_model.nv);
         jacobian.block(3,0,3, robot_model.nv) = b_R_w * J.block(3,0,3, robot_model.nv);
 
@@ -162,11 +172,11 @@ namespace aliengolib
 
 
     Eigen::VectorXd Aliengo::fromRobotlibToPinocchioJointState(const robotlib::JointState &joint_position){
-        Eigen::VectorXd q = pinocchio::neutral(robot_model);        
+        Eigen::VectorXd q = pinocchio::neutral(robot_model);
         q.tail(this->getNJOINTS()) = reorderJoints(joint_position);
         return q;
     }
-    
+
     Eigen::VectorXd Aliengo::fromRobotlibToPinocchioJointState(const Eigen::Matrix<double, 7, 1> &robot_pose, const robotlib::JointState &joint_position){
         Eigen::VectorXd q = pinocchio::neutral(robot_model);
         q.tail(this->getNJOINTS()) = reorderJoints(joint_position);
@@ -179,7 +189,7 @@ namespace aliengolib
         qd.tail(this->getNJOINTS()) = reorderJoints(joint_velocity);
         return qd;
     }
-    
+
     Eigen::VectorXd Aliengo::fromRobotlibToPinocchioJointVelocity(const Eigen::Matrix<double, 6, 1> &robot_velocity, const robotlib::JointState &joint_velocity){
         Eigen::VectorXd qd = Eigen::VectorXd::Zero(robot_model.nv);
         qd.tail(this->getNJOINTS()) = reorderJoints(joint_velocity);
@@ -230,6 +240,47 @@ namespace aliengolib
         end_effector_velocity[this->getLimb("RF")] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model, robot_data, robot_model.getFrameId("rf_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
         end_effector_velocity[this->getLimb("LH")] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model, robot_data, robot_model.getFrameId("lh_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
         end_effector_velocity[this->getLimb("RH")] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model, robot_data, robot_model.getFrameId("rh_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
+    }
+
+    void Aliengo::forwardKinematics(const robotlib::JointState &joint_position,
+                                    const robotlib::JointState &joint_velocity,
+                                    const robotlib::JointState &joint_acceleration,
+                                    robotlib::LimbDataMap<Eigen::Vector3d> &end_effector_position,
+                                    robotlib::LimbDataMap<Eigen::Matrix3d> &end_effector_orientation,
+                                    robotlib::LimbDataMap<robotlib::Vec6d> &end_effector_velocity,
+                                    robotlib::LimbDataMap<robotlib::Vec6d> &end_effector_acceleration)
+    {
+        Eigen::VectorXd q = fromRobotlibToPinocchioJointState(joint_position);
+        Eigen::VectorXd qd = fromRobotlibToPinocchioJointVelocity(joint_velocity);
+        Eigen::VectorXd qdd = fromRobotlibToPinocchioJointVelocity(joint_acceleration);
+
+        pinocchio::forwardKinematics(robot_model, robot_data, q, qd, qdd);
+        pinocchio::updateFramePlacements(robot_model, robot_data);
+
+        pinocchio::FrameIndex base_frame_id = robot_model.getFrameId(robot_model.frames[2].name); //base frame
+        pinocchio::SE3 baseMo = robot_data.oMf[base_frame_id].inverse();
+
+        int frameId;
+        for (auto leg : {"LF", "RF", "LH", "RH"})
+        {
+          frameId = robot_model.getFrameId(robotlib::utils::toLower(leg) + "_foot");
+          end_effector_position[getLimb(leg)] =
+              (baseMo * robot_data.oMf[frameId]).translation();
+          end_effector_orientation[getLimb(leg)] =
+              (baseMo * robot_data.oMf[frameId]).rotation();
+          end_effector_velocity[getLimb(leg)].head(3) = baseMo.rotation()
+              * pinocchio::getFrameVelocity(robot_model, robot_data, frameId,
+                                            pinocchio::LOCAL).angular();
+          end_effector_velocity[getLimb(leg)].tail(3) = baseMo.rotation()
+              * pinocchio::getFrameVelocity(robot_model, robot_data, frameId,
+                                            pinocchio::LOCAL).linear();
+          end_effector_acceleration[getLimb(leg)].head(3) = baseMo.rotation()
+              * pinocchio::getFrameAcceleration(robot_model, robot_data, frameId,
+                                                pinocchio::LOCAL).angular();
+          end_effector_acceleration[getLimb(leg)].tail(3) = baseMo.rotation()
+              * pinocchio::getFrameAcceleration(robot_model, robot_data, frameId,
+                                                pinocchio::LOCAL).linear();
+        }
     }
 
     pinocchio::FrameIndex Aliengo::getBaseID() const{
@@ -317,7 +368,7 @@ namespace aliengolib
             // --- compute pseudo-inverse
             JJt_task = J_task*J_task.transpose() + Eigen::MatrixXd::Identity(JJt_task.rows(),JJt_task.cols())*damp;
             J_task_pseudo = J_task.transpose()*(JJt_task.inverse());
-            
+
             // -- compute new joint position
             qd_des = J_task_pseudo * err_task;
             // -- fixed base inverse kinematics
@@ -349,11 +400,11 @@ namespace aliengolib
 
         // Closed Loop Inverse Kinematics (CLIK)
         Eigen::VectorXd q_pin_des = clik(frame_name, q_pin_init_guess, oMdes, IK::TASK::POSITION_TASK);
-       
+
         // Get IK solution
         q_des = reorderJoints(q_pin_des.tail(this->getNJOINTS()));
     }
-    
+
     void Aliengo::fixedBaseInverseKinematics(
         const robotlib::JointState &q_init_guess,
         const robotlib::LimbDataMap<Eigen::Vector3d> &positions_des,
@@ -373,7 +424,7 @@ namespace aliengolib
                                         const robotlib::JointState &q,
                                         const Eigen::Vector3d &velocity_des,
                                         robotlib::JointState &qd_des)
-    {    
+    {
         // map from robotlib to pinocchio
         Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(q);
         // compute jacobian in base frame
@@ -382,7 +433,7 @@ namespace aliengolib
         pinocchio::framesForwardKinematics(robot_model, robot_data, q_pin);
         pinocchio::computeFrameJacobian(robot_model, robot_data, q_pin, frame_id, pinocchio::LOCAL_WORLD_ALIGNED, J);
 
-        // compute pseudo-inverse using linear jacobian        
+        // compute pseudo-inverse using linear jacobian
         Eigen::MatrixXd J_lin = J.block(0,6,3,robot_model.nv-6); // do not consider base
 		const double damp = 1e-6;
         Eigen::MatrixXd JJt_lin = Eigen::MatrixXd::Identity(J_lin.rows(),J_lin.rows())*damp;
@@ -390,7 +441,7 @@ namespace aliengolib
         Eigen::MatrixXd J_pseudo = J_lin.transpose()*(JJt_lin.inverse());
         // compute desired joint velocity
         Eigen::VectorXd qd_des_pin = J_pseudo * velocity_des;
-        qd_des = reorderJoints(qd_des_pin.tail(this->getNJOINTS()));                       
+        qd_des = reorderJoints(qd_des_pin.tail(this->getNJOINTS()));
     }
 
     void Aliengo::fixedBaseInverseDiffKinematics(const robotlib::JointState &q,
@@ -448,7 +499,7 @@ namespace aliengolib
 		g_base = robot_data.g.block<6,1>(0,0);
 		g_joints = reorderJoints(robot_data.g.tail(this->getNJOINTS()));
     }
-    
+
     void Aliengo::computeGravityTerm(  const Eigen::Matrix<double, 7, 1> &robot_pose,
                                           const robotlib::JointState &joint_position,
                                           robotlib::JointState &g_joints)
@@ -465,7 +516,7 @@ namespace aliengolib
                                         robotlib::JointState &nle_joints
                                         )
     {
-        Eigen::VectorXd q = fromRobotlibToPinocchioJointState(robot_pose, joint_position);
+              Eigen::VectorXd q = fromRobotlibToPinocchioJointState(robot_pose, joint_position);
         Eigen::VectorXd qd = fromRobotlibToPinocchioJointVelocity(robot_velocity, joint_velocity);
         pinocchio::nonLinearEffects(robot_model, robot_data, q, qd);
 
@@ -480,6 +531,48 @@ namespace aliengolib
     {
         Eigen::Matrix<double, 6, 1> nle_base = Eigen::Matrix<double, 6, 1>::Zero();
         computeNonLinearEffects(robot_pose, Eigen::Matrix<double,6,1>::Zero(), joint_position, joint_velocity, nle_base, nle_joints);
+    }
+
+    void Aliengo::computeJSInertiaMatrix(
+        const Eigen::Matrix<double, 7, 1> &robot_pose,
+        const robotlib::JointState &joint_position,
+        Eigen::MatrixXd &jsInertia)
+    {
+      Eigen::VectorXd q = fromRobotlibToPinocchioJointState(robot_pose, joint_position);
+      // pinocchio::computeMinverse(robot_model, robot_data, q);
+      // jsInertia = robot_data.Minv;
+      // // make triangular matrix symmetric
+      // jsInertia.triangularView<Eigen::StrictlyLower>() =
+      //     robot_data.Minv.transpose().triangularView<Eigen::StrictlyLower>();
+      pinocchio::crba(robot_model, robot_data, q);
+      // reorder pinocchio to match robcogen: xyz, rpy, lf, rf, lh, rh, arm
+      // make triangular matrix symmetric
+      robot_data.M.triangularView<Eigen::StrictlyLower>() =
+          robot_data.M.transpose().triangularView<Eigen::StrictlyLower>();
+      // STI: only valid for urdf of hyqreal (4x3 dof) with arm (7 dof) and hand (6 dof)
+      // ToDo: use a config file to get the mapping
+      static std::vector<int> sizes = {3, 3, 3, 3, 3, 3}; //, 7, 6};
+      static std::vector<int> indices = {3, 0, 6, 12, 9, 15}; //, 6, 13};
+      static int all = std::accumulate(sizes.begin(), sizes.end(), 0);
+      jsInertia.resize(all, all);
+      jsInertia.setZero();
+
+      // r: read, w: write, s: size, i: index, r: row, c: col --> rir = read index row
+      int wir(0), wic, sr, sc, rir, ric;
+      for (int i = 0; i < sizes.size(); i++)
+      {
+        wic = 0;
+        sr = sizes[i];
+        rir = indices[i];
+        for (int j = 0; j < sizes.size(); j++)
+        {
+          sc = sizes[j];
+          ric = indices[j];
+          jsInertia.block(wir, wic, sr, sc) << robot_data.M.block(rir, ric, sr, sc);
+          wic += sizes[j];
+        }
+        wir += sizes[i];
+      }
     }
 
     Eigen::Matrix4d Aliengo::getImuBaseOffset(const std::string& imu_link_name, const std::string& base_link_name) const
@@ -503,7 +596,7 @@ namespace aliengolib
         }
         return imu_pose;
     }
-    
+
     double Aliengo::getLinkMass(const robotlib::LinkPtr link) const
     {
         const int joint_id = robot_model.frames[robot_model.getFrameId(link->getName())].parentJoint;
@@ -517,7 +610,7 @@ namespace aliengolib
 
     Eigen::Vector3d Aliengo::computeWholeBodyCoM(const robotlib::JointState& q) {
         // set the robot base pose to pos=0, ori=0 --> centerOfMass gives the CoM in the base frame
-        Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(q); 
+        Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(q);
         return pinocchio::centerOfMass(robot_model, robot_data, q_pin, false);//false: do not compute com of subtrees
     }
 
@@ -599,11 +692,11 @@ namespace aliengolib
         for (auto const& limb : limbs_definition)
         {
             limbs.push_back(std::make_shared<robotlib::Limb>(limb.at("name")[0], limb.at("links"), limb.at("joints"), limb.at("type")[0]));
-        }     
+        }
 
         return std::make_shared<Aliengo>(robot_name, trunk_dyn_params, limbs, robot_urdf);
     }
-    
+
     extern "C" std::shared_ptr<robotlib::RobotBase> createRobot_t()
     {
         std::string urdf_path("/usr/include/aliengo_description/urdfs/aliengo.urdf");
