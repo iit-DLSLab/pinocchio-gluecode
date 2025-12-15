@@ -416,7 +416,10 @@ namespace aliengolib
             std::string foot_name = leg->getName() + "_foot";
             foot_name = robotlib::utils::toLower(foot_name);
             this->fixedBaseInverseKinematics(foot_name, q_init_guess, positions_des.at(leg), q_des_temp);
-            q_des[leg->id] = q_des_temp[leg->id];
+            for (auto joint : leg->getJoints())
+            {
+                q_des[joint->id] = q_des_temp[joint->id];
+            }
         }
     }
 
@@ -454,7 +457,10 @@ namespace aliengolib
             std::string foot_name = leg->getName() + "_foot";
             foot_name = robotlib::utils::toLower(foot_name);
             this->fixedBaseInverseDiffKinematics(foot_name, q, velocities_des.at(leg), qd_des_temp);
-            qd_des[leg->id] = qd_des_temp[leg->id];
+            for (auto joint : leg->getJoints())
+            {
+                qd_des[joint->id] = qd_des_temp[joint->id];
+            }
         }
     }
 
