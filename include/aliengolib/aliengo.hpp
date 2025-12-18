@@ -7,6 +7,11 @@
 #include "pinocchio/multibody/data.hpp"
 #include "pinocchio/multibody/fwd.hpp"
 
+#include <yaml-cpp/yaml.h>
+
+using LimbMap  = std::map<std::string,std::vector<std::string>>;
+using LimbList = std::vector<LimbMap>;
+
 namespace aliengolib
 {
     namespace IK{
@@ -26,15 +31,9 @@ namespace aliengolib
     public:
        /*!
          * @brief Constructor.
-         * @param[in] trunk shared pointer pointing to the trunk object.
-         * @param[in] legs shared pointer pointing to the robot's legs.
-         * @param[in] arms shared pointer pointing to the robot's arms.
-         * @param[in] robot_urdf urdf of the robot.
+          * @param[in] kinematics_mapping YAML node containing the kinematics mapping information.
        */
-        Aliengo(  const std::string& name,
-                  const robotlib::DynParams& dynamic_parameters,
-                  const std::vector<robotlib::LimbPtr>& limbs,
-                  const std::string& robot_urdf);
+        Aliengo(const YAML::Node& kinematics_mapping);
  		/*!
          * @brief Destructor.
          */
@@ -52,11 +51,11 @@ namespace aliengolib
         /*!
          * @brief Forward kinematics.
          * @details
-         * It computes the position and velocity of each end effector (foot) expressed in base frame.
+         * It computes the position and velocity of each end effector expressed in base frame.
          * @param[in] joint_position angle of each joint.
          * @param[in] joint_velocity velocity of each joint.
-         * @param[out] end_effector_position position of each end effector (foot) in base frame.
-         * @param[out] end_effector_velocity velocity of each end effector (foot) in base frame.
+         * @param[out] end_effector_position position of each end effector in base frame.
+         * @param[out] end_effector_velocity velocity of each end effector in base frame.
          */
         virtual void forwardKinematics(const robotlib::JointState &joint_position,
                                        const robotlib::JointState &joint_velocity,
@@ -66,14 +65,14 @@ namespace aliengolib
         /*!
         * @brief Forward kinematics.
         * @details
-        * It computes the position, orientation, velocity and acceleration of each end effector (foot) expressed in base frame.
+        * It computes the position, orientation, velocity and acceleration of each end effector expressed in base frame.
         * @param[in] joint_position angle of each joint.
         * @param[in] joint_velocity velocity of each joint.
         * @param[in] joint_acceleration acceleration of each joint.
-        * @param[out] end_effector_position position of each end effector (foot) in base frame.
-        * @param[out] end_effector_orientation orientation of each end effector (foot) in base frame.
-        * @param[out] end_effector_velocity velocity of each end effector (foot) in base frame.
-        * @param[out] end_effector_acceleration acceleration of each end effector (foot) in base frame.
+        * @param[out] end_effector_position position of each end effector in base frame.
+        * @param[out] end_effector_orientation orientation of each end effector in base frame.
+        * @param[out] end_effector_velocity velocity of each end effector in base frame.
+        * @param[out] end_effector_acceleration acceleration of each end effector in base frame.
         */
         virtual void forwardKinematics(const robotlib::JointState &joint_position,
                                     const robotlib::JointState &joint_velocity,
@@ -375,11 +374,16 @@ namespace aliengolib
         * @brief Get the base ID. 
         */
         pinocchio::FrameIndex getBaseID() const;
+                
+        int getJointIdWithoutRoot(const std::string &joint_name) const;
+
+        LimbList loadLimbsDefinition(const YAML::Node& root);
 
         // Pinocchio order the joints following an alphanumeric order, so we need to map our order to the pinocchio one and viceversa
         // our convention: lf rf lh rh
         // pinocchio one: lf lh rf rh
-        std::map<int,int> idx_map = {{3,6},{4,7},{5,8}};
+        // dls idx, pinocchio idx
+        std::map<int,int> idx_map;
 
         Eigen::VectorXd reorderJoints(const Eigen::VectorXd& data) const;
         Eigen::MatrixXd reorderLimbsJacobian(const Eigen::MatrixXd& jacobian) const;
@@ -389,6 +393,11 @@ namespace aliengolib
         Eigen::VectorXd fromRobotlibToPinocchioJointState(const Eigen::Matrix<double, 7, 1> &robot_pose, const robotlib::JointState &joint_position);
         Eigen::VectorXd fromRobotlibToPinocchioJointVelocity(const robotlib::JointState &joint_velocity);
         Eigen::VectorXd fromRobotlibToPinocchioJointVelocity(const Eigen::Matrix<double, 6, 1> &robot_velocity, const robotlib::JointState &joint_velocity);
+
+        // dls to urdf name
+        std::map<std::string, std::string> dls_to_urdf_joints_name;
+        std::map<std::string, std::string> dls_to_urdf_links_name;
+        std::vector<int> joint_directions;
     };
 } //namespace aliengolib
 

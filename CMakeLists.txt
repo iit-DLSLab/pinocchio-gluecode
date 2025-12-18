@@ -81,7 +81,8 @@ target_link_libraries(${PROJECT_NAME}
         roscpp
         urdf
         ${pinocchio_LIBRARIES}
-        pinocchio_parsers    
+        pinocchio_parsers 
+        yaml-cpp   
 )
 
 # set the output name of the library
@@ -100,7 +101,7 @@ install(
     COMPONENT   aliengo_lib
 )
 
-# add_subdirectory(tests)
+add_subdirectory(tests)
 
 # ================================== Packaging =================================
 set(CPACK_PACKAGE_VERSION_MAJOR              ${PROJECT_VERSION_MAJOR})
