@@ -55,6 +55,14 @@ namespace aliengolib
                 dls_to_urdf_links_name[dls_link_name] = urdf_link_name;
             }
         }
+        // init name map with link and joint names
+        for(const auto& pair : dls_to_urdf_joints_name) {
+            name_map_[pair.first] = pair.second;
+        }
+        for(const auto& pair : dls_to_urdf_links_name) {
+            name_map_[pair.first] = pair.second;
+        }
+ 
         // read joint direction from yaml
         for (const auto& limb : limbs_definition) {
             for (const auto& direction_str : limb.at("joints_direction")) {
