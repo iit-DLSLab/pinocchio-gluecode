@@ -403,7 +403,7 @@ namespace aliengolib
         // dls to urdf name
         std::map<std::string, std::string> dls_to_urdf_joints_name;
         std::map<std::string, std::string> dls_to_urdf_links_name;
-        std::vector<int> joint_directions;
+        std::vector<int> joint_directions; // not used yet
         // variable used to populate a pinocchio variable of size nq. In case of continuous joints, pinocchio adds two elements to the configuration space: cos(theta) and sin(theta). So, when mapping from Robotlib joint ids to Pinocchio ones we need to take into account this extension
         std::vector<std::vector<int>> extended_joint_ids;
         };
