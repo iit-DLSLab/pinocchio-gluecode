@@ -362,14 +362,7 @@ namespace aliengolib
     void Aliengo::forwardKinematics(const robotlib::JointState &joint_position,
                                     robotlib::LimbDataMap<Eigen::Vector3d> &end_effector_position)
     {
-        std::cout << "joint positions: " << joint_position.transpose()<<std::endl;
         Eigen::VectorXd q = fromRobotlibToPinocchioJointState(joint_position);
-        std::cout << "nq: "<< robot_model.nq << ", nv: "<< robot_model.nv <<", joint positions reordered: " << q.transpose()<<std::endl;
-        // print joint names
-        for(auto name : robot_model.names){
-            std::cout << name << ", id" << this->getJointIdForNq(name)<<std::endl;
-        }
-
         pinocchio::forwardKinematics(robot_model, robot_data, q);
         pinocchio::updateFramePlacements(robot_model, robot_data);
 
