@@ -393,12 +393,20 @@ namespace aliengolib
         Eigen::VectorXd fromRobotlibToPinocchioJointState(const Eigen::Matrix<double, 7, 1> &robot_pose, const robotlib::JointState &joint_position);
         Eigen::VectorXd fromRobotlibToPinocchioJointVelocity(const robotlib::JointState &joint_velocity);
         Eigen::VectorXd fromRobotlibToPinocchioJointVelocity(const Eigen::Matrix<double, 6, 1> &robot_velocity, const robotlib::JointState &joint_velocity);
-
+        void fromPinocchioToRobotlibJointState(const Eigen::VectorXd &q_pin,
+                                                robotlib::JointState &joint_position);
+        /*
+        * @brief Set the extended joint state used by pinocchio from the robotlib joint state, which takes into account continuous joints.
+        */
+        void setExtendedJointState(const robotlib::JointState &joint_position,
+                                        Eigen::VectorXd &q);
         // dls to urdf name
         std::map<std::string, std::string> dls_to_urdf_joints_name;
         std::map<std::string, std::string> dls_to_urdf_links_name;
         std::vector<int> joint_directions;
-    };
+        // variable used to populate a pinocchio variable of size nq. In case of continuous joints, pinocchio adds two elements to the configuration space: cos(theta) and sin(theta). So, when mapping from Robotlib joint ids to Pinocchio ones we need to take into account this extension
+        std::vector<std::vector<int>> extended_joint_ids;
+        };
 } //namespace aliengolib
 
 /*!

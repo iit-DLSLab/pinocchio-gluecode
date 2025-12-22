@@ -91,6 +91,23 @@ namespace aliengolib
         }
 
         setJointLimitsFromUrdf();
+
+        // Detect continuous joints
+        extended_joint_ids.resize(this->getNJOINTS());
+        int count_continuous_joints=0;
+        for(int i=0; i< this->getNJOINTS(); i++){
+            std::string urdf_joint_name = dls_to_urdf_joints_name[this->joints_[i]->getName()];
+            const auto& joint_model = robot_model.joints[robot_model.getJointId(urdf_joint_name)];
+            int joint_id = getJointIdForNq(urdf_joint_name)+count_continuous_joints;
+            bool is_continuous = (joint_model.nq() == 2 && joint_model.nv() == 1);
+            if(is_continuous){
+                // in case of continuous joints, pinocchio adds two elements to the configuration space: cos(theta) and sin(theta)
+                extended_joint_ids[i] = {joint_id, joint_id+1};
+                count_continuous_joints+=1;
+            }else{
+                extended_joint_ids[i] = {joint_id};
+            }
+        }
     }
 
     int Aliengo::getJointIdWithoutRoot(const std::string &joint_name) const
@@ -281,13 +298,15 @@ namespace aliengolib
 
     Eigen::VectorXd Aliengo::fromRobotlibToPinocchioJointState(const robotlib::JointState &joint_position){
         Eigen::VectorXd q = pinocchio::neutral(robot_model);
-        q.tail(this->getNJOINTS()) = reorderJoints(joint_position);
+        auto pos = reorderJoints(joint_position);
+        setExtendedJointState(pos, q);
         return q;
     }
 
     Eigen::VectorXd Aliengo::fromRobotlibToPinocchioJointState(const Eigen::Matrix<double, 7, 1> &robot_pose, const robotlib::JointState &joint_position){
         Eigen::VectorXd q = pinocchio::neutral(robot_model);
-        q.tail(this->getNJOINTS()) = reorderJoints(joint_position);
+        auto pos = reorderJoints(joint_position);
+        setExtendedJointState(pos, q);
         q.head(7) = robot_pose;
         return q;
     }
@@ -305,16 +324,57 @@ namespace aliengolib
         return qd;
     }
 
+    void Aliengo::fromPinocchioToRobotlibJointState(const Eigen::VectorXd &q,
+                                                robotlib::JointState &joint_position)
+    {
+        for(int i=0;i<this->getNJOINTS();i++){
+            std::vector<int> pinocchio_indices = extended_joint_ids[i];
+            if (pinocchio_indices.size() == 1) {
+                // regular joint
+                joint_position[i] = q[pinocchio_indices[0]];
+            } else if (pinocchio_indices.size() == 2) {
+                // continuous joint
+                double cos_angle = q[pinocchio_indices[0]];
+                double sin_angle = q[pinocchio_indices[1]];
+                joint_position[i] = std::atan2(sin_angle, cos_angle);
+            }
+        }
+        joint_position = reorderJoints(joint_position);
+    }
+
+    void Aliengo::setExtendedJointState(const robotlib::JointState &joint_position,
+                                                Eigen::VectorXd &q)
+    {
+        for(int i=0;i<this->getNJOINTS();i++){
+            std::vector<int> pinocchio_indices = extended_joint_ids[i];
+            if (pinocchio_indices.size() == 1) {
+                // regular joint
+                q[pinocchio_indices[0]] = joint_position[i];
+            } else if (pinocchio_indices.size() == 2) {
+                // continuous joint
+                double angle = joint_position[i];
+                q[pinocchio_indices[0]] = std::cos(angle);
+                q[pinocchio_indices[1]] = std::sin(angle);
+            }
+        }
+    }
+
     void Aliengo::forwardKinematics(const robotlib::JointState &joint_position,
                                     robotlib::LimbDataMap<Eigen::Vector3d> &end_effector_position)
     {
+        std::cout << "joint positions: " << joint_position.transpose()<<std::endl;
         Eigen::VectorXd q = fromRobotlibToPinocchioJointState(joint_position);
+        std::cout << "nq: "<< robot_model.nq << ", nv: "<< robot_model.nv <<", joint positions reordered: " << q.transpose()<<std::endl;
+        // print joint names
+        for(auto name : robot_model.names){
+            std::cout << name << ", id" << this->getJointIdForNq(name)<<std::endl;
+        }
 
         pinocchio::forwardKinematics(robot_model, robot_data, q);
         pinocchio::updateFramePlacements(robot_model, robot_data);
 
         pinocchio::FrameIndex base_frame_id = robot_model.getFrameId(robot_model.frames[2].name); //base frame
-        pinocchio::SE3 baseMo = robot_data.oMf[base_frame_id].inverse();
+        pinocchio::SE3 baseMo = robot_data.oMf[base_frame_id].inverse();    
 
         // feet positions
         for(auto limb : limbs_){
@@ -511,7 +571,7 @@ namespace aliengolib
             // -- compute new joint position
             qd_des = J_task_pseudo * err_task;
             // -- fixed base inverse kinematics
-            q_des.tail(this->getNJOINTS()) = q_des.tail(this->getNJOINTS()) + (qd_des).tail(this->getNJOINTS())*dt;
+            q_des = pinocchio::integrate(robot_model, q_des, qd_des*dt);
 		}
 
 		if (success)
@@ -542,7 +602,7 @@ namespace aliengolib
         Eigen::VectorXd q_pin_des = clik(urdf_frame_name, q_pin_init_guess, oMdes, IK::TASK::POSITION_TASK);
 
         // Get IK solution
-        q_des = reorderJoints(q_pin_des.tail(this->getNJOINTS()));
+        fromPinocchioToRobotlibJointState(q_pin_des, q_des);
     }
 
     void Aliengo::fixedBaseInverseKinematics(
