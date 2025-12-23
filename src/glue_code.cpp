@@ -62,14 +62,6 @@ namespace glue_code
         for(const auto& pair : dls_to_urdf_links_name) {
             name_map_[pair.first] = pair.second;
         }
- 
-        // read joint direction from yaml
-        for (const auto& limb : limbs_definition) {
-            for (const auto& direction_str : limb.at("joints_direction")) {
-                joint_directions.push_back(std::stoi(direction_str));
-            }
-        }
-
         // load pinocchio model from urdf
         const std::string urdf_name = kinematics_mapping["urdf_path"].as<std::string>();
         pinocchio::urdf::buildModel(urdf_name, pinocchio::JointModelFreeFlyer(), robot_model);
@@ -142,10 +134,8 @@ namespace glue_code
                     // j["name"] is e.g. "HAA", "HFE", "KFE"
                     std::string j_name = j["name"].as<std::string>();
                     std::string j_name_urdf = j["urdf"].as<std::string>();
-                    std::string j_direction = j["direction"].as<std::string>();
                     limb_def["dls_joints_name"].push_back(limb_name + "_" + j_name);
                     limb_def["urdf_joints_name"].push_back(j_name_urdf);
-                    limb_def["joints_direction"].push_back(j_direction);
                 }
             }
 
