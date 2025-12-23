@@ -369,10 +369,6 @@ namespace glue_code
             const int frame_id = robot_model.getFrameId(end_effector_name);
             end_effector_position[limb] = (baseMo*robot_data.oMf[frame_id]).translation();
         }
-        // end_effector_position[this->getLimb("LF")] = (baseMo*robot_data.oMf[robot_model.getFrameId("lf_foot")]).translation();
-        // end_effector_position[this->getLimb("RF")] = (baseMo*robot_data.oMf[robot_model.getFrameId("rf_foot")]).translation();
-        // end_effector_position[this->getLimb("LH")] = (baseMo*robot_data.oMf[robot_model.getFrameId("lh_foot")]).translation();
-        // end_effector_position[this->getLimb("RH")] = (baseMo*robot_data.oMf[robot_model.getFrameId("rh_foot")]).translation();
     }
 
     void GlueCode::forwardKinematics(const robotlib::JointState &joint_position,
@@ -396,16 +392,6 @@ namespace glue_code
             end_effector_position[limb] = (baseMo*robot_data.oMf[frame_id]).translation();
             end_effector_velocity[limb] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model, robot_data, frame_id, pinocchio::LOCAL_WORLD_ALIGNED).linear();
         }
-        // end_effector_position[this->getLimb("LF")] = (baseMo*robot_data.oMf[robot_model.getFrameId("lf_foot")]).translation();
-        // end_effector_position[this->getLimb("RF")] = (baseMo*robot_data.oMf[robot_model.getFrameId("rf_foot")]).translation();
-        // end_effector_position[this->getLimb("LH")] = (baseMo*robot_data.oMf[robot_model.getFrameId("lh_foot")]).translation();
-        // end_effector_position[this->getLimb("RH")] = (baseMo*robot_data.oMf[robot_model.getFrameId("rh_foot")]).translation();
-
-        // // feet velocities
-        // end_effector_velocity[this->getLimb("LF")] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model, robot_data, robot_model.getFrameId("lf_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
-        // end_effector_velocity[this->getLimb("RF")] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model, robot_data, robot_model.getFrameId("rf_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
-        // end_effector_velocity[this->getLimb("LH")] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model, robot_data, robot_model.getFrameId("lh_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
-        // end_effector_velocity[this->getLimb("RH")] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model, robot_data, robot_model.getFrameId("rh_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
     }
 
     void GlueCode::forwardKinematics(const robotlib::JointState &joint_position,
@@ -445,28 +431,6 @@ namespace glue_code
                 * pinocchio::getFrameAcceleration(robot_model, robot_data, frame_id,
                                                     pinocchio::LOCAL).linear();
         }
-
-        // int frameId;
-        // for (auto leg : {"LF", "RF", "LH", "RH"})
-        // {
-        //   frameId = robot_model.getFrameId(robotlib::utils::toLower(leg) + "_foot");
-        //   end_effector_position[getLimb(leg)] =
-        //       (baseMo * robot_data.oMf[frameId]).translation();
-        //   end_effector_orientation[getLimb(leg)] =
-        //       (baseMo * robot_data.oMf[frameId]).rotation();
-        //   end_effector_velocity[getLimb(leg)].head(3) = baseMo.rotation()
-        //       * pinocchio::getFrameVelocity(robot_model, robot_data, frameId,
-        //                                     pinocchio::LOCAL).angular();
-        //   end_effector_velocity[getLimb(leg)].tail(3) = baseMo.rotation()
-        //       * pinocchio::getFrameVelocity(robot_model, robot_data, frameId,
-        //                                     pinocchio::LOCAL).linear();
-        //   end_effector_acceleration[getLimb(leg)].head(3) = baseMo.rotation()
-        //       * pinocchio::getFrameAcceleration(robot_model, robot_data, frameId,
-        //                                         pinocchio::LOCAL).angular();
-        //   end_effector_acceleration[getLimb(leg)].tail(3) = baseMo.rotation()
-        //       * pinocchio::getFrameAcceleration(robot_model, robot_data, frameId,
-        //                                         pinocchio::LOCAL).linear();
-        // }
     }
 
     pinocchio::FrameIndex GlueCode::getBaseID() const{
@@ -709,7 +673,7 @@ namespace glue_code
                                         robotlib::JointState &nle_joints
                                         )
     {
-              Eigen::VectorXd q = fromRobotlibToPinocchioJointState(robot_pose, joint_position);
+        Eigen::VectorXd q = fromRobotlibToPinocchioJointState(robot_pose, joint_position);
         Eigen::VectorXd qd = fromRobotlibToPinocchioJointVelocity(robot_velocity, joint_velocity);
         pinocchio::nonLinearEffects(robot_model, robot_data, q, qd);
 
