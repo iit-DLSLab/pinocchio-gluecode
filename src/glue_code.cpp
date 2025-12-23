@@ -195,9 +195,10 @@ namespace glue_code
 
         // transform(origin_name.begin(), origin_name.end(), origin_name.begin(), ::tolower);
         // transform(destination_name.begin(), destination_name.end(), destination_name.begin(), ::tolower);
-
-        auto origin_frame_idx = robot_model.getFrameId(origin->getName());
-        auto dest_frame_idx = robot_model.getFrameId(destination->getName());
+        const std::string urdf_origin_name = dls_to_urdf_links_name.at(origin->getName());
+        const std::string urdf_destination_name = dls_to_urdf_links_name.at(destination->getName());
+        auto origin_frame_idx = robot_model.getFrameId(urdf_origin_name);
+        auto dest_frame_idx = robot_model.getFrameId(urdf_destination_name);
         auto oMorigin = robot_data.oMf[origin_frame_idx];
         auto oMdest = robot_data.oMf[dest_frame_idx];
 
@@ -216,8 +217,10 @@ namespace glue_code
         // transform(origin_name.begin(), origin_name.end(), origin_name.begin(), ::tolower);
         // transform(destination_name.begin(), destination_name.end(), destination_name.begin(), ::tolower);
 
-        auto origin_frame_idx = robot_model.getFrameId(origin->getName());
-        auto dest_frame_idx = robot_model.getFrameId(destination->getName());
+        const std::string urdf_origin_name = dls_to_urdf_links_name.at(origin->getName());
+        const std::string urdf_destination_name = dls_to_urdf_links_name.at(destination->getName());
+        auto origin_frame_idx = robot_model.getFrameId(urdf_origin_name);
+        auto dest_frame_idx = robot_model.getFrameId(urdf_destination_name);
         auto oMorigin = robot_data.oMf[origin_frame_idx];
         auto oMdest = robot_data.oMf[dest_frame_idx];
 
@@ -272,7 +275,8 @@ namespace glue_code
         Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(robot_pose, q);
 
         // compute jacobian in world frame
-        const int frame_id = robot_model.getFrameId(frame->getName());
+        const std::string urdf_frame_name = dls_to_urdf_links_name.at(frame->getName());
+        const int frame_id = robot_model.getFrameId(urdf_frame_name);
         Eigen::MatrixXd J = Eigen::MatrixXd::Zero(6, robot_model.nv);
         pinocchio::computeFrameJacobian(robot_model, robot_data, q_pin, frame_id, pinocchio::LOCAL_WORLD_ALIGNED, J);
 
@@ -788,7 +792,8 @@ namespace glue_code
 
     double GlueCode::getLinkMass(const robotlib::LinkPtr link) const
     {
-        const int joint_id = robot_model.frames[robot_model.getFrameId(link->getName())].parentJoint;
+        const std::string urdf_frame_name = dls_to_urdf_links_name.at(link->getName());
+        const int joint_id = robot_model.frames[robot_model.getFrameId(urdf_frame_name)].parentJoint;
         return robot_model.inertias[joint_id].mass();
     }
 
@@ -805,13 +810,15 @@ namespace glue_code
 
     Eigen::Vector3d GlueCode::getLinkCoM(const robotlib::LinkPtr link) const
     {
-        const int joint_id = robot_model.frames[robot_model.getFrameId(link->getName())].parentJoint;
+        const std::string urdf_frame_name = dls_to_urdf_links_name.at(link->getName());
+        const int joint_id = robot_model.frames[robot_model.getFrameId(urdf_frame_name)].parentJoint;
         return robot_model.inertias[joint_id].lever();
     }
 
     Eigen::Matrix3d GlueCode::getLinkInertia(const robotlib::LinkPtr link) const
     {
-        const int joint_id = robot_model.frames[robot_model.getFrameId(link->getName())].parentJoint;
+        const std::string urdf_frame_name = dls_to_urdf_links_name.at(link->getName());
+        const int joint_id = robot_model.frames[robot_model.getFrameId(urdf_frame_name)].parentJoint;
         return robot_model.inertias[joint_id].inertia().matrix();
     }
 
