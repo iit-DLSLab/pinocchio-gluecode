@@ -30,8 +30,8 @@ namespace glue_code
         // get robot name
         std::string robot_name = kinematics_mapping["name"].as<std::string>();
         // get trunk name
-        // std::string trunk_name = kinematics_mapping["trunk"].as<std::string>();
-        const robotlib::DynParams trunk_dyn_params{Eigen::Vector3d::Zero(), 5, Eigen::Matrix3d::Zero()}; //dummy com, mass, inertia
+        robotlib::TrunkPtr trunk = std::make_shared<robotlib::Trunk>(kinematics_mapping["trunk"]["name"].as<std::string>());
+        dls_to_urdf_links_name[trunk->getName()] = kinematics_mapping["trunk"]["urdf"].as<std::string>();
         // get limbs
         std::vector<robotlib::LimbPtr> limbs;
         for (auto const& limb : limbs_definition)
@@ -40,7 +40,7 @@ namespace glue_code
         }
 
         // initialize robot
-        init(robot_name, trunk_dyn_params, limbs);
+        init(robot_name, trunk, limbs);
 
         // dls name to urdf ones
         for (const auto& limb : limbs_definition) {
