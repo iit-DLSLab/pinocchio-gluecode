@@ -1,5 +1,5 @@
-#ifndef _ALIENGOLIB_ALIENGO_HPP_
-#define _ALIENGOLIB_ALIENGO_HPP_
+#ifndef _GLUE_CODE_HPP_
+#define _GLUE_CODE_HPP_
 
 #include <robotlib/robot.hpp>
 #include <robotlib/limb.hpp>
@@ -12,7 +12,7 @@
 using LimbMap  = std::map<std::string,std::vector<std::string>>;
 using LimbList = std::vector<LimbMap>;
 
-namespace aliengolib
+namespace glue_code
 {
     namespace IK{
       enum TASK{
@@ -22,22 +22,22 @@ namespace aliengolib
     }
 
     /*!
-     * @brief Aliengo class.
+     * @brief GlueCode class.
      * @details
-     * This class represents the Aliengo robot with a specific number of limbs, joints and links.
+     * This class represents the GlueCode robot with a specific number of limbs, joints and links.
     */
-    class Aliengo : public robotlib::Robot
+    class GlueCode : public robotlib::Robot
     {
     public:
        /*!
          * @brief Constructor.
           * @param[in] kinematics_mapping YAML node containing the kinematics mapping information.
        */
-        Aliengo(const YAML::Node& kinematics_mapping);
+        GlueCode(const YAML::Node& kinematics_mapping);
  		/*!
          * @brief Destructor.
          */
-        virtual ~Aliengo();
+        virtual ~GlueCode();
         /*!
           * @brief Forward kinematics.
           * @details
@@ -407,20 +407,13 @@ namespace aliengolib
         // variable used to populate a pinocchio variable of size nq. In case of continuous joints, pinocchio adds two elements to the configuration space: cos(theta) and sin(theta). So, when mapping from Robotlib joint ids to Pinocchio ones we need to take into account this extension
         std::vector<std::vector<int>> extended_joint_ids;
         };
-} //namespace aliengolib
+} //namespace glue_code
 
 /*!
 * @brief Factory function to load at run-time the glue code, creating a robot object.
 * @return shared pointer pointing to the RobotBase object.
 */
-extern "C" std::shared_ptr<robotlib::RobotBase> createRobot_t();
-
-/*!
-* @brief Factory function to load at run-time the glue code, with external urdf in input.
-* @param[in] robot_urdf the urdf of the robot in string format.
-* @return shared pointer pointing to the RobotBase object.
-*/
-extern "C" std::shared_ptr<robotlib::RobotBase> createRobotWithUrdf_t(const std::string& robot_urdf);
+extern "C" std::shared_ptr<robotlib::RobotBase> createRobot_t(const std::string& robot_type);
 
 /*!
 * @brief Factory function to destroy the robot object.
@@ -428,4 +421,4 @@ extern "C" std::shared_ptr<robotlib::RobotBase> createRobotWithUrdf_t(const std:
 */
 extern "C" void destroyRobot_t(std::shared_ptr<robotlib::RobotBase> robot);
 
-#endif // _ALIENGOLIB_ALIENGO_HPP_
+#endif // _GLUE_CODE_HPP_

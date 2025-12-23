@@ -1,4 +1,4 @@
-#include "aliengolib/aliengo.hpp"
+#include "glue_code/glue_code.hpp"
 
 #include "robotlib/utils/utils.hpp"
 
@@ -22,9 +22,9 @@
 #include <fstream>
 #include <vector>
 
-namespace aliengolib
+namespace glue_code
 {
-    Aliengo::Aliengo(const YAML::Node& kinematics_mapping) : Robot()
+    GlueCode::GlueCode(const YAML::Node& kinematics_mapping) : Robot()
     {
         auto limbs_definition = loadLimbsDefinition(kinematics_mapping);        
         // get robot name
@@ -110,12 +110,12 @@ namespace aliengolib
         }
     }
 
-    int Aliengo::getJointIdWithoutRoot(const std::string &joint_name) const
+    int GlueCode::getJointIdWithoutRoot(const std::string &joint_name) const
     {
         return robot_model.getJointId(joint_name)-2;//2: the number of joints are universe+root_joint+robot_joints
     }
 
-    LimbList Aliengo::loadLimbsDefinition(const YAML::Node& root)
+    LimbList GlueCode::loadLimbsDefinition(const YAML::Node& root)
     {
         LimbList limbs_definition;
 
@@ -166,9 +166,9 @@ namespace aliengolib
         return limbs_definition;
     }
 
-    Aliengo::~Aliengo(){}
+    GlueCode::~GlueCode(){}
 
-    void Aliengo::setJointLimitsFromUrdf()
+    void GlueCode::setJointLimitsFromUrdf()
     {
         for(auto& joint : this->joints_){
                 // **Transform robotlib joint name to urdf one**
@@ -184,17 +184,17 @@ namespace aliengolib
             }
     }
 
-    int Aliengo::getJointIdForNq(const std::string &joint_name) const
+    int GlueCode::getJointIdForNq(const std::string &joint_name) const
     {
         return robot_model.getJointId(joint_name)+5;//5: in any variable of dimension nq, with a model having a JointModelFreeFlyer as root_joint, the first 7 values corresponds to the floating base joint (pos,quaternion). But the number of joints are universe+root_joint+robot_joints. So the index of the first robot joint is 2, which corresponds to 7 in any variable of dimension nq. So we use the joint_id offset=5.
     }
 
-    int Aliengo::getJointIdForNv(const std::string &joint_name) const
+    int GlueCode::getJointIdForNv(const std::string &joint_name) const
     {
         return robot_model.getJointId(joint_name)+4;//4: in any variable of dimension nv, with a model having a JointModelFreeFlyer as root_joint, the first 6 values corresponds to the floating base joint (lin. vel.,ang. vel.). But the number of joints are universe+root_joint+robot_joints. So the index of the first robot joint is 2, which corresponds to 6 in any variable of dimension nq. So we use the joint_id offset=4.
     }
 
-    Eigen::Vector3d Aliengo::computeFramePosition(  const robotlib::JointState &q,
+    Eigen::Vector3d GlueCode::computeFramePosition(  const robotlib::JointState &q,
                                                 const robotlib::FramePtr origin,
                                                 const robotlib::FramePtr destination)
     {
@@ -214,7 +214,7 @@ namespace aliengolib
         return (oMdest.inverse() * oMorigin).translation();
     }
 
-    Eigen::Matrix3d Aliengo::computeFrameOrientation( const robotlib::JointState &q,
+    Eigen::Matrix3d GlueCode::computeFrameOrientation( const robotlib::JointState &q,
                                                 const robotlib::FramePtr origin,
                                                 const robotlib::FramePtr destination)
     {
@@ -234,7 +234,7 @@ namespace aliengolib
         return (oMdest.inverse() * oMorigin).rotation();
     }
 
-    Eigen::Matrix4d Aliengo::computeFramePose(const robotlib::JointState &q,
+    Eigen::Matrix4d GlueCode::computeFramePose(const robotlib::JointState &q,
                                             const robotlib::FramePtr origin,
                                             const robotlib::FramePtr destination)
     {
@@ -248,13 +248,13 @@ namespace aliengolib
         return frame_pose;
     }
 
-    void Aliengo::computeLimbsJacobian(const robotlib::JointState &q,
+    void GlueCode::computeLimbsJacobian(const robotlib::JointState &q,
                                         const robotlib::FramePtr frame,
                                         Eigen::MatrixXd &jacobian){
         computeLimbsJacobian(q, frame->getName(), jacobian);
     }
 
-    void Aliengo::computeLimbsJacobian(const robotlib::JointState &q,
+    void GlueCode::computeLimbsJacobian(const robotlib::JointState &q,
                                         const std::string& frame_name,
                                         Eigen::MatrixXd &jacobian){
         // map robotlib to pinocchio
@@ -274,7 +274,7 @@ namespace aliengolib
         jacobian = reorderLimbsJacobian(jacobian);
     }
 
-    void Aliengo::computeWholeBodyJacobian(const Eigen::Matrix<double, 7, 1> &robot_pose,
+    void GlueCode::computeWholeBodyJacobian(const Eigen::Matrix<double, 7, 1> &robot_pose,
                                             const robotlib::JointState &q,
                                             const robotlib::FramePtr frame,
                                             Eigen::MatrixXd &jacobian){
@@ -296,14 +296,14 @@ namespace aliengolib
     }
 
 
-    Eigen::VectorXd Aliengo::fromRobotlibToPinocchioJointState(const robotlib::JointState &joint_position){
+    Eigen::VectorXd GlueCode::fromRobotlibToPinocchioJointState(const robotlib::JointState &joint_position){
         Eigen::VectorXd q = pinocchio::neutral(robot_model);
         auto pos = reorderJoints(joint_position);
         setExtendedJointState(pos, q);
         return q;
     }
 
-    Eigen::VectorXd Aliengo::fromRobotlibToPinocchioJointState(const Eigen::Matrix<double, 7, 1> &robot_pose, const robotlib::JointState &joint_position){
+    Eigen::VectorXd GlueCode::fromRobotlibToPinocchioJointState(const Eigen::Matrix<double, 7, 1> &robot_pose, const robotlib::JointState &joint_position){
         Eigen::VectorXd q = pinocchio::neutral(robot_model);
         auto pos = reorderJoints(joint_position);
         setExtendedJointState(pos, q);
@@ -311,20 +311,20 @@ namespace aliengolib
         return q;
     }
 
-    Eigen::VectorXd Aliengo::fromRobotlibToPinocchioJointVelocity(const robotlib::JointState &joint_velocity){
+    Eigen::VectorXd GlueCode::fromRobotlibToPinocchioJointVelocity(const robotlib::JointState &joint_velocity){
         Eigen::VectorXd qd = Eigen::VectorXd::Zero(robot_model.nv);
         qd.tail(this->getNJOINTS()) = reorderJoints(joint_velocity);
         return qd;
     }
 
-    Eigen::VectorXd Aliengo::fromRobotlibToPinocchioJointVelocity(const Eigen::Matrix<double, 6, 1> &robot_velocity, const robotlib::JointState &joint_velocity){
+    Eigen::VectorXd GlueCode::fromRobotlibToPinocchioJointVelocity(const Eigen::Matrix<double, 6, 1> &robot_velocity, const robotlib::JointState &joint_velocity){
         Eigen::VectorXd qd = Eigen::VectorXd::Zero(robot_model.nv);
         qd.tail(this->getNJOINTS()) = reorderJoints(joint_velocity);
         qd.head(6) = robot_velocity;
         return qd;
     }
 
-    void Aliengo::fromPinocchioToRobotlibJointState(const Eigen::VectorXd &q,
+    void GlueCode::fromPinocchioToRobotlibJointState(const Eigen::VectorXd &q,
                                                 robotlib::JointState &joint_position)
     {
         for(int i=0;i<this->getNJOINTS();i++){
@@ -342,7 +342,7 @@ namespace aliengolib
         joint_position = reorderJoints(joint_position);
     }
 
-    void Aliengo::setExtendedJointState(const robotlib::JointState &joint_position,
+    void GlueCode::setExtendedJointState(const robotlib::JointState &joint_position,
                                                 Eigen::VectorXd &q)
     {
         for(int i=0;i<this->getNJOINTS();i++){
@@ -359,7 +359,7 @@ namespace aliengolib
         }
     }
 
-    void Aliengo::forwardKinematics(const robotlib::JointState &joint_position,
+    void GlueCode::forwardKinematics(const robotlib::JointState &joint_position,
                                     robotlib::LimbDataMap<Eigen::Vector3d> &end_effector_position)
     {
         Eigen::VectorXd q = fromRobotlibToPinocchioJointState(joint_position);
@@ -381,7 +381,7 @@ namespace aliengolib
         // end_effector_position[this->getLimb("RH")] = (baseMo*robot_data.oMf[robot_model.getFrameId("rh_foot")]).translation();
     }
 
-    void Aliengo::forwardKinematics(const robotlib::JointState &joint_position,
+    void GlueCode::forwardKinematics(const robotlib::JointState &joint_position,
                                     const robotlib::JointState &joint_velocity,
                                     robotlib::LimbDataMap<Eigen::Vector3d> &end_effector_position,
                                     robotlib::LimbDataMap<Eigen::Vector3d> &end_effector_velocity)
@@ -414,7 +414,7 @@ namespace aliengolib
         // end_effector_velocity[this->getLimb("RH")] = baseMo.rotation()*pinocchio::getFrameVelocity(robot_model, robot_data, robot_model.getFrameId("rh_foot"), pinocchio::LOCAL_WORLD_ALIGNED).linear();
     }
 
-    void Aliengo::forwardKinematics(const robotlib::JointState &joint_position,
+    void GlueCode::forwardKinematics(const robotlib::JointState &joint_position,
                                     const robotlib::JointState &joint_velocity,
                                     const robotlib::JointState &joint_acceleration,
                                     robotlib::LimbDataMap<Eigen::Vector3d> &end_effector_position,
@@ -475,11 +475,11 @@ namespace aliengolib
         // }
     }
 
-    pinocchio::FrameIndex Aliengo::getBaseID() const{
+    pinocchio::FrameIndex GlueCode::getBaseID() const{
         return robot_model.getFrameId(robot_model.frames[2].name);
     }
 
-    Eigen::VectorXd Aliengo::clik(const std::string &frame_name,
+    Eigen::VectorXd GlueCode::clik(const std::string &frame_name,
                         const Eigen::VectorXd &q_init_guess,
                         const pinocchio::SE3 &oMdes,
                         const IK::TASK task_type)
@@ -579,7 +579,7 @@ namespace aliengolib
 		}
     }
 
-    void Aliengo::fixedBaseInverseKinematics(
+    void GlueCode::fixedBaseInverseKinematics(
         const std::string &frame_name,
         const robotlib::JointState &q_init_guess,
         const Eigen::Vector3d &position_des,
@@ -598,7 +598,7 @@ namespace aliengolib
         fromPinocchioToRobotlibJointState(q_pin_des, q_des);
     }
 
-    void Aliengo::fixedBaseInverseKinematics(
+    void GlueCode::fixedBaseInverseKinematics(
         const robotlib::JointState &q_init_guess,
         const robotlib::LimbDataMap<Eigen::Vector3d> &positions_des,
         robotlib::JointState &q_des)
@@ -615,7 +615,7 @@ namespace aliengolib
         }
     }
 
-    void Aliengo::fixedBaseInverseDiffKinematics(const std::string &frame_name,
+    void GlueCode::fixedBaseInverseDiffKinematics(const std::string &frame_name,
                                         const robotlib::JointState &q,
                                         const Eigen::Vector3d &velocity_des,
                                         robotlib::JointState &qd_des)
@@ -640,7 +640,7 @@ namespace aliengolib
         qd_des = reorderJoints(qd_des_pin.tail(this->getNJOINTS()));
     }
 
-    void Aliengo::fixedBaseInverseDiffKinematics(const robotlib::JointState &q,
+    void GlueCode::fixedBaseInverseDiffKinematics(const robotlib::JointState &q,
                                         const robotlib::LimbDataMap<Eigen::Vector3d> &velocities_des,
                                         robotlib::JointState &qd_des)
     {
@@ -656,7 +656,7 @@ namespace aliengolib
         }
     }
 
-    void Aliengo::inverseDynamics(const Eigen::Matrix<double, 7, 1> &robot_pose,    // robot base
+    void GlueCode::inverseDynamics(const Eigen::Matrix<double, 7, 1> &robot_pose,    // robot base
                                 const Eigen::Matrix<double, 6, 1> &robot_velocity,    // robot base
                                 const Eigen::Matrix<double, 6, 1> &robot_acceleration,  // robot base
                                 const robotlib::JointState &joint_position,
@@ -686,7 +686,7 @@ namespace aliengolib
     }
 
 
-    void Aliengo::computeGravityTerm(  const Eigen::Matrix<double, 7, 1> &robot_pose,
+    void GlueCode::computeGravityTerm(  const Eigen::Matrix<double, 7, 1> &robot_pose,
                                           const robotlib::JointState &joint_position,
                                           Eigen::Matrix<double, 6, 1> &g_base,
                                           robotlib::JointState &g_joints)
@@ -699,7 +699,7 @@ namespace aliengolib
 		g_joints = reorderJoints(robot_data.g.tail(this->getNJOINTS()));
     }
 
-    void Aliengo::computeGravityTerm(  const Eigen::Matrix<double, 7, 1> &robot_pose,
+    void GlueCode::computeGravityTerm(  const Eigen::Matrix<double, 7, 1> &robot_pose,
                                           const robotlib::JointState &joint_position,
                                           robotlib::JointState &g_joints)
     {
@@ -707,7 +707,7 @@ namespace aliengolib
         computeGravityTerm(robot_pose, joint_position, g_base, g_joints);
     }
 
-    void Aliengo::computeNonLinearEffects( const Eigen::Matrix<double, 7, 1> &robot_pose,
+    void GlueCode::computeNonLinearEffects( const Eigen::Matrix<double, 7, 1> &robot_pose,
                                         const Eigen::Matrix<double, 6, 1> &robot_velocity,
                                         const robotlib::JointState &joint_position,
                                         const robotlib::JointState &joint_velocity,
@@ -723,7 +723,7 @@ namespace aliengolib
 		nle_joints = reorderJoints(robot_data.nle.tail(this->getNJOINTS()));
     }
 
-    void Aliengo::computeNonLinearEffects( const Eigen::Matrix<double, 7, 1> &robot_pose,
+    void GlueCode::computeNonLinearEffects( const Eigen::Matrix<double, 7, 1> &robot_pose,
                                         const robotlib::JointState &joint_position,
                                         const robotlib::JointState &joint_velocity,
                                         robotlib::JointState &nle_joints)
@@ -732,7 +732,7 @@ namespace aliengolib
         computeNonLinearEffects(robot_pose, Eigen::Matrix<double,6,1>::Zero(), joint_position, joint_velocity, nle_base, nle_joints);
     }
 
-    void Aliengo::computeJSInertiaMatrix( // TODO
+    void GlueCode::computeJSInertiaMatrix( // TODO
         const Eigen::Matrix<double, 7, 1> &robot_pose,
         const robotlib::JointState &joint_position,
         Eigen::MatrixXd &jsInertia)
@@ -774,7 +774,7 @@ namespace aliengolib
       }
     }
 
-    Eigen::Matrix4d Aliengo::getImuBaseOffset(const std::string& imu_link_name, const std::string& base_link_name) const
+    Eigen::Matrix4d GlueCode::getImuBaseOffset(const std::string& imu_link_name, const std::string& base_link_name) const
     {
         Eigen::Matrix4d imu_pose {Eigen::Matrix4d::Zero()};
         imu_pose(3,3) = 1; //homogeneous definition
@@ -796,36 +796,36 @@ namespace aliengolib
         return imu_pose;
     }
 
-    double Aliengo::getLinkMass(const robotlib::LinkPtr link) const
+    double GlueCode::getLinkMass(const robotlib::LinkPtr link) const
     {
         const int joint_id = robot_model.frames[robot_model.getFrameId(link->getName())].parentJoint;
         return robot_model.inertias[joint_id].mass();
     }
 
-    double Aliengo::getRobotMass() const
+    double GlueCode::getRobotMass() const
     {
         return pinocchio::computeTotalMass(robot_model);
     }
 
-    Eigen::Vector3d Aliengo::computeWholeBodyCoM(const robotlib::JointState& q) {
+    Eigen::Vector3d GlueCode::computeWholeBodyCoM(const robotlib::JointState& q) {
         // set the robot base pose to pos=0, ori=0 --> centerOfMass gives the CoM in the base frame
         Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(q);
         return pinocchio::centerOfMass(robot_model, robot_data, q_pin, false);//false: do not compute com of subtrees
     }
 
-    Eigen::Vector3d Aliengo::getLinkCoM(const robotlib::LinkPtr link) const
+    Eigen::Vector3d GlueCode::getLinkCoM(const robotlib::LinkPtr link) const
     {
         const int joint_id = robot_model.frames[robot_model.getFrameId(link->getName())].parentJoint;
         return robot_model.inertias[joint_id].lever();
     }
 
-    Eigen::Matrix3d Aliengo::getLinkInertia(const robotlib::LinkPtr link) const
+    Eigen::Matrix3d GlueCode::getLinkInertia(const robotlib::LinkPtr link) const
     {
         const int joint_id = robot_model.frames[robot_model.getFrameId(link->getName())].parentJoint;
         return robot_model.inertias[joint_id].inertia().matrix();
     }
 
-    Eigen::VectorXd Aliengo::reorderJoints(const Eigen::VectorXd& data) const{
+    Eigen::VectorXd GlueCode::reorderJoints(const Eigen::VectorXd& data) const{
         Eigen::VectorXd new_data = data;
         for(auto &[key, value] : idx_map)
         {
@@ -835,7 +835,7 @@ namespace aliengolib
         return new_data;
     }
 
-    Eigen::MatrixXd Aliengo::reorderLimbsJacobian(const Eigen::MatrixXd& jacobian) const{
+    Eigen::MatrixXd GlueCode::reorderLimbsJacobian(const Eigen::MatrixXd& jacobian) const{
         Eigen::MatrixXd new_jac = jacobian;
         for(auto &[key, value] : idx_map)
         {
@@ -845,7 +845,7 @@ namespace aliengolib
         return new_jac;
     }
 
-    Eigen::MatrixXd Aliengo::reorderWholeBodyJacobian(const Eigen::MatrixXd& jacobian) const{
+    Eigen::MatrixXd GlueCode::reorderWholeBodyJacobian(const Eigen::MatrixXd& jacobian) const{
         Eigen::MatrixXd new_jac = jacobian;
         for(auto &[key, value] : idx_map)
         {
@@ -855,36 +855,13 @@ namespace aliengolib
         return new_jac;
     }
 
-    extern "C" std::shared_ptr<robotlib::RobotBase> createRobotWithUrdf_t(const std::string& robot_urdf)
-    {        
-        return std::make_shared<Aliengo>(YAML::LoadFile("/usr/include/aliengo_description/kinematics/kinematics.yaml"));
-    }
-
-
-    extern "C" std::shared_ptr<robotlib::RobotBase> createRobot_t()
+    extern "C" std::shared_ptr<robotlib::RobotBase> createRobot_t(const std::string& robot_type)
     {
-        std::string urdf_path("/usr/include/aliengo_description/urdfs/aliengo.urdf");
-
-        if (!std::filesystem::exists(urdf_path))
-        {
-            const std::string error{urdf_path + " not found"};
-            throw error;
-        }
-
-        std::ifstream myfile{urdf_path};
-        std::stringstream ss;
-        ss << myfile.rdbuf();
-        std::string robot_description{ss.str()};
-
-        return createRobotWithUrdf_t(robot_description);
-    }
-
-    extern "C" void destroyRobotWithUrdf_t(std::shared_ptr<robotlib::RobotBase> robot)
-    {
+        return std::make_shared<GlueCode>(YAML::LoadFile("/usr/include/"+robot_type+"_description/kinematics/kinematics.yaml"));
     }
 
     extern "C" void destroyRobot_t(std::shared_ptr<robotlib::RobotBase>)
     {
     }
 
-} // namespace aliengolib
+} // namespace glue_code

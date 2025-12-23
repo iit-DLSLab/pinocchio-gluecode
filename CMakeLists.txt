@@ -1,6 +1,6 @@
 # Project configuration
 cmake_minimum_required(VERSION 3.15)
-project(aliengo_lib)
+project(glue_code)
 
 add_compile_options("-std=c++2a")
 set(CMAKE_BUILD_TYPE Release)
@@ -35,7 +35,7 @@ string(JOIN "." PROJECT_VERSION
 	${PROJECT_VERSION_PATCH}
 )
 unset(VERSION_ARRAY) # delete aray of version strings
-message(STATUS "ALIENGO COMMONS PROJECT VERSION ${PROJECT_VERSION}")
+message(STATUS "GLUE_CODE COMMONS PROJECT VERSION ${PROJECT_VERSION}")
 
 # ==============================================================================
 # Setup the repository
@@ -57,8 +57,7 @@ find_package(pinocchio REQUIRED)
 
 add_library(${PROJECT_NAME}
     SHARED
-        src/aliengo.cpp
-        # src/aliengo_leg.cpp
+        src/glue_code.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -86,19 +85,19 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 # set the output name of the library
-set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "aliengo")
+set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "glue_code")
 
 # ================================== Install =================================
 install(
     DIRECTORY   include
     DESTINATION ${DLS_INSTALL_MODEL_HEADER_DIR}
-    COMPONENT   aliengo_lib_dev
+    COMPONENT   glue_code_dev
 )
 
 install(
     TARGETS     ${PROJECT_NAME}
     DESTINATION ${DLS_INSTALL_MODEL_DIR}
-    COMPONENT   aliengo_lib
+    COMPONENT   glue_code
 )
 
 add_subdirectory(tests)
@@ -116,13 +115,13 @@ set(CPACK_GENERATOR                          "DEB")
 set(CPACK_DEB_COMPONENT_INSTALL              ON)
 set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS           ON)
 
-set(CPACK_DEBIAN_ALIENGO_LIB_PACKAGE_NAME            "dls-aliengo-lib" CACHE INTERNAL "")
-set(CPACK_DEBIAN_ALIENGO_LIB_FILE_NAME               "dls-aliengo-lib-${PROJECT_VERSION}.deb" CACHE INTERNAL "")  
-set(CPACK_DEBIAN_ALIENGO_LIB_PACKAGE_DEPENDS         "dls-robotlib, dls-aliengo-description" CACHE INTERNAL "")
+set(CPACK_DEBIAN_GLUE_CODE_PACKAGE_NAME            "dls-glue_code-lib" CACHE INTERNAL "")
+set(CPACK_DEBIAN_GLUE_CODE_FILE_NAME               "dls-glue_code-lib-${PROJECT_VERSION}.deb" CACHE INTERNAL "")  
+set(CPACK_DEBIAN_GLUE_CODE_PACKAGE_DEPENDS         "dls-robotlib, dls-glue_code-description" CACHE INTERNAL "")
 
-set(CPACK_DEBIAN_ALIENGO_LIB_DEV_PACKAGE_NAME        "dls-aliengo-lib-dev" CACHE INTERNAL "")
-set(CPACK_DEBIAN_ALIENGO_LIB_DEV_FILE_NAME           "dls-aliengo-lib-dev-${PROJECT_VERSION}.deb" CACHE INTERNAL "")  
-set(CPACK_DEBIAN_ALIENGO_LIB_DEV_PACKAGE_DEPENDS     "dls-aliengo-lib, dls-robotlib-dev" CACHE INTERNAL "")
+set(CPACK_DEBIAN_GLUE_CODE_DEV_PACKAGE_NAME        "dls-glue_code-lib-dev" CACHE INTERNAL "")
+set(CPACK_DEBIAN_GLUE_CODE_DEV_FILE_NAME           "dls-glue_code-lib-dev-${PROJECT_VERSION}.deb" CACHE INTERNAL "")  
+set(CPACK_DEBIAN_GLUE_CODE_DEV_PACKAGE_DEPENDS     "dls-glue_code-lib, dls-robotlib-dev" CACHE INTERNAL "")
 
 get_cmake_property(CPACK_COMPONENTS_ALL COMPONENTS)
 list(REMOVE_ITEM CPACK_COMPONENTS_ALL "Unspecified")
