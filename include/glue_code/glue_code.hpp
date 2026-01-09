@@ -379,32 +379,28 @@ namespace glue_code
 
         LimbList loadLimbsDefinition(const YAML::Node& root);
 
-        // Pinocchio order the joints following an alphanumeric order, so we need to map our order to the pinocchio one and viceversa
-        // our convention: lf rf lh rh
-        // pinocchio one: lf lh rf rh
-        // dls idx, pinocchio idx
-        std::map<int,int> idx_map;
-
-        Eigen::VectorXd reorderJoints(const Eigen::VectorXd& data) const;
-        Eigen::MatrixXd reorderLimbsJacobian(const Eigen::MatrixXd& jacobian) const;
-        Eigen::MatrixXd reorderWholeBodyJacobian(const Eigen::MatrixXd& jacobian) const;
-
-        Eigen::VectorXd fromRobotlibToPinocchioJointState(const robotlib::JointState &joint_position);
-        Eigen::VectorXd fromRobotlibToPinocchioJointState(const Eigen::Matrix<double, 7, 1> &robot_pose, const robotlib::JointState &joint_position);
-        Eigen::VectorXd fromRobotlibToPinocchioJointVelocity(const robotlib::JointState &joint_velocity);
-        Eigen::VectorXd fromRobotlibToPinocchioJointVelocity(const Eigen::Matrix<double, 6, 1> &robot_velocity, const robotlib::JointState &joint_velocity);
-        void fromPinocchioToRobotlibJointState(const Eigen::VectorXd &q_pin,
-                                                robotlib::JointState &joint_position);
-        /*
-        * @brief Set the extended joint state used by pinocchio from the robotlib joint state, which takes into account continuous joints.
-        */
-        void setExtendedJointState(const robotlib::JointState &joint_position,
-                                        Eigen::VectorXd &q);
-        // dls to urdf name
+        Eigen::MatrixXd fromPinocchioToRobotlibLimbsJacobian(const Eigen::MatrixXd& jacobian) const;
+        Eigen::MatrixXd fromPinocchioToRobotlibWholeBodyJacobian(const Eigen::MatrixXd& jacobian) const;
+        Eigen::VectorXd fromRobotlibToPinocchioNqData(const robotlib::JointState &joint_position_type);
+        Eigen::VectorXd fromRobotlibToPinocchioNqData(const Eigen::Matrix<double, 7, 1> &robot_pose, const robotlib::JointState &joint_position_type);
+        Eigen::VectorXd fromRobotlibToPinocchioNvData(const robotlib::JointState &joint_velocity_type);
+        Eigen::VectorXd fromRobotlibToPinocchioNvData(const Eigen::Matrix<double, 6, 1> &robot_velocity, const robotlib::JointState &joint_velocity_type);
+        
+        void fromPinocchioNqDataToRobotlib(const Eigen::VectorXd &q_pin,
+                                                robotlib::JointState &joint_position_type);
+        void fromPinocchioNvDataToRobotlib(const Eigen::VectorXd &qd,
+                                                robotlib::JointState &joint_velocity_type);
+        void checkJointNames() const;
+        void checkLinkNames() const;
+        
+                                                // dls to urdf name
         std::map<std::string, std::string> dls_to_urdf_joints_name;
         std::map<std::string, std::string> dls_to_urdf_links_name;
         // variable used to populate a pinocchio variable of size nq. In case of continuous joints, pinocchio adds two elements to the configuration space: cos(theta) and sin(theta). So, when mapping from Robotlib joint ids to Pinocchio ones we need to take into account this extension
-        std::vector<std::vector<int>> extended_joint_ids;
+        // mapping from 
+        std::map<int,std::vector<int>> robotlib_to_pin_joint_position_ids;
+        // variable used to populate a pinocchio variable of size nv. In case of continuous joints, pinocchio does not add extra elements to the velocity space
+        std::map <int,int> robotlib_to_pin_joint_velocity_ids;
         };
 } //namespace glue_code
 
