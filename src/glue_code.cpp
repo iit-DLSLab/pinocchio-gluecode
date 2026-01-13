@@ -283,12 +283,7 @@ namespace glue_code
         const int frame_id = robot_model.getFrameId(urdf_frame_name);
         Eigen::MatrixXd J = Eigen::MatrixXd::Zero(6, robot_model.nv);
         pinocchio::computeFrameJacobian(robot_model, robot_data, q_pin, frame_id, pinocchio::LOCAL_WORLD_ALIGNED, J);
-
-        // set output
-        const int jacobian_cols = robot_model.nv-6; // -6 because we are not considering the floating base joint
-        jacobian = J.block(0,6,6, jacobian_cols); //6 because it is a geometric jacobian (lin, ang)
-
-        jacobian = fromPinocchioToRobotlibLimbsJacobian(jacobian);
+        jacobian = fromPinocchioToRobotlibLimbsJacobian(J);
     }
 
     void GlueCode::computeWholeBodyJacobian(const Eigen::Matrix<double, 7, 1> &robot_pose,
@@ -306,11 +301,7 @@ namespace glue_code
 
         // compute jacobian in base frame
         Eigen::Matrix3d b_R_w = robotlib::utils::quatToRotMat(Eigen::Quaterniond(q_pin.block<4,1>(3,0))); // orientation of the world frame expressed in base frame
-        jacobian.resize(6, robot_model.nv);
-        jacobian.block(0,0,3, robot_model.nv) = b_R_w * J.block(0,0,3, robot_model.nv);
-        jacobian.block(3,0,3, robot_model.nv) = b_R_w * J.block(3,0,3, robot_model.nv);
-
-        jacobian = fromPinocchioToRobotlibWholeBodyJacobian(jacobian);
+        jacobian = fromPinocchioToRobotlibWholeBodyJacobian(J);
     }
 
 
@@ -812,18 +803,18 @@ namespace glue_code
         return robot_model.inertias[joint_id].inertia().matrix();
     }
 
-    Eigen::MatrixXd GlueCode::fromPinocchioToRobotlibLimbsJacobian(const Eigen::MatrixXd& jacobian) const{
-        Eigen::MatrixXd new_jac = jacobian;
+    Eigen::MatrixXd GlueCode::fromPinocchioToRobotlibLimbsJacobian(const Eigen::MatrixXd& jacobian_pin) const{
+        Eigen::MatrixXd new_jac = Eigen::MatrixXd::Zero(6, this->getNJOINTS());
         for(int i=0;i<this->getNJOINTS();i++){
             int pinocchio_index = robotlib_to_pin_joint_velocity_ids.at(i);
-            new_jac.block<6,1>(0,i) = jacobian.block<6,1>(0,pinocchio_index); // 6 because we are not considering the floating base joint
+            new_jac.block<6,1>(0,i) = jacobian_pin.block<6,1>(0,pinocchio_index);
         }
         return new_jac;
     }
 
-    Eigen::MatrixXd GlueCode::fromPinocchioToRobotlibWholeBodyJacobian(const Eigen::MatrixXd& jacobian) const{
-        Eigen::MatrixXd new_jac = jacobian;
-        new_jac.block(0,6,6, this->getNJOINTS()) = fromPinocchioToRobotlibLimbsJacobian(jacobian.block(0,6,6, this->getNJOINTS()));        
+    Eigen::MatrixXd GlueCode::fromPinocchioToRobotlibWholeBodyJacobian(const Eigen::MatrixXd& jacobian_pin) const{
+        Eigen::MatrixXd new_jac = jacobian_pin;
+        new_jac.block(0,6,6, this->getNJOINTS()) = fromPinocchioToRobotlibLimbsJacobian(jacobian_pin);        
         return new_jac;
     }
 
