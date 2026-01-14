@@ -274,13 +274,11 @@ namespace glue_code
                                         Eigen::MatrixXd &jacobian) override;
         /*!
         * @brief Get the geometric jacobian of the frame expressed in base frame. The order is linear_jacobian, angular_jacobian. For a jacobian considering only the joints, see getLimbsJacobian.
-        * @param[in] robot_pose pose of the robot base in world frame.
         * @param[in] q angles of the joints.
         * @param[in] frame frame used to compute the jacobian.
         * @param[out] jacobian jacobian to be filled.
         */
-        virtual void computeWholeBodyJacobian(  const Eigen::Matrix<double, 7, 1> &robot_pose,
-                                        const robotlib::JointState &q,
+        virtual void computeWholeBodyJacobian(const robotlib::JointState &q,
                                         const robotlib::FramePtr frame,
                                         Eigen::MatrixXd &jacobian) override;
 
@@ -378,11 +376,6 @@ namespace glue_code
         int getJointIdWithoutRoot(const std::string &joint_name) const;
 
         LimbList loadLimbsDefinition(const YAML::Node& root);
-
-        // Pinocchio order the joints following an alphanumeric order, so we need to map our order to the pinocchio one and viceversa
-        // our convention: lf rf lh rh
-        // pinocchio one: lf lh rf rh
-        // dls idx, pinocchio idx
 
         // dls to urdf name
         std::map<std::string, std::string> dls_to_urdf_joints_name;

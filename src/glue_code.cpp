@@ -80,7 +80,6 @@ namespace glue_code
 
         setJointLimitsFromUrdf();
 
-         // Detect continuous joints. The mapping is as follows:
         // for each joint in robotlib order, store the corresponding pinocchio indices in a vector. Two types of indices are stored:
         // - the ones to be used to populate a pinocchio variable of size nq: robotlib_to_pin_joint_position_ids
         // - the one to be used to populate a pinocchio variable of size nv: robotlib_to_pin_joint_velocity_ids
@@ -100,7 +99,7 @@ namespace glue_code
             robotlib_to_pin_joint_velocity_ids[joint->id] = getJointIdForNv(urdf_joint_name);
         }
     }
-
+    
     int GlueCode::getJointIdWithoutRoot(const std::string &joint_name) const
     {
         return robot_model.getJointId(joint_name)-2;//2: the number of joints are universe+root_joint+robot_joints
@@ -252,7 +251,7 @@ namespace glue_code
         // map robotlib to pinocchio
         Eigen::VectorXd q_pin = fromRobotlibToPinocchioNqData(q);
 
-        // compute jacobian in base frame: since we are setting the robot pose to Identity (using fromRobotlibToPinocchioJointState(q)) the jacobian computed in LOCAL_WORLD_ALIGNED is the jacobian in the base frame
+        // compute jacobian in base frame: since we are setting the robot pose to Identity (using fromRobotlibToPinocchioNqData) the jacobian computed in LOCAL_WORLD_ALIGNED is the jacobian in the base frame
         
         const std::string urdf_frame_name = dls_to_urdf_links_name.at(frame_name);
         const int frame_id = robot_model.getFrameId(urdf_frame_name);
@@ -263,8 +262,7 @@ namespace glue_code
         jacobian = fromPinocchioToRobotlibLimbsJacobian(J);
     }
 
-    void GlueCode::computeWholeBodyJacobian(const Eigen::Matrix<double, 7, 1> &robot_pose,
-                                            const robotlib::JointState &q,
+    void GlueCode::computeWholeBodyJacobian(const robotlib::JointState &q,
                                             const robotlib::FramePtr frame,
                                             Eigen::MatrixXd &jacobian){
         // map robotlib to pinocchio
@@ -278,8 +276,6 @@ namespace glue_code
 
         // compute jacobian in base frame
         Eigen::Matrix3d b_R_w = robotlib::utils::quatToRotMat(Eigen::Quaterniond(q_pin.block<4,1>(3,0))); // orientation of the world frame expressed in base frame
-        J.block(0,0,3, robot_model.nv) = b_R_w * J.block(0,0,3, robot_model.nv);
-        J.block(3,0,3, robot_model.nv) = b_R_w * J.block(3,0,3, robot_model.nv);
         jacobian = fromPinocchioToRobotlibWholeBodyJacobian(J);
     }
 

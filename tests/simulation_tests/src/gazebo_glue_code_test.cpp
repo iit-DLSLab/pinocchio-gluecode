@@ -514,7 +514,7 @@ namespace dls
 
 	// -- method 2: using whole body jacobian
 	Eigen::MatrixXd J = Eigen::MatrixXd::Zero(6, robot_model.nv);
-	pRobot->computeWholeBodyJacobian(q.head(7), *joints_positions, frame, J);
+	pRobot->computeWholeBodyJacobian(*joints_positions, frame, J);
 	J.block<6,6>(0,0).setZero();
 	auto qd_ordered = qd;
 	qd_ordered.tail(pRobot->getNJOINTS()) = reorderJoints(qd.tail(pRobot->getNJOINTS()));
