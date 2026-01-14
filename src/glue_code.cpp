@@ -66,7 +66,9 @@ namespace glue_code
         const std::string urdf_name = kinematics_mapping["urdf_path"].as<std::string>();
         pinocchio::urdf::buildModel(urdf_name, pinocchio::JointModelFreeFlyer(), robot_model);
         robot_data = pinocchio::Data(robot_model);
-
+        // check if urdf names in the configuration correspond to existing joints/links in the robot
+        checkJointNames();
+        checkLinkNames();
         // from order of joints defined in the yaml, extract the mapping between this order and the pinocchio one
         // dls_joint_order (urdf names)
         std::vector<std::string> dls_joint_order;
@@ -75,30 +77,27 @@ namespace glue_code
                 dls_joint_order.push_back(joint_name);
             }
         }
-        // find the mapping between the dls and pinocchio order using urdf names
-        std::vector<std::string> pinocchio_joint_order;
-        for (int i=0; i< dls_joint_order.size();i++) {
-            int pinocchio_idx = getJointIdWithoutRoot(dls_joint_order[i]);
-            idx_map[i] = pinocchio_idx;
-        }
 
         setJointLimitsFromUrdf();
 
-        // Detect continuous joints
-        extended_joint_ids.resize(this->getNJOINTS());
+         // Detect continuous joints. The mapping is as follows:
+        // for each joint in robotlib order, store the corresponding pinocchio indices in a vector. Two types of indices are stored:
+        // - the ones to be used to populate a pinocchio variable of size nq: robotlib_to_pin_joint_position_ids
+        // - the one to be used to populate a pinocchio variable of size nv: robotlib_to_pin_joint_velocity_ids
         int count_continuous_joints=0;
-        for(int i=0; i< this->getNJOINTS(); i++){
-            std::string urdf_joint_name = dls_to_urdf_joints_name[this->joints_[i]->getName()];
+        for(auto joint: this->joints_){
+            std::string urdf_joint_name = dls_to_urdf_joints_name[joint->getName()];
             const auto& joint_model = robot_model.joints[robot_model.getJointId(urdf_joint_name)];
             int joint_id = getJointIdForNq(urdf_joint_name)+count_continuous_joints;
             bool is_continuous = (joint_model.nq() == 2 && joint_model.nv() == 1);
             if(is_continuous){
                 // in case of continuous joints, pinocchio adds two elements to the configuration space: cos(theta) and sin(theta)
-                extended_joint_ids[i] = {joint_id, joint_id+1};
+                robotlib_to_pin_joint_position_ids[joint->id] = {joint_id, joint_id+1};
                 count_continuous_joints+=1;
             }else{
-                extended_joint_ids[i] = {joint_id};
+                robotlib_to_pin_joint_position_ids[joint->id] = {joint_id};
             }
+            robotlib_to_pin_joint_velocity_ids[joint->id] = getJointIdForNv(urdf_joint_name);
         }
     }
 
@@ -188,7 +187,7 @@ namespace glue_code
                                                 const robotlib::FramePtr origin,
                                                 const robotlib::FramePtr destination)
     {
-        Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(q);
+        Eigen::VectorXd q_pin = fromRobotlibToPinocchioNqData(q);
         pinocchio::framesForwardKinematics(robot_model, robot_data, q_pin);
         // std::string origin_name = origin->getName();
         // std::string destination_name = destination->getName();
@@ -209,7 +208,7 @@ namespace glue_code
                                                 const robotlib::FramePtr origin,
                                                 const robotlib::FramePtr destination)
     {
-        Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(q);
+        Eigen::VectorXd q_pin = fromRobotlibToPinocchioNqData(q);
         pinocchio::framesForwardKinematics(robot_model, robot_data, q_pin);
         // std::string origin_name = origin->getName();
         // std::string destination_name = destination->getName();
@@ -251,7 +250,7 @@ namespace glue_code
                                         const std::string& frame_name,
                                         Eigen::MatrixXd &jacobian){
         // map robotlib to pinocchio
-        Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(q);
+        Eigen::VectorXd q_pin = fromRobotlibToPinocchioNqData(q);
 
         // compute jacobian in base frame: since we are setting the robot pose to Identity (using fromRobotlibToPinocchioJointState(q)) the jacobian computed in LOCAL_WORLD_ALIGNED is the jacobian in the base frame
         
@@ -261,10 +260,7 @@ namespace glue_code
         pinocchio::computeFrameJacobian(robot_model, robot_data, q_pin, frame_id, pinocchio::LOCAL_WORLD_ALIGNED, J);
 
         // set output
-        const int jacobian_cols = robot_model.nv-6; // -6 because we are not considering the floating base joint
-        jacobian = J.block(0,6,6, jacobian_cols); //6 because it is a geometric jacobian (lin, ang)
-
-        jacobian = reorderLimbsJacobian(jacobian);
+        jacobian = fromPinocchioToRobotlibLimbsJacobian(J);
     }
 
     void GlueCode::computeWholeBodyJacobian(const Eigen::Matrix<double, 7, 1> &robot_pose,
@@ -272,7 +268,7 @@ namespace glue_code
                                             const robotlib::FramePtr frame,
                                             Eigen::MatrixXd &jacobian){
         // map robotlib to pinocchio
-        Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(robot_pose, q);
+        Eigen::VectorXd q_pin = fromRobotlibToPinocchioNqData(q);
 
         // compute jacobian in world frame
         const std::string urdf_frame_name = dls_to_urdf_links_name.at(frame->getName());
@@ -282,81 +278,15 @@ namespace glue_code
 
         // compute jacobian in base frame
         Eigen::Matrix3d b_R_w = robotlib::utils::quatToRotMat(Eigen::Quaterniond(q_pin.block<4,1>(3,0))); // orientation of the world frame expressed in base frame
-        jacobian.resize(6, robot_model.nv);
-        jacobian.block(0,0,3, robot_model.nv) = b_R_w * J.block(0,0,3, robot_model.nv);
-        jacobian.block(3,0,3, robot_model.nv) = b_R_w * J.block(3,0,3, robot_model.nv);
-
-        jacobian = reorderWholeBodyJacobian(jacobian);
-    }
-
-
-    Eigen::VectorXd GlueCode::fromRobotlibToPinocchioJointState(const robotlib::JointState &joint_position){
-        Eigen::VectorXd q = pinocchio::neutral(robot_model);
-        auto pos = reorderJoints(joint_position);
-        setExtendedJointState(pos, q);
-        return q;
-    }
-
-    Eigen::VectorXd GlueCode::fromRobotlibToPinocchioJointState(const Eigen::Matrix<double, 7, 1> &robot_pose, const robotlib::JointState &joint_position){
-        Eigen::VectorXd q = pinocchio::neutral(robot_model);
-        auto pos = reorderJoints(joint_position);
-        setExtendedJointState(pos, q);
-        q.head(7) = robot_pose;
-        return q;
-    }
-
-    Eigen::VectorXd GlueCode::fromRobotlibToPinocchioJointVelocity(const robotlib::JointState &joint_velocity){
-        Eigen::VectorXd qd = Eigen::VectorXd::Zero(robot_model.nv);
-        qd.tail(this->getNJOINTS()) = reorderJoints(joint_velocity);
-        return qd;
-    }
-
-    Eigen::VectorXd GlueCode::fromRobotlibToPinocchioJointVelocity(const Eigen::Matrix<double, 6, 1> &robot_velocity, const robotlib::JointState &joint_velocity){
-        Eigen::VectorXd qd = Eigen::VectorXd::Zero(robot_model.nv);
-        qd.tail(this->getNJOINTS()) = reorderJoints(joint_velocity);
-        qd.head(6) = robot_velocity;
-        return qd;
-    }
-
-    void GlueCode::fromPinocchioToRobotlibJointState(const Eigen::VectorXd &q,
-                                                robotlib::JointState &joint_position)
-    {
-        for(int i=0;i<this->getNJOINTS();i++){
-            std::vector<int> pinocchio_indices = extended_joint_ids[i];
-            if (pinocchio_indices.size() == 1) {
-                // regular joint
-                joint_position[i] = q[pinocchio_indices[0]];
-            } else if (pinocchio_indices.size() == 2) {
-                // continuous joint
-                double cos_angle = q[pinocchio_indices[0]];
-                double sin_angle = q[pinocchio_indices[1]];
-                joint_position[i] = std::atan2(sin_angle, cos_angle);
-            }
-        }
-        joint_position = reorderJoints(joint_position);
-    }
-
-    void GlueCode::setExtendedJointState(const robotlib::JointState &joint_position,
-                                                Eigen::VectorXd &q)
-    {
-        for(int i=0;i<this->getNJOINTS();i++){
-            std::vector<int> pinocchio_indices = extended_joint_ids[i];
-            if (pinocchio_indices.size() == 1) {
-                // regular joint
-                q[pinocchio_indices[0]] = joint_position[i];
-            } else if (pinocchio_indices.size() == 2) {
-                // continuous joint
-                double angle = joint_position[i];
-                q[pinocchio_indices[0]] = std::cos(angle);
-                q[pinocchio_indices[1]] = std::sin(angle);
-            }
-        }
+        J.block(0,0,3, robot_model.nv) = b_R_w * J.block(0,0,3, robot_model.nv);
+        J.block(3,0,3, robot_model.nv) = b_R_w * J.block(3,0,3, robot_model.nv);
+        jacobian = fromPinocchioToRobotlibWholeBodyJacobian(J);
     }
 
     void GlueCode::forwardKinematics(const robotlib::JointState &joint_position,
                                     robotlib::LimbDataMap<Eigen::Vector3d> &end_effector_position)
     {
-        Eigen::VectorXd q = fromRobotlibToPinocchioJointState(joint_position);
+        Eigen::VectorXd q = fromRobotlibToPinocchioNqData(joint_position);
         pinocchio::forwardKinematics(robot_model, robot_data, q);
         pinocchio::updateFramePlacements(robot_model, robot_data);
 
@@ -376,8 +306,8 @@ namespace glue_code
                                     robotlib::LimbDataMap<Eigen::Vector3d> &end_effector_position,
                                     robotlib::LimbDataMap<Eigen::Vector3d> &end_effector_velocity)
     {
-        Eigen::VectorXd q = fromRobotlibToPinocchioJointState(joint_position);
-        Eigen::VectorXd qd = fromRobotlibToPinocchioJointVelocity(joint_velocity);
+        Eigen::VectorXd q = fromRobotlibToPinocchioNqData(joint_position);
+        Eigen::VectorXd qd = fromRobotlibToPinocchioNvData(joint_velocity);
 
         pinocchio::forwardKinematics(robot_model, robot_data, q, qd);
         pinocchio::updateFramePlacements(robot_model, robot_data);
@@ -402,9 +332,9 @@ namespace glue_code
                                     robotlib::LimbDataMap<robotlib::Vec6d> &end_effector_velocity,
                                     robotlib::LimbDataMap<robotlib::Vec6d> &end_effector_acceleration)
     {
-        Eigen::VectorXd q = fromRobotlibToPinocchioJointState(joint_position);
-        Eigen::VectorXd qd = fromRobotlibToPinocchioJointVelocity(joint_velocity);
-        Eigen::VectorXd qdd = fromRobotlibToPinocchioJointVelocity(joint_acceleration);
+        Eigen::VectorXd q = fromRobotlibToPinocchioNqData(joint_position);
+        Eigen::VectorXd qd = fromRobotlibToPinocchioNvData(joint_velocity);
+        Eigen::VectorXd qdd = fromRobotlibToPinocchioNvData(joint_acceleration);
 
         pinocchio::forwardKinematics(robot_model, robot_data, q, qd, qdd);
         pinocchio::updateFramePlacements(robot_model, robot_data);
@@ -547,13 +477,13 @@ namespace glue_code
         // compute desired pose in pinocchio format
 		const pinocchio::SE3 oMdes(Eigen::Matrix3d::Identity(), position_des);
         // map from robotlib to pinocchio
-        Eigen::VectorXd q_pin_init_guess = fromRobotlibToPinocchioJointState(q_init_guess);
+        Eigen::VectorXd q_pin_init_guess = fromRobotlibToPinocchioNqData(q_init_guess);
 
         // Closed Loop Inverse Kinematics (CLIK)
         Eigen::VectorXd q_pin_des = clik(urdf_frame_name, q_pin_init_guess, oMdes, IK::TASK::POSITION_TASK);
 
         // Get IK solution
-        fromPinocchioToRobotlibJointState(q_pin_des, q_des);
+        fromPinocchioNqDataToRobotlib(q_pin_des, q_des);
     }
 
     void GlueCode::fixedBaseInverseKinematics(
@@ -579,7 +509,7 @@ namespace glue_code
                                         robotlib::JointState &qd_des)
     {
         // map from robotlib to pinocchio
-        Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(q);
+        Eigen::VectorXd q_pin = fromRobotlibToPinocchioNqData(q);
         // compute jacobian in base frame
         const std::string urdf_frame_name = dls_to_urdf_links_name.at(frame_name);
         pinocchio::FrameIndex frame_id = robot_model.getFrameId(urdf_frame_name);
@@ -594,8 +524,9 @@ namespace glue_code
         JJt_lin += J_lin*J_lin.transpose();
         Eigen::MatrixXd J_pseudo = J_lin.transpose()*(JJt_lin.inverse());
         // compute desired joint velocity
-        Eigen::VectorXd qd_des_pin = J_pseudo * velocity_des;
-        qd_des = reorderJoints(qd_des_pin.tail(this->getNJOINTS()));
+        Eigen::VectorXd qd_des_pin = Eigen::VectorXd::Zero(robot_model.nv);
+        qd_des_pin.segment(6, robot_model.nv-6) = J_pseudo * velocity_des;
+        fromPinocchioNvDataToRobotlib(qd_des_pin, qd_des);
     }
 
     void GlueCode::fixedBaseInverseDiffKinematics(const robotlib::JointState &q,
@@ -624,9 +555,9 @@ namespace glue_code
                                 robotlib::JointState &tau_joints)             ///output
     {
         // map from robotlib to pinocchio
-        Eigen::VectorXd q = fromRobotlibToPinocchioJointState(robot_pose, joint_position);
-        Eigen::VectorXd qd = fromRobotlibToPinocchioJointVelocity(robot_velocity, joint_velocity);
-        Eigen::VectorXd qdd = fromRobotlibToPinocchioJointVelocity(robot_acceleration, joint_acceleration);
+        Eigen::VectorXd q = fromRobotlibToPinocchioNqData(robot_pose, joint_position);
+        Eigen::VectorXd qd = fromRobotlibToPinocchioNvData(robot_velocity, joint_velocity);
+        Eigen::VectorXd qdd = fromRobotlibToPinocchioNvData(robot_acceleration, joint_acceleration);
 
         // compute contact forces in joint frame
         pinocchio::container::aligned_vector<pinocchio::Force> joint_f_contact(robot_model.njoints, pinocchio::Force::Zero());
@@ -640,7 +571,7 @@ namespace glue_code
 											robot_data.oMf[frame_id].act(pin_force));
         }
         pinocchio::rnea(robot_model, robot_data, q, qd, qdd, joint_f_contact);
-        tau_joints = reorderJoints(robot_data.tau.tail(this->getNJOINTS()));
+        fromPinocchioNvDataToRobotlib(robot_data.tau, tau_joints);
     }
 
 
@@ -649,12 +580,12 @@ namespace glue_code
                                           Eigen::Matrix<double, 6, 1> &g_base,
                                           robotlib::JointState &g_joints)
     {
-        Eigen::VectorXd q = fromRobotlibToPinocchioJointState(robot_pose, joint_position);
+        Eigen::VectorXd q = fromRobotlibToPinocchioNqData(robot_pose, joint_position);
 
         pinocchio::computeGeneralizedGravity(robot_model, robot_data, q); // equivalent to pinocchio::rnea(model, data, q, 0, 0).
 
 		g_base = robot_data.g.block<6,1>(0,0);
-		g_joints = reorderJoints(robot_data.g.tail(this->getNJOINTS()));
+		fromPinocchioNvDataToRobotlib(robot_data.g, g_joints);
     }
 
     void GlueCode::computeGravityTerm(  const Eigen::Matrix<double, 7, 1> &robot_pose,
@@ -673,12 +604,12 @@ namespace glue_code
                                         robotlib::JointState &nle_joints
                                         )
     {
-        Eigen::VectorXd q = fromRobotlibToPinocchioJointState(robot_pose, joint_position);
-        Eigen::VectorXd qd = fromRobotlibToPinocchioJointVelocity(robot_velocity, joint_velocity);
+        Eigen::VectorXd q = fromRobotlibToPinocchioNqData(robot_pose, joint_position);
+        Eigen::VectorXd qd = fromRobotlibToPinocchioNvData(robot_velocity, joint_velocity);
         pinocchio::nonLinearEffects(robot_model, robot_data, q, qd);
 
 		nle_base = robot_data.nle.block<6,1>(0,0);
-		nle_joints = reorderJoints(robot_data.nle.tail(this->getNJOINTS()));
+        fromPinocchioNvDataToRobotlib(robot_data.nle, nle_joints);
     }
 
     void GlueCode::computeNonLinearEffects( const Eigen::Matrix<double, 7, 1> &robot_pose,
@@ -695,41 +626,40 @@ namespace glue_code
         const robotlib::JointState &joint_position,
         Eigen::MatrixXd &jsInertia)
     {
-      Eigen::VectorXd q = fromRobotlibToPinocchioJointState(robot_pose, joint_position);
-      // pinocchio::computeMinverse(robot_model, robot_data, q);
-      // jsInertia = robot_data.Minv;
-      // // make triangular matrix symmetric
-      // jsInertia.triangularView<Eigen::StrictlyLower>() =
-      //     robot_data.Minv.transpose().triangularView<Eigen::StrictlyLower>();
-      pinocchio::crba(robot_model, robot_data, q);
-      // reorder pinocchio to match robcogen: xyz, rpy, lf, rf, lh, rh, arm
-      // make triangular matrix symmetric
-      robot_data.M.triangularView<Eigen::StrictlyLower>() =
-          robot_data.M.transpose().triangularView<Eigen::StrictlyLower>();
-      // STI: only valid for urdf of hyqreal (4x3 dof) with arm (7 dof) and hand (6 dof)
-      // ToDo: use a config file to get the mapping
-      static std::vector<int> sizes = {3, 3, 3, 3, 3, 3}; //, 7, 6};
-      static std::vector<int> indices = {3, 0, 6, 12, 9, 15}; //, 6, 13};
-      static int all = std::accumulate(sizes.begin(), sizes.end(), 0);
-      jsInertia.resize(all, all);
-      jsInertia.setZero();
-
-      // r: read, w: write, s: size, i: index, r: row, c: col --> rir = read index row
-      int wir(0), wic, sr, sc, rir, ric;
-      for (int i = 0; i < sizes.size(); i++)
-      {
-        wic = 0;
-        sr = sizes[i];
-        rir = indices[i];
-        for (int j = 0; j < sizes.size(); j++)
-        {
-          sc = sizes[j];
-          ric = indices[j];
-          jsInertia.block(wir, wic, sr, sc) << robot_data.M.block(rir, ric, sr, sc);
-          wic += sizes[j];
+        Eigen::VectorXd q = fromRobotlibToPinocchioNqData(robot_pose, joint_position);
+        pinocchio::crba(robot_model, robot_data, q);
+        // make triangular matrix symmetric (pinocchio computes only upper triangular part)
+        robot_data.M.triangularView<Eigen::StrictlyLower>() =
+            robot_data.M.transpose().triangularView<Eigen::StrictlyLower>();
+ 
+        jsInertia = robot_data.M; //Eigen::MatrixXd::Zero(robot_model.nv, robot_model.nv);
+        // invert floating base angular and linear part
+        // diagonal:: linear-linear, angular-angular
+        jsInertia.block(0,0,3,3) = robot_data.M.block(3,3,3,3);
+        jsInertia.block(3,3,3,3) = robot_data.M.block(0,0,3,3);
+        // off-diagonal: linear-angular, angular-linear
+        jsInertia.block(3,0,3,3) = robot_data.M.block(0,3,3,3);
+        jsInertia.block(0,3,3,3) = robot_data.M.block(3,0,3,3);
+        // invert floating base to joints and reorder
+        // rows
+        jsInertia.block(3,6,3,this->getNJOINTS()) = robot_data.M.block(0,6,3,this->getNJOINTS());
+        jsInertia.block(0,6,3,this->getNJOINTS()) = robot_data.M.block(3,6,3,this->getNJOINTS());
+        // columns
+        jsInertia.block(6,3,this->getNJOINTS(),3) = robot_data.M.block(6,0,this->getNJOINTS(),3);
+        jsInertia.block(6,0,this->getNJOINTS(),3) = robot_data.M.block(6,3,this->getNJOINTS(),3);
+        // save new configuration of matrix with reordered linear and angular base velocities
+        // remember that the joints are not reordered yet
+        robot_data.M = jsInertia;
+        // joints
+        for(int i=0;i<this->getNJOINTS();i++){
+            int pinocchio_i = robotlib_to_pin_joint_velocity_ids.at(i);
+            for(int j=0;j<this->getNJOINTS();j++){
+                int pinocchio_j = robotlib_to_pin_joint_velocity_ids.at(j);
+                jsInertia(i+6,j+6) = robot_data.M(pinocchio_i, pinocchio_j);
+                jsInertia.block(0,j+6,6,1) = robot_data.M.block(0, pinocchio_j,6,1);
+                jsInertia.block(i+6,0,1,6) = robot_data.M.block(pinocchio_i, 0,1,6);
+            }       
         }
-        wir += sizes[i];
-      }
     }
 
     Eigen::Matrix4d GlueCode::getImuBaseOffset(const std::string& imu_link_name, const std::string& base_link_name) const
@@ -768,7 +698,7 @@ namespace glue_code
 
     Eigen::Vector3d GlueCode::computeWholeBodyCoM(const robotlib::JointState& q) {
         // set the robot base pose to pos=0, ori=0 --> centerOfMass gives the CoM in the base frame
-        Eigen::VectorXd q_pin = fromRobotlibToPinocchioJointState(q);
+        Eigen::VectorXd q_pin = fromRobotlibToPinocchioNqData(q);
         return pinocchio::centerOfMass(robot_model, robot_data, q_pin, false);//false: do not compute com of subtrees
     }
 
@@ -786,33 +716,111 @@ namespace glue_code
         return robot_model.inertias[joint_id].inertia().matrix();
     }
 
-    Eigen::VectorXd GlueCode::reorderJoints(const Eigen::VectorXd& data) const{
-        Eigen::VectorXd new_data = data;
-        for(auto &[key, value] : idx_map)
-        {
-            new_data(value) = data(key);
-            new_data(key) = data(value);
+    void GlueCode::checkJointNames() const
+    {
+        for (const auto& pair : dls_to_urdf_joints_name) {
+            bool found = false;
+            for(const auto& joint : robot_model.frames){
+                if(joint.name == pair.second){
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                throw std::runtime_error("Joint name " + pair.second + " (mapped from " + pair.first + ") not found in the URDF model. Please check the kinematics mapping file.");
+            }
         }
-        return new_data;
     }
 
-    Eigen::MatrixXd GlueCode::reorderLimbsJacobian(const Eigen::MatrixXd& jacobian) const{
-        Eigen::MatrixXd new_jac = jacobian;
-        for(auto &[key, value] : idx_map)
-        {
-            new_jac.block<6,1>(0,value) = jacobian.block<6,1>(0,key);
-            new_jac.block<6,1>(0,key) = jacobian.block<6,1>(0,value);
+    void GlueCode::checkLinkNames() const
+    {
+        for (const auto& pair : dls_to_urdf_links_name) {
+            bool found = false;
+            for(const auto& link : robot_model.frames){
+                if(link.name == pair.second){
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                throw std::runtime_error("Link name " + pair.second + " (mapped from " + pair.first + ") not found in the URDF model. Please check the kinematics mapping file.");
+            }
+        }
+    }
+    Eigen::VectorXd GlueCode::fromRobotlibToPinocchioNqData(const robotlib::JointState &joint_position_type){
+        Eigen::VectorXd q = pinocchio::neutral(robot_model);
+        for(int i=0;i<this->getNJOINTS();i++){
+            std::vector<int> pinocchio_indices = robotlib_to_pin_joint_position_ids[i];
+            double angle = joint_position_type[i];
+            if (pinocchio_indices.size() == 1) {
+                // regular joint
+                q[pinocchio_indices[0]] = angle;
+            } else if (pinocchio_indices.size() == 2) {
+                // continuous joint
+                q[pinocchio_indices[0]] = std::cos(angle);
+                q[pinocchio_indices[1]] = std::sin(angle);
+            }
+        }
+        return q;
+    }
+
+    Eigen::VectorXd GlueCode::fromRobotlibToPinocchioNqData(const Eigen::Matrix<double, 7, 1> &robot_pose, const robotlib::JointState &joint_position_type){
+        Eigen::VectorXd q = fromRobotlibToPinocchioNqData(joint_position_type);
+        q.head(7) = robot_pose;
+        return q;
+    }
+
+    Eigen::VectorXd GlueCode::fromRobotlibToPinocchioNvData(const robotlib::JointState &joint_velocity_type){
+        Eigen::VectorXd qd = Eigen::VectorXd::Zero(robot_model.nv);
+        for(int i=0;i<this->getNJOINTS();i++){
+            int pinocchio_index = robotlib_to_pin_joint_velocity_ids.at(i);
+            qd[pinocchio_index] = joint_velocity_type[i];
+        }
+        return qd;
+    }
+
+    Eigen::VectorXd GlueCode::fromRobotlibToPinocchioNvData(const Eigen::Matrix<double, 6, 1> &robot_velocity, const robotlib::JointState &joint_velocity_type){
+        Eigen::VectorXd qd = fromRobotlibToPinocchioNvData(joint_velocity_type);
+        qd.head(6) = robot_velocity;
+        return qd;
+    }
+
+    void GlueCode::fromPinocchioNvDataToRobotlib(const Eigen::VectorXd &qd,
+                                                robotlib::JointState &joint_velocity_type){
+        for(int i=0;i<this->getNJOINTS();i++){
+            int pinocchio_index = robotlib_to_pin_joint_velocity_ids.at(i);
+            joint_velocity_type[i] = qd[pinocchio_index];
+        }
+    }
+
+    void GlueCode::fromPinocchioNqDataToRobotlib(const Eigen::VectorXd &q,
+                                                robotlib::JointState &joint_position_type)
+    {
+        for(int i=0;i<this->getNJOINTS();i++){
+            std::vector<int> pinocchio_indices = robotlib_to_pin_joint_position_ids[i];
+            if (pinocchio_indices.size() == 1) {
+                // regular joint
+                joint_position_type[i] = q[pinocchio_indices[0]];
+            } else if (pinocchio_indices.size() == 2) {
+                // continuous joint
+                double cos_angle = q[pinocchio_indices[0]];
+                double sin_angle = q[pinocchio_indices[1]];
+                joint_position_type[i] = std::atan2(sin_angle, cos_angle);
+            }
+        }
+    }
+    Eigen::MatrixXd GlueCode::fromPinocchioToRobotlibLimbsJacobian(const Eigen::MatrixXd& jacobian_pin) const{
+        Eigen::MatrixXd new_jac = Eigen::MatrixXd::Zero(6, this->getNJOINTS());
+        for(int i=0;i<this->getNJOINTS();i++){
+            int pinocchio_index = robotlib_to_pin_joint_velocity_ids.at(i);
+            new_jac.block<6,1>(0,i) = jacobian_pin.block<6,1>(0,pinocchio_index);
         }
         return new_jac;
     }
 
-    Eigen::MatrixXd GlueCode::reorderWholeBodyJacobian(const Eigen::MatrixXd& jacobian) const{
-        Eigen::MatrixXd new_jac = jacobian;
-        for(auto &[key, value] : idx_map)
-        {
-            new_jac.block<6,1>(0,value+6) = jacobian.block<6,1>(0,key+6);
-            new_jac.block<6,1>(0,key+6) = jacobian.block<6,1>(0,value+6);
-        }
+    Eigen::MatrixXd GlueCode::fromPinocchioToRobotlibWholeBodyJacobian(const Eigen::MatrixXd& jacobian_pin) const{
+        Eigen::MatrixXd new_jac = jacobian_pin;
+        new_jac.block(0,6,6, this->getNJOINTS()) = fromPinocchioToRobotlibLimbsJacobian(jacobian_pin);        
         return new_jac;
     }
 
