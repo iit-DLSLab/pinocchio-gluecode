@@ -1,5 +1,5 @@
-#ifndef _ALIENGOLIB_ALIENGO_HPP_
-#define _ALIENGOLIB_ALIENGO_HPP_
+#ifndef _GLUE_CODE_HPP_
+#define _GLUE_CODE_HPP_
 
 #include <robotlib/robot.hpp>
 #include <robotlib/limb.hpp>
@@ -7,7 +7,12 @@
 #include "pinocchio/multibody/data.hpp"
 #include "pinocchio/multibody/fwd.hpp"
 
-namespace aliengolib
+#include <yaml-cpp/yaml.h>
+
+using LimbMap  = std::map<std::string,std::vector<std::string>>;
+using LimbList = std::vector<LimbMap>;
+
+namespace glue_code
 {
     namespace IK{
       enum TASK{
@@ -17,28 +22,22 @@ namespace aliengolib
     }
 
     /*!
-     * @brief Aliengo class.
+     * @brief GlueCode class.
      * @details
-     * This class represents the Aliengo robot with a specific number of limbs, joints and links.
+     * This class represents the GlueCode robot with a specific number of limbs, joints and links.
     */
-    class Aliengo : public robotlib::Robot
+    class GlueCode : public robotlib::Robot
     {
     public:
        /*!
          * @brief Constructor.
-         * @param[in] trunk shared pointer pointing to the trunk object.
-         * @param[in] legs shared pointer pointing to the robot's legs.
-         * @param[in] arms shared pointer pointing to the robot's arms.
-         * @param[in] robot_urdf urdf of the robot.
+          * @param[in] kinematics_mapping YAML node containing the kinematics mapping information.
        */
-        Aliengo(  const std::string& name,
-                  const robotlib::DynParams& dynamic_parameters,
-                  const std::vector<robotlib::LimbPtr>& limbs,
-                  const std::string& robot_urdf);
+        GlueCode(const YAML::Node& kinematics_mapping);
  		/*!
          * @brief Destructor.
          */
-        virtual ~Aliengo();
+        virtual ~GlueCode();
         /*!
           * @brief Forward kinematics.
           * @details
@@ -52,11 +51,11 @@ namespace aliengolib
         /*!
          * @brief Forward kinematics.
          * @details
-         * It computes the position and velocity of each end effector (foot) expressed in base frame.
+         * It computes the position and velocity of each end effector expressed in base frame.
          * @param[in] joint_position angle of each joint.
          * @param[in] joint_velocity velocity of each joint.
-         * @param[out] end_effector_position position of each end effector (foot) in base frame.
-         * @param[out] end_effector_velocity velocity of each end effector (foot) in base frame.
+         * @param[out] end_effector_position position of each end effector in base frame.
+         * @param[out] end_effector_velocity velocity of each end effector in base frame.
          */
         virtual void forwardKinematics(const robotlib::JointState &joint_position,
                                        const robotlib::JointState &joint_velocity,
@@ -66,14 +65,14 @@ namespace aliengolib
         /*!
         * @brief Forward kinematics.
         * @details
-        * It computes the position, orientation, velocity and acceleration of each end effector (foot) expressed in base frame.
+        * It computes the position, orientation, velocity and acceleration of each end effector expressed in base frame.
         * @param[in] joint_position angle of each joint.
         * @param[in] joint_velocity velocity of each joint.
         * @param[in] joint_acceleration acceleration of each joint.
-        * @param[out] end_effector_position position of each end effector (foot) in base frame.
-        * @param[out] end_effector_orientation orientation of each end effector (foot) in base frame.
-        * @param[out] end_effector_velocity velocity of each end effector (foot) in base frame.
-        * @param[out] end_effector_acceleration acceleration of each end effector (foot) in base frame.
+        * @param[out] end_effector_position position of each end effector in base frame.
+        * @param[out] end_effector_orientation orientation of each end effector in base frame.
+        * @param[out] end_effector_velocity velocity of each end effector in base frame.
+        * @param[out] end_effector_acceleration acceleration of each end effector in base frame.
         */
         virtual void forwardKinematics(const robotlib::JointState &joint_position,
                                     const robotlib::JointState &joint_velocity,
@@ -275,13 +274,11 @@ namespace aliengolib
                                         Eigen::MatrixXd &jacobian) override;
         /*!
         * @brief Get the geometric jacobian of the frame expressed in base frame. The order is linear_jacobian, angular_jacobian. For a jacobian considering only the joints, see getLimbsJacobian.
-        * @param[in] robot_pose pose of the robot base in world frame.
         * @param[in] q angles of the joints.
         * @param[in] frame frame used to compute the jacobian.
         * @param[out] jacobian jacobian to be filled.
         */
-        virtual void computeWholeBodyJacobian(  const Eigen::Matrix<double, 7, 1> &robot_pose,
-                                        const robotlib::JointState &q,
+        virtual void computeWholeBodyJacobian(const robotlib::JointState &q,
                                         const robotlib::FramePtr frame,
                                         Eigen::MatrixXd &jacobian) override;
 
@@ -375,35 +372,41 @@ namespace aliengolib
         * @brief Get the base ID. 
         */
         pinocchio::FrameIndex getBaseID() const;
+                
+        int getJointIdWithoutRoot(const std::string &joint_name) const;
 
-        // Pinocchio order the joints following an alphanumeric order, so we need to map our order to the pinocchio one and viceversa
-        // our convention: lf rf lh rh
-        // pinocchio one: lf lh rf rh
-        std::map<int,int> idx_map = {{3,6},{4,7},{5,8}};
+        LimbList loadLimbsDefinition(const YAML::Node& root);
 
-        Eigen::VectorXd reorderJoints(const Eigen::VectorXd& data) const;
-        Eigen::MatrixXd reorderLimbsJacobian(const Eigen::MatrixXd& jacobian) const;
-        Eigen::MatrixXd reorderWholeBodyJacobian(const Eigen::MatrixXd& jacobian) const;
+        // dls to urdf name
+        std::map<std::string, std::string> dls_to_urdf_joints_name;
+        std::map<std::string, std::string> dls_to_urdf_links_name;
 
-        Eigen::VectorXd fromRobotlibToPinocchioJointState(const robotlib::JointState &joint_position);
-        Eigen::VectorXd fromRobotlibToPinocchioJointState(const Eigen::Matrix<double, 7, 1> &robot_pose, const robotlib::JointState &joint_position);
-        Eigen::VectorXd fromRobotlibToPinocchioJointVelocity(const robotlib::JointState &joint_velocity);
-        Eigen::VectorXd fromRobotlibToPinocchioJointVelocity(const Eigen::Matrix<double, 6, 1> &robot_velocity, const robotlib::JointState &joint_velocity);
-    };
-} //namespace aliengolib
+        Eigen::MatrixXd fromPinocchioToRobotlibLimbsJacobian(const Eigen::MatrixXd& jacobian) const;
+        Eigen::MatrixXd fromPinocchioToRobotlibWholeBodyJacobian(const Eigen::MatrixXd& jacobian) const;
+        Eigen::VectorXd fromRobotlibToPinocchioNqData(const robotlib::JointState &joint_position_type);
+        Eigen::VectorXd fromRobotlibToPinocchioNqData(const Eigen::Matrix<double, 7, 1> &robot_pose, const robotlib::JointState &joint_position_type);
+        Eigen::VectorXd fromRobotlibToPinocchioNvData(const robotlib::JointState &joint_velocity_type);
+        Eigen::VectorXd fromRobotlibToPinocchioNvData(const Eigen::Matrix<double, 6, 1> &robot_velocity, const robotlib::JointState &joint_velocity_type);
+        
+        void fromPinocchioNqDataToRobotlib(const Eigen::VectorXd &q_pin,
+                                                robotlib::JointState &joint_position_type);
+        void fromPinocchioNvDataToRobotlib(const Eigen::VectorXd &qd,
+                                                robotlib::JointState &joint_velocity_type);
+        void checkJointNames() const;
+        void checkLinkNames() const;        
+        // mapping from 
+        std::map<int,std::vector<int>> robotlib_to_pin_joint_position_ids;
+        // variable used to populate a pinocchio variable of size nv. In case of continuous joints, pinocchio does not add extra elements to the velocity space
+        std::map <int,int> robotlib_to_pin_joint_velocity_ids;
+
+        };
+} //namespace glue_code
 
 /*!
 * @brief Factory function to load at run-time the glue code, creating a robot object.
 * @return shared pointer pointing to the RobotBase object.
 */
-extern "C" std::shared_ptr<robotlib::RobotBase> createRobot_t();
-
-/*!
-* @brief Factory function to load at run-time the glue code, with external urdf in input.
-* @param[in] robot_urdf the urdf of the robot in string format.
-* @return shared pointer pointing to the RobotBase object.
-*/
-extern "C" std::shared_ptr<robotlib::RobotBase> createRobotWithUrdf_t(const std::string& robot_urdf);
+extern "C" std::shared_ptr<robotlib::RobotBase> createRobot_t(const std::string& robot_type);
 
 /*!
 * @brief Factory function to destroy the robot object.
@@ -411,4 +414,4 @@ extern "C" std::shared_ptr<robotlib::RobotBase> createRobotWithUrdf_t(const std:
 */
 extern "C" void destroyRobot_t(std::shared_ptr<robotlib::RobotBase> robot);
 
-#endif // _ALIENGOLIB_ALIENGO_HPP_
+#endif // _GLUE_CODE_HPP_
