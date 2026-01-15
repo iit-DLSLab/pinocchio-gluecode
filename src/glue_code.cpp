@@ -99,7 +99,7 @@ namespace glue_code
             robotlib_to_pin_joint_velocity_ids[joint->id] = getJointIdForNv(urdf_joint_name);
         }
     }
-    
+
     int GlueCode::getJointIdWithoutRoot(const std::string &joint_name) const
     {
         return robot_model.getJointId(joint_name)-2;//2: the number of joints are universe+root_joint+robot_joints
@@ -344,20 +344,12 @@ namespace glue_code
             end_effector_position[limb] = (baseMo*robot_data.oMf[frame_id]).translation();
             end_effector_orientation[limb] =
                 (baseMo * robot_data.oMf[frame_id]).rotation();
-            end_effector_velocity[limb].head(3) = baseMo.rotation()
-                * pinocchio::getFrameVelocity(robot_model, robot_data, frame_id,
-                                                pinocchio::LOCAL).angular();
-            end_effector_velocity[limb].tail(3) = baseMo.rotation()
-                * pinocchio::getFrameVelocity(robot_model, robot_data, frame_id,
-                                                pinocchio::LOCAL).linear();
-            end_effector_acceleration[limb].head(3) = baseMo.rotation()
-                * pinocchio::getFrameAcceleration(robot_model, robot_data, frame_id,
-                                                    pinocchio::LOCAL).angular();
-            end_effector_acceleration[limb].tail(3) = baseMo.rotation()
-                * pinocchio::getFrameAcceleration(robot_model, robot_data, frame_id,
-                                                    pinocchio::LOCAL).linear();
+            end_effector_velocity[limb].head(3) = baseMo.rotation() * pinocchio::getFrameVelocity(robot_model, robot_data, frame_id, pinocchio::LOCAL_WORLD_ALIGNED).angular();
+            end_effector_velocity[limb].tail(3) = baseMo.rotation() * pinocchio::getFrameVelocity(robot_model, robot_data, frame_id, pinocchio::LOCAL_WORLD_ALIGNED).linear();
+            end_effector_acceleration[limb].head(3) = baseMo.rotation() * pinocchio::getFrameAcceleration(robot_model, robot_data, frame_id, pinocchio::LOCAL_WORLD_ALIGNED).angular();
+            end_effector_acceleration[limb].tail(3) = baseMo.rotation() * pinocchio::getFrameAcceleration(robot_model, robot_data, frame_id, pinocchio::LOCAL_WORLD_ALIGNED).linear();
         }
-    }
+}
 
     pinocchio::FrameIndex GlueCode::getBaseID() const{
         return robot_model.getFrameId(robot_model.frames[2].name);
