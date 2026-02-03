@@ -48,9 +48,20 @@ execute_process(
 )
 
 # verify var definition if the building comes from the dls_deploy or is stand_alone
-if(NOT DEFINED DLS_INSTALL_MODEL_DIR)
+include(dls_options RESULT_VARIABLE DLS_OPTIONS_INCLUDED OPTIONAL)
+if (NOT DLS_OPTIONS_INCLUDED)
+    message(STATUS "${PROJECT_NAME}: Trying to include dls_options from /usr/include/dls2/cmake")
     list(APPEND CMAKE_MODULE_PATH "/usr/include/dls2/cmake")
-    include(dls_options)
+    include(dls_options RESULT_VARIABLE DLS_OPTIONS_INCLUDED OPTIONAL)
+    if(NOT DLS_OPTIONS_INCLUDED)
+        set (DLS_INSTALL_MODEL_HEADER_DIR "/usr/include/dls2/robots")
+        set (DLS_INSTALL_MODEL_DIR "/usr/lib/dls2/robots")
+        message(STATUS "${PROJECT_NAME}: Could not include dls_options.cmake from dls2 installation. Setting default installation paths: ${DLS_INSTALL_MODEL_HEADER_DIR}, ${DLS_INSTALL_MODEL_DIR}")
+    else()
+        message(STATUS "${PROJECT_NAME}: Successfully included dls_options.cmake from dls2 installation.")
+    endif()
+else()
+    message(STATUS "${PROJECT_NAME}: Successfully included dls_options.cmake from local cmake.")
 endif()
 
 find_package(pinocchio REQUIRED)
