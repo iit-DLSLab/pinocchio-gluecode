@@ -58,8 +58,9 @@ install(
 
 install(
 	FILES		config/scheduler.yaml
-	DESTINATION /usr/include/dls2/schedulers/${PINOCCHIO_CONTROLLER}
+	DESTINATION /usr/include/dls2/schedulers/
 	COMPONENT   ${PINOCCHIO_CONTROLLER}
+	RENAME 		${PINOCCHIO_CONTROLLER}.yaml
 )
 install(
 	TARGETS             ${PINOCCHIO_CONTROLLER}
