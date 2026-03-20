@@ -78,7 +78,6 @@ target_link_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
         robotlib
-        # roscpp
         urdfdom_model
         urdfdom_model_state
         urdfdom_world
