@@ -12,7 +12,6 @@
 #include <ignition/math/Pose3.hh>
 
 #include "dls2/util/messaging/dds_participant.hpp"
-#include "dls2/log/log.hpp"
 #include "dls2/signal/t265_odometry.hpp"
 #include "dls2/signal/signal_writer.hpp"
 #include "dls2/util/time/time.hpp"

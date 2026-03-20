@@ -78,8 +78,11 @@ target_link_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
         robotlib
-        roscpp
-        urdf
+        # roscpp
+        urdfdom_model
+        urdfdom_model_state
+        urdfdom_world
+        urdfdom_sensor
         ${pinocchio_LIBRARIES}
         pinocchio_parsers    
 )
