@@ -324,6 +324,13 @@ namespace glue_code
         */
         virtual Eigen::Matrix4d getImuBaseOffset(const std::string& imu_link_name="trunk_imu", const std::string& base_link_name="base_link") const override;
 
+
+        void getJointJacobianTimeVariation(const Eigen::Matrix<double, 6, 1> &robot_velocity, const robotlib::JointState &joint_position, const robotlib::JointState &joint_velocity, const std::string &frame_name, Eigen::MatrixXd &jdotV);
+        
+        void getBaseAcceleration(const robotlib::JointState &joint_position, const robotlib::JointState &joint_velocity, const robotlib::JointState &joint_acceleration, Eigen::Matrix<double, 6, 1> &end_effector_acceleration);
+
+        void computeBaseJacobian(const robotlib::JointState &q, Eigen::MatrixXd &base_jacobian);
+
         // ** SET FUNCTIONS **
 
     private: 
