@@ -65,6 +65,7 @@ else()
 endif()
 
 find_package(pinocchio REQUIRED)
+find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
 add_library(${PROJECT_NAME}
     SHARED
@@ -74,9 +75,6 @@ add_library(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME}
     PUBLIC
         include
-    PRIVATE
-        SYSTEM
-        /usr/include/eigen3
 )
 
 target_link_directories(${PROJECT_NAME}
@@ -87,6 +85,7 @@ target_link_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
+        Eigen3::Eigen
         robotlib
         urdfdom_model
         urdfdom_model_state
