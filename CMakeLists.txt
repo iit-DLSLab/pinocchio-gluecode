@@ -75,6 +75,7 @@ add_library(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME}
     PUBLIC
         include
+        ${pinocchio_INCLUDE_DIRS}
 )
 
 target_link_directories(${PROJECT_NAME}
