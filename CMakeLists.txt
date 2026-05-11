@@ -93,7 +93,6 @@ target_link_libraries(${PROJECT_NAME}
         urdfdom_world
         urdfdom_sensor
         ${pinocchio_LIBRARIES}
-        pinocchio_parsers 
         yaml-cpp   
 )
 

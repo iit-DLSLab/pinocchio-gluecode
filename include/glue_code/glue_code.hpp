@@ -1,6 +1,11 @@
 #ifndef _GLUE_CODE_HPP_
 #define _GLUE_CODE_HPP_
 
+// Define following thi warning 
+// /opt/openrobots/include/hpp/fcl/coal.hpp:12:99: note: '#pragma message: Please update your includes from 'hpp/fcl' to 'coal' or define COAL_DISABLE_HPP_FCL_WARNINGS'
+//   12 |     "Please update your includes from 'hpp/fcl' to 'coal' or define COAL_DISABLE_HPP_FCL_WARNINGS")
+#define COAL_DISABLE_HPP_FCL_WARNINGS
+
 #include <robotlib/robot.hpp>
 #include <robotlib/limb.hpp>
 
