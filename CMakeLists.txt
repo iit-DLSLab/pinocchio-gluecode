@@ -64,6 +64,7 @@ else()
     message(STATUS "${PROJECT_NAME}: Successfully included dls_options.cmake from local cmake.")
 endif()
 
+set(COAL_DISABLE_HPP_FCL_WARNINGS ON)
 find_package(pinocchio REQUIRED)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
