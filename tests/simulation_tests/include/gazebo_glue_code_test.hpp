@@ -34,7 +34,7 @@ namespace dls
 {
 
    /**
-    * @class This class tests some of the Robotlib functions by accessing to ground truth data from Gazebo.
+    * @class GazeboPluginGlueTest This class tests some of the Robotlib functions by accessing to ground truth data from Gazebo.
     */
    class GazeboPluginGlueTest : public gazebo::ModelPlugin
    {
