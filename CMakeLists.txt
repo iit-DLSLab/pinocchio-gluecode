@@ -72,10 +72,17 @@ add_library(${PROJECT_NAME}
         src/glue_code.cpp
 )
 
+set(GLUE_CODE_CONFIG_INSTALL_DIR "${DLS_INSTALL_MODEL_HEADER_DIR}/glue_code/config")
+
 target_include_directories(${PROJECT_NAME}
     PUBLIC
         include
         ${pinocchio_INCLUDE_DIRS}
+)
+
+target_compile_definitions(${PROJECT_NAME}
+    PRIVATE
+        GLUE_CODE_CONFIG_PATH="${GLUE_CODE_CONFIG_INSTALL_DIR}/config.yaml"
 )
 
 target_link_directories(${PROJECT_NAME}
@@ -104,6 +111,12 @@ install(
     DIRECTORY   include
     DESTINATION ${DLS_INSTALL_MODEL_HEADER_DIR}
     COMPONENT   glue_code_dev
+)
+
+install(
+    DIRECTORY   config
+    DESTINATION ${DLS_INSTALL_MODEL_HEADER_DIR}/glue_code
+    COMPONENT   glue_code
 )
 
 install(

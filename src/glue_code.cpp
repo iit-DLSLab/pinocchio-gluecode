@@ -20,10 +20,27 @@
 
 #include <filesystem>
 #include <fstream>
+#include <sstream>
 #include <vector>
 
 namespace glue_code
 {
+    namespace
+    {
+        double loadGravityConstant()
+        {
+            const YAML::Node config = YAML::LoadFile(GLUE_CODE_CONFIG_PATH);
+
+            if (!config["gravity_constant"]) {
+                std::ostringstream oss;
+                oss << "Missing 'gravity_constant' in glue code config: " << GLUE_CODE_CONFIG_PATH;
+                throw std::runtime_error(oss.str());
+            }
+
+            return config["gravity_constant"].as<double>();
+        }
+    } // namespace
+
     GlueCode::GlueCode(const YAML::Node& kinematics_mapping) : Robot()
     {
         auto limbs_definition = loadLimbsDefinition(kinematics_mapping);        
@@ -65,6 +82,7 @@ namespace glue_code
         // load pinocchio model from urdf
         const std::string urdf_name = kinematics_mapping["urdf_path"].as<std::string>();
         pinocchio::urdf::buildModel(urdf_name, pinocchio::JointModelFreeFlyer(), robot_model);
+        robot_model.gravity.linear() = Eigen::Vector3d(0, 0, loadGravityConstant());
         robot_data = pinocchio::Data(robot_model);
         // check if urdf names in the configuration correspond to existing joints/links in the robot
         checkJointNames();
