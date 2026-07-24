@@ -21,6 +21,7 @@
 #include <filesystem>
 #include <fstream>
 #include <sstream>
+#include <cstdlib>
 #include <vector>
 
 namespace glue_code
@@ -30,7 +31,11 @@ namespace glue_code
         double loadGravityConstant()
         {
             const YAML::Node config = YAML::LoadFile(GLUE_CODE_CONFIG_PATH);
-
+			char * val;
+			val = getenv("DLS_GRAVITY_CONSTANT");
+            if (val != nullptr) {
+                return std::strtod(val, nullptr);
+			}
             if (!config["gravity_constant"]) {
                 std::ostringstream oss;
                 oss << "Missing 'gravity_constant' in glue code config: " << GLUE_CODE_CONFIG_PATH;
