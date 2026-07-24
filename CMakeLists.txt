@@ -92,7 +92,7 @@ target_link_libraries(${PROJECT_NAME}
         urdfdom_model_state
         urdfdom_world
         urdfdom_sensor
-        ${pinocchio_LIBRARIES}
+        pinocchio::pinocchio
         yaml-cpp   
 )
 
