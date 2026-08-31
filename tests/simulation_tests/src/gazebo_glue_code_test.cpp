@@ -22,7 +22,7 @@ namespace dls
 			dls::domains::signals
 		))
 	{
-        const std::string urdf_name = "/usr/include/aliengo_description/urdfs/aliengo.urdf";
+        const std::string urdf_name = "/usr/include/aliengo-description/urdfs/aliengo.urdf";
         pinocchio::urdf::buildModel(urdf_name, pinocchio::JointModelFreeFlyer(), robot_model);
         robot_data = pinocchio::Data(robot_model);
 

@@ -61,7 +61,7 @@ LimbList loadLimbsDefinition(const YAML::Node& root)
 int main()
 {
     try {
-        YAML::Node kinematics_mapping = YAML::LoadFile("/usr/include/aliengo_description/kinematics/kinematics.yaml");
+        YAML::Node kinematics_mapping = YAML::LoadFile("/usr/include/aliengo-description/kinematics/kinematics.yaml");
         LimbList limbs_definition = loadLimbsDefinition(kinematics_mapping);
 
         // Print to verify structure
