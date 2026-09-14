@@ -837,7 +837,7 @@ namespace glue_code
 
     extern "C" std::shared_ptr<robotlib::RobotBase> createRobot_t(const std::string& robot_type)
     {
-        return std::make_shared<GlueCode>(YAML::LoadFile("/usr/include/"+robot_type+"_description/kinematics/kinematics.yaml"));
+        return std::make_shared<GlueCode>(YAML::LoadFile("/usr/include/"+robot_type+"-description/kinematics/kinematics.yaml"));
     }
 
     extern "C" void destroyRobot_t(std::shared_ptr<robotlib::RobotBase>)
