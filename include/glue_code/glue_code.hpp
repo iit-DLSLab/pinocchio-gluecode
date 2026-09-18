@@ -292,6 +292,8 @@ namespace glue_code
          * @return total robot mass.
          */
         virtual double getRobotMass() const override;
+
+        Eigen::Vector2d getJointDampingAndFriction(const robotlib::JointPtr joint) const override;
         
         /*!
          * @brief Get link mass.
@@ -336,6 +338,15 @@ namespace glue_code
 		 * @brief Set the joint limits from the urdf file.
 		 */
         void setJointLimitsFromUrdf();
+
+		/*!
+		 * @brief Set model.armature from the <armature value="..."/> tags in the urdf file.
+		 * @details Pinocchio's urdf parser reads <dynamics> (friction, damping) but not the
+		 * actuator reflected inertia, so the tag is read back here. Joints without the tag
+		 * keep their default (zero) armature.
+		 * @param[in] urdf_name path to the urdf file
+		 */
+        void setArmatureFromUrdf(const std::string &urdf_name);
 
         /*!
         * @brief Closed loop inverse kinematics.

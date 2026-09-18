@@ -8,6 +8,8 @@
 #include "pinocchio/algorithm/joint-configuration.hpp"
 #include "pinocchio/algorithm/frames.hpp"
 #include "pinocchio/parsers/urdf.hpp"
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
 // #include <algorithm>
 // #include <cctype>
 // #include <cmath>
@@ -87,6 +89,7 @@ namespace glue_code
         // load pinocchio model from urdf
         const std::string urdf_name = kinematics_mapping["urdf_path"].as<std::string>();
         pinocchio::urdf::buildModel(urdf_name, pinocchio::JointModelFreeFlyer(), robot_model);
+        setArmatureFromUrdf(urdf_name);
         robot_model.gravity.linear() = Eigen::Vector3d(0, 0, loadGravityConstant());
         robot_data = pinocchio::Data(robot_model);
         // check if urdf names in the configuration correspond to existing joints/links in the robot
@@ -193,6 +196,26 @@ namespace glue_code
                 const double tau_max = robot_model.effortLimit[joint_id_nv];
                 joint->setJointLimits(q_min, q_max, qd_max, tau_max);
             }
+    }
+
+    void GlueCode::setArmatureFromUrdf(const std::string &urdf_name)
+    {
+        boost::property_tree::ptree tree;
+        boost::property_tree::read_xml(urdf_name, tree);
+        for (const auto &child : tree.get_child("robot")) {
+            if (child.first != "joint") {
+                continue;
+            }
+            const auto armature = child.second.get_optional<double>("armature.<xmlattr>.value");
+            if (!armature) {
+                continue;
+            }
+            const std::string joint_name = child.second.get<std::string>("<xmlattr>.name");
+            if (!robot_model.existJointName(joint_name)) {
+                continue;
+            }
+            robot_model.armature[getJointIdForNv(joint_name)] = *armature;
+        }
     }
 
     int GlueCode::getJointIdForNq(const std::string &joint_name) const
@@ -705,6 +728,12 @@ namespace glue_code
     double GlueCode::getRobotMass() const
     {
         return pinocchio::computeTotalMass(robot_model);
+    }
+
+    Eigen::Vector2d GlueCode::getJointDampingAndFriction(const robotlib::JointPtr joint) const
+    {
+        const int index = robotlib_to_pin_joint_velocity_ids.at(joint->id);
+        return {robot_model.damping[index], robot_model.friction[index]};
     }
 
     Eigen::Vector3d GlueCode::computeWholeBodyCoM(const robotlib::JointState& q) {
