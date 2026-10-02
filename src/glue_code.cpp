@@ -291,15 +291,27 @@ namespace glue_code
         // map robotlib to pinocchio
         Eigen::VectorXd q_pin = fromRobotlibToPinocchioNqData(q);
 
-        // compute jacobian in world frame
+        // compute jacobian in base frame
         const std::string urdf_frame_name = dls_to_urdf_links_name.at(frame->getName());
         const int frame_id = robot_model.getFrameId(urdf_frame_name);
         Eigen::MatrixXd J = Eigen::MatrixXd::Zero(6, robot_model.nv);
         pinocchio::computeFrameJacobian(robot_model, robot_data, q_pin, frame_id, pinocchio::LOCAL_WORLD_ALIGNED, J);
 
         // compute jacobian in base frame
-        Eigen::Matrix3d b_R_w = robotlib::utils::quatToRotMat(Eigen::Quaterniond(q_pin.block<4,1>(3,0))); // orientation of the world frame expressed in base frame
         jacobian = fromPinocchioToRobotlibWholeBodyJacobian(J);
+    }
+
+    void GlueCode::computeBaseJacobian(const robotlib::JointState &q,
+                                    Eigen::MatrixXd &base_jacobian){
+        // map robotlib to pinocchio
+        Eigen::VectorXd q_pin = fromRobotlibToPinocchioNqData(q);
+
+        // compute jacobian in base frame
+        Eigen::MatrixXd J = Eigen::MatrixXd::Zero(6, robot_model.nv);
+        pinocchio::computeFrameJacobian(robot_model, robot_data, q_pin, getBaseID(), pinocchio::LOCAL_WORLD_ALIGNED, J); //1: base joint id
+
+        // compute jacobian in base frame
+        base_jacobian = fromPinocchioToRobotlibWholeBodyJacobian(J);
     }
 
     void GlueCode::forwardKinematics(const robotlib::JointState &joint_position,
@@ -365,14 +377,34 @@ namespace glue_code
             const std::string end_effector_name = dls_to_urdf_links_name.at(limb->getEndEffector()->getName());
             const int frame_id = robot_model.getFrameId(end_effector_name);
             end_effector_position[limb] = (baseMo*robot_data.oMf[frame_id]).translation();
-            end_effector_orientation[limb] =
-                (baseMo * robot_data.oMf[frame_id]).rotation();
-            end_effector_velocity[limb].head(3) = baseMo.rotation() * pinocchio::getFrameVelocity(robot_model, robot_data, frame_id, pinocchio::LOCAL_WORLD_ALIGNED).angular();
-            end_effector_velocity[limb].tail(3) = baseMo.rotation() * pinocchio::getFrameVelocity(robot_model, robot_data, frame_id, pinocchio::LOCAL_WORLD_ALIGNED).linear();
-            end_effector_acceleration[limb].head(3) = baseMo.rotation() * pinocchio::getFrameAcceleration(robot_model, robot_data, frame_id, pinocchio::LOCAL_WORLD_ALIGNED).angular();
-            end_effector_acceleration[limb].tail(3) = baseMo.rotation() * pinocchio::getFrameAcceleration(robot_model, robot_data, frame_id, pinocchio::LOCAL_WORLD_ALIGNED).linear();
+            end_effector_orientation[limb] = (baseMo * robot_data.oMf[frame_id]).rotation();
+            end_effector_velocity[limb].head(3) = baseMo.rotation() * pinocchio::getFrameVelocity(robot_model, robot_data, frame_id, pinocchio::LOCAL_WORLD_ALIGNED).linear();
+            end_effector_velocity[limb].tail(3) = baseMo.rotation() * pinocchio::getFrameVelocity(robot_model, robot_data, frame_id, pinocchio::LOCAL_WORLD_ALIGNED).angular();
+            end_effector_acceleration[limb].head(3) = baseMo.rotation() * pinocchio::getFrameAcceleration(robot_model, robot_data, frame_id, pinocchio::LOCAL_WORLD_ALIGNED).linear();
+            end_effector_acceleration[limb].tail(3) = baseMo.rotation() * pinocchio::getFrameAcceleration(robot_model, robot_data, frame_id, pinocchio::LOCAL_WORLD_ALIGNED).angular();
         }
-}
+    }
+
+
+    void GlueCode::getBaseAcceleration(const robotlib::JointState &joint_position,
+                                    const robotlib::JointState &joint_velocity,
+                                    const robotlib::JointState &joint_acceleration,
+                                    Eigen::Matrix<double, 6, 1>  &end_effector_acceleration)
+    {
+        Eigen::VectorXd q = fromRobotlibToPinocchioNqData(joint_position);
+        Eigen::VectorXd qd = fromRobotlibToPinocchioNvData(joint_velocity);
+        Eigen::VectorXd qdd = fromRobotlibToPinocchioNvData(joint_acceleration);
+
+        pinocchio::forwardKinematics(robot_model, robot_data, q, qd, qdd);
+        pinocchio::updateFramePlacements(robot_model, robot_data);
+
+        pinocchio::FrameIndex base_frame_id = getBaseID();
+        pinocchio::SE3 baseMo = robot_data.oMf[base_frame_id].inverse();
+
+        // Compute acceleration of the base frame in base frame
+        end_effector_acceleration.head(3) = baseMo.rotation() * pinocchio::getFrameAcceleration(robot_model, robot_data, base_frame_id, pinocchio::LOCAL_WORLD_ALIGNED).linear();
+        end_effector_acceleration.tail(3) = baseMo.rotation() * pinocchio::getFrameAcceleration(robot_model, robot_data, base_frame_id, pinocchio::LOCAL_WORLD_ALIGNED).angular();
+    }
 
     pinocchio::FrameIndex GlueCode::getBaseID() const{
         return robot_model.getFrameId(robot_model.frames[2].name);
@@ -556,6 +588,30 @@ namespace glue_code
         }
     }
 
+    void GlueCode::getJointJacobianTimeVariation(
+        const Eigen::Matrix<double, 6, 1> &robot_velocity,
+        const robotlib::JointState &joint_position,
+        const robotlib::JointState &joint_velocity,
+        const std::string &frame_name,
+        Eigen::MatrixXd &jdotV)
+    {
+        // map from robotlib to pinocchio
+        Eigen::VectorXd q = fromRobotlibToPinocchioNqData(joint_position);
+        Eigen::VectorXd qd = fromRobotlibToPinocchioNvData(robot_velocity, joint_velocity);
+
+        // compute jacobian time variation in base frame
+        const std::string urdf_frame_name = dls_to_urdf_links_name.at(frame_name);
+        pinocchio::FrameIndex frame_id = robot_model.getFrameId(urdf_frame_name);
+        
+        pinocchio::computeJointJacobiansTimeVariation(robot_model, robot_data, q, qd);
+        pinocchio::updateFramePlacements(robot_model, robot_data);
+
+        pinocchio::Data::Matrix6x JdotV_pin = Eigen::MatrixXd::Zero(6, robot_model.nv);
+        pinocchio::getFrameJacobianTimeVariation(robot_model, robot_data, frame_id, pinocchio::LOCAL_WORLD_ALIGNED, JdotV_pin);
+        // map from pinocchio to robotlib
+        jdotV = fromPinocchioToRobotlibWholeBodyJacobian(JdotV_pin);
+    }
+
     void GlueCode::inverseDynamics(const Eigen::Matrix<double, 7, 1> &robot_pose,    // robot base
                                 const Eigen::Matrix<double, 6, 1> &robot_velocity,    // robot base
                                 const Eigen::Matrix<double, 6, 1> &robot_acceleration,  // robot base
@@ -646,18 +702,18 @@ namespace glue_code
         jsInertia = robot_data.M; //Eigen::MatrixXd::Zero(robot_model.nv, robot_model.nv);
         // invert floating base angular and linear part
         // diagonal:: linear-linear, angular-angular
-        jsInertia.block(0,0,3,3) = robot_data.M.block(3,3,3,3);
-        jsInertia.block(3,3,3,3) = robot_data.M.block(0,0,3,3);
+        // jsInertia.block(0,0,3,3) = robot_data.M.block(3,3,3,3);
+        // jsInertia.block(3,3,3,3) = robot_data.M.block(0,0,3,3);
         // off-diagonal: linear-angular, angular-linear
-        jsInertia.block(3,0,3,3) = robot_data.M.block(0,3,3,3);
-        jsInertia.block(0,3,3,3) = robot_data.M.block(3,0,3,3);
+        // jsInertia.block(3,0,3,3) = robot_data.M.block(0,3,3,3);
+        // jsInertia.block(0,3,3,3) = robot_data.M.block(3,0,3,3);
         // invert floating base to joints and reorder
         // rows
-        jsInertia.block(3,6,3,this->getNJOINTS()) = robot_data.M.block(0,6,3,this->getNJOINTS());
-        jsInertia.block(0,6,3,this->getNJOINTS()) = robot_data.M.block(3,6,3,this->getNJOINTS());
+        // jsInertia.block(3,6,3,this->getNJOINTS()) = robot_data.M.block(0,6,3,this->getNJOINTS());
+        // jsInertia.block(0,6,3,this->getNJOINTS()) = robot_data.M.block(3,6,3,this->getNJOINTS());
         // columns
-        jsInertia.block(6,3,this->getNJOINTS(),3) = robot_data.M.block(6,0,this->getNJOINTS(),3);
-        jsInertia.block(6,0,this->getNJOINTS(),3) = robot_data.M.block(6,3,this->getNJOINTS(),3);
+        // jsInertia.block(6,3,this->getNJOINTS(),3) = robot_data.M.block(6,0,this->getNJOINTS(),3);
+        // jsInertia.block(6,0,this->getNJOINTS(),3) = robot_data.M.block(6,3,this->getNJOINTS(),3);
         // save new configuration of matrix with reordered linear and angular base velocities
         // remember that the joints are not reordered yet
         robot_data.M = jsInertia;
